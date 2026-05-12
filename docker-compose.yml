@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+
+  # --- Conteneur PHP ---
+  php:
+    build: ./docker/php        # "construis l'image depuis ce dossier"
+    container_name: app_php
+    volumes:
+      - .:/var/www/html        # ton code local est partagé dans le conteneur
+    depends_on:
+      - db                     # php démarre après la base de données
+
+  # --- Conteneur Nginx (serveur web) ---
+  nginx:
+    image: nginx:alpine        # image officielle, légère
+    container_name: app_nginx
+    ports:
+      - "8080:80"              # port local:port dans le conteneur
+                               # tu accèdes à l'app via localhost:8080
+    volumes:
+      - .:/var/www/html
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - php
+
+  # --- Conteneur MySQL ---
+  db:
+    image: mysql:8.0
+    container_name: app_db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: gestion_depenses
+      MYSQL_USER: app
+      MYSQL_PASSWORD: app
+    ports:
+      - "3307:3306"            # permet de te connecter avec MySQL Workbench
+    volumes:
+      - db_data:/var/lib/mysql # les données persistent même si tu arrêtes Docker
+
+# --- Volume nommé pour la BDD ---
+
+###> doctrine/doctrine-bundle ###
+  database:
+    image: postgres:${POSTGRES_VERSION:-16}-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-app}
+      # You should definitely change the password in production
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-!ChangeMe!}
+      POSTGRES_USER: ${POSTGRES_USER:-app}
+    healthcheck:
+      test: ["CMD", "pg_isready", "-d", "${POSTGRES_DB:-app}", "-U", "${POSTGRES_USER:-app}"]
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+    volumes:
+      - database_data:/var/lib/postgresql/data:rw
+      # You may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
+      # - ./docker/db/data:/var/lib/postgresql/data:rw
+###< doctrine/doctrine-bundle ###
+volumes:
+  db_data:
+###> doctrine/doctrine-bundle ###
+  database_data:
+###< doctrine/doctrine-bundle ###
