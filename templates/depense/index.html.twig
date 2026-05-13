@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Depense index{% endblock %}
+
+{% block body %}
+    <h1>Depense index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Date_depense</th>
+                <th>Montant_depense</th>
+                <th>Commentaire_depense</th>
+                <th>Facture_depense</th>
+                <th>Km_vehicule</th>
+                <th>Carbu_prix_litre</th>
+                <th>Repa_description</th>
+                <th>Repa_ref_pieces</th>
+                <th>Repa_photos</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for depense in depenses %}
+            <tr>
+                <td>{{ depense.id }}</td>
+                <td>{{ depense.dateDepense ? depense.dateDepense|date('Y-m-d') : '' }}</td>
+                <td>{{ depense.montantDepense }}</td>
+                <td>{{ depense.commentaireDepense }}</td>
+                <td>{{ depense.factureDepense }}</td>
+                <td>{{ depense.kmVehicule }}</td>
+                <td>{{ depense.carbuPrixLitre }}</td>
+                <td>{{ depense.repaDescription }}</td>
+                <td>{{ depense.repaRefPieces }}</td>
+                <td>{{ depense.repaPhotos }}</td>
+                <td>
+                    <a href="{{ path('app_depense_show', {'id': depense.id}) }}">show</a>
+                    <a href="{{ path('app_depense_edit', {'id': depense.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="11">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_depense_new') }}">Create new</a>
+{% endblock %}
