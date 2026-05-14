@@ -1,6 +1,6 @@
-# Image de base : PHP 8.2 avec PHP-FPM (FastCGI Process Manager)
-# FPM = PHP qui tourne en arrière-plan et attend les requêtes de Nginx
-FROM php:8.2-fpm
+# Image de base : PHP 8.2 avec Apache
+# Apache = serveur web qui sert les fichiers PHP
+FROM php:8.2-apache
 
 # Installer les dépendances système nécessaires
 # mise à jour des paquets
@@ -22,6 +22,12 @@ RUN docker-php-ext-install \
     pdo_mysql \
     # gestion des langues/formats de date
     intl           
+
+# Active le module Apache "rewrite" — indispensable pour Symfony
+RUN a2enmod rewrite
+
+# Copie de la config Apache dans le conteneur
+COPY docker/apache/000-default.conf /etc/apache2/sites-available/000-default.conf
 
 # Installer Composer (gestionnaire de dépendances PHP)
 RUN curl -sS https://getcomposer.org/installer \
