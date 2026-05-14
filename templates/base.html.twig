@@ -25,28 +25,39 @@
 		{% endif %}
 	</head>
 	<body>
-		<header>
+		<div
+			class="container">
+			{# Le header est commenté, remplacé par le aside
+									<header>
+						
+										{% block header %}
+											{% include 'partials/_header.html.twig' %}
+										{% endblock %}
+						
+									</header>
+									 #}
+			<div class="d-flex">
+				<aside>
+					{% block aside %}
+						{% include 'partials/_aside.html.twig' %}
+					{% endblock %}
+				</aside>
 
-			{% block header %}
-				{% include 'partials/_header.html.twig' %}
-			{% endblock %}
+				<main>
+					<div class="container my-3">
 
-		</header>
-
-		<main>
-			<div class="container my-3">
-
-				{% block body %}
-					{# Le contenu par défaut (optionnel) #}
-				{% endblock %}
+						{% block body %}
+							{# Le contenu par défaut (optionnel) #}
+						{% endblock %}
+					</div>
+				</main>
 			</div>
-		</main>
-
-		<footer>
-			{% block footer %}
-				{% include 'partials/_footer.html.twig' %}
-			{% endblock %}
-		</footer>
+			<footer class="mt-5">
+				{% block footer %}
+					{% include 'partials/_footer.html.twig' %}
+				{% endblock %}
+			</footer>
+		</div>
 		{% block javascripts %}{% endblock %}
 	</body>
 </html>

@@ -1,0 +1,67 @@
+<!-- Desktop Side Navigation -->
+<div class="d-flex flex-column flex-shrink-0 bg-light" style="width: 9rem;">
+	<a href="/" class="d-block p-3 link-dark text-decoration-none" data-bs-toggle="tooltip" data-bs-placement="right">
+		ToolSpend
+	</a>
+	<div class="dropdown border-top">
+		<a href="/fr/docs/5.2/examples/sidebars/#" class="d-flex align-items-center justify-content-center p-3 link-dark text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+			<img src="https://github.com/mdo.png" alt="mdo" class="rounded-circle" width="24" height="24">
+		</a>
+		<ul class="dropdown-menu text-small shadow">
+			<li>
+				<a class="dropdown-item" href="/fr/docs/5.2/examples/sidebars/#">Nouveau projet...</a>
+			</li>
+			<li>
+				<a class="dropdown-item" href="/fr/docs/5.2/examples/sidebars/#">Réglages</a>
+			</li>
+			<li>
+				<a class="dropdown-item" href="/fr/docs/5.2/examples/sidebars/#">Profil</a>
+			</li>
+			<li>
+				<hr class="dropdown-divider"></li>
+			<li>
+				<a class="dropdown-item" href="/fr/docs/5.2/examples/sidebars/#">Déconnexion</a>
+			</li>
+		</ul>
+	</div>
+	<ul class="nav nav-pills nav-flush flex-column mb-auto">
+		<li class="nav-item">
+			<a href="{{ path('app_depense_index') }}" class="nav-link {{ app.current_route == 'app_depense_index' ? 'active' : '' }} py-3 border-bottom rounded-0" aria-current="page" data-bs-toggle="tooltip" data-bs-placement="right" aria-label="Maison">
+				<i class="fa-solid fa-house"></i>
+				Home
+			</a>
+		</li>
+		<li class="nav-item">
+			<a href="{{ path('app_vehicule_index') }}" class="nav-link {{ app.current_route == 'app_vehicule_index' ? 'active' : '' }} py-3 border-bottom rounded-0" data-bs-toggle="tooltip" data-bs-placement="right" aria-label="Véhicules">
+				<i class="fa-solid fa-car"></i>
+				Véhicules
+			</a>
+		</li>
+		<li class="nav-item">
+			<a href="{{ path('app_magasin_index') }}" class="nav-link {{ app.current_route == 'app_magasin_index' ? 'active' : '' }} py-3 border-bottom rounded-0" data-bs-toggle="tooltip" data-bs-placement="right" aria-label="Magasins">
+				<i class="fa-solid fa-store"></i>
+				Magasins
+			</a>
+		</li>
+		<li class="nav-item">
+			<a href="{{ path('app_categorie_index') }}" class="nav-link {{ app.current_route == 'app_categorie_index' ? 'active' : '' }} py-3 border-bottom rounded-0" data-bs-toggle="tooltip" data-bs-placement="right" aria-label="Catégories">
+				<i class="fa-solid fa-box"></i>
+				Catégories
+			</a>
+		</li>
+		<li class="nav-item">
+			<a href="#" class="nav-link py-3 border-bottom rounded-0" data-bs-toggle="tooltip" data-bs-placement="right" aria-label="Profil">
+				<i class="fa-solid fa-user"></i>
+				Profil
+			</a>
+		</li>
+		{% if app.current_route == 'app_depense_index' %}
+			<li class="nav-item text-center mt-5">
+				<a href="{{ path('app_depense_new') }}" class="btn btn-primary" data-bs-toggle="tooltip" data-bs-placement="right" aria-label="Ajouter une dépense">
+					<i class="fa-solid fa-plus"></i>
+					Ajouter
+				</a>
+			</li>
+		{% endif %}
+	</ul>
+</div>
