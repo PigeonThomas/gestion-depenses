@@ -1,0 +1,27 @@
+<nav class="navbar bg-primary navbar-expand-lg navbar-dark">
+	<div class="container">
+		<div class="d-flex align-items-center justify-content-start">
+			<a class="navbar-brand" href="{{ path('app_home') }}">DépensesApp</a>
+		</div>
+
+
+		<div class="justify-content-end">
+			<div class="collapse navbar-collapse ">
+				<ul class="navbar-nav">
+					<li class="nav-item">
+						<a class="nav-link {{ app.current_route == 'app_depense_index' ? 'active' : '' }}" href="{{ path('app_depense_index') }}">Dépenses</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link {{ app.current_route == 'app_vehicule_index' ? 'active' : '' }}" href="{{ path('app_vehicule_index') }}">Véhicules</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link {{ app.current_route == 'app_magasin_index' ? 'active' : '' }}" href="{{ path('app_magasin_index') }}">Magasins</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link {{ app.current_route == 'app_categorie_index' ? 'active' : '' }}" href="{{ path('app_categorie_index') }}">Catégories</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</nav>
