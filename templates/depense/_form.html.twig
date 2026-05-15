@@ -1,4 +1,37 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+<div class="row d-flex justify-content-between gap-3">
+	<div class="col mt-3">
+		{{form_label(form.date_depense, 'Date de la dépense', {'label_attr': {'class': 'form-label'}})}}
+		{{ form_widget(form.date_depense, {'attr': {'class': 'form-control'}}) }}
+	</div>
+	<div class="col mt-3">
+		{{form_label(form.montant_depense, 'Montant de la dépense (€)', {'label_attr': {'class': 'form-label'}})}}
+		{{ form_widget(form.montant_depense, {'attr': {'class': 'form-control', 'placeholder': '0.00'}}) }}
+	</div>
+</div>
+<div class="mt-3">
+	{{form_label(form.commentaire_depense, 'Commentaire', {'label_attr': {'class': 'form-label'}})}}
+	{{ form_widget(form.commentaire_depense, {'attr': {'class': 'form-control'}}) }}
+</div>
+<div class="row d-flex justify-content-between gap-3">
+	<div class="col mt-3">
+		{{form_label(form.categorie, 'Catégorie', {'label_attr': {'class': 'form-label'}})}}
+		{{ form_widget(form.categorie, {'attr': {'class': 'form-control'}, 'placeholder': 'Sélectionnez une catégorie'}) }}
+	</div>
+	<div class="col mt-3">
+		{{form_label(form.magasin, 'Magasin', {'label_attr': {'class': 'form-label'}})}}
+		{{ form_widget(form.magasin, {'attr': {'class': 'form-control'}, 'placeholder': 'Sélectionnez un magasin'}) }}
+	</div>
+</div>
+<div class="mt-3">
+	{{ form_label(form.facture_depense, 'Reçu/Facture', {'label_attr': {'class': 'form-label'}}) }}
+	{{ form_widget(form.facture_depense, {'attr': {'class': 'form-control', 'placeholder': 'Sélectionnez un reçu ou une facture'}}) }}
+</div>
+
+
+{{ form_row(form.user) }}
+<div class="text-center">
+	<button class="btn btn-primary">{{ button_label|default('Enregistrer la dépense') }}</button>
+</div>
+{{form_rest(form)}}
 {{ form_end(form) }}
