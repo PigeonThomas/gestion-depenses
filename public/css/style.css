@@ -1,0 +1,17 @@
+.form-label {
+    font-family: Quicksand;
+    text-transform: uppercase;
+    font-weight: bold;
+    color: rgb(0 81 192 / var(--tw-text-opacity, 1));
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: 0.05em;
+    font-weight: 700;
+}
+
+.form-control {
+    
+    background-color: rgb(242 244 246 / var(--tw-bg-opacity, 1));;
+    border-radius: 1rem;
+    
+}

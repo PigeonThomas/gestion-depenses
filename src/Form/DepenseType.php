@@ -28,19 +28,19 @@ class DepenseType extends AbstractType
             ->add('repa_photos')
             ->add('categorie', EntityType::class, [
                 'class' => Categorie::class,
-                'choice_label' => 'id',
+                'choice_label' => 'nom_categorie',
             ])
             ->add('magasin', EntityType::class, [
                 'class' => Magasin::class,
-                'choice_label' => 'id',
+                'choice_label' => 'nom_magasin',
             ])
             ->add('vehicule', EntityType::class, [
                 'class' => Vehicule::class,
-                'choice_label' => 'id',
+                'choice_label' => 'surnom_vehicule',
             ])
             ->add('user', EntityType::class, [
                 'class' => User::class,
-                'choice_label' => 'id',
+                'choice_label' => 'nom_user',
             ])
         ;
     }

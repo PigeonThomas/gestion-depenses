@@ -25,27 +25,16 @@
 		{% endif %}
 	</head>
 	<body>
-		<div
-			class="container-sm">
-			{# Le header est commenté, remplacé par le aside
-																		<header>
-															
-																			{% block header %}
-																				{% include 'partials/_header.html.twig' %}
-																			{% endblock %}
-															
-																		</header>
-																		 #}
-			<div class="d-flex">
-				<aside>
+		<div class="container">
+			<div class="row d-flex">
+				<aside class="col-3">
 					{% block aside %}
 						{% include 'partials/_aside.html.twig' %}
 					{% endblock %}
 				</aside>
 
-				<main>
+				<main class="col">
 					<div class="m-3">
-
 						{% block body %}
 							{# Le contenu par défaut (optionnel) #}
 						{% endblock %}

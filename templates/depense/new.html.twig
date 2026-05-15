@@ -1,11 +1,21 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Depense{% endblock %}
+{% block title %}Nouvelle dépense
+{% endblock %}
 
 {% block body %}
-    <h1>Create new Depense</h1>
 
-    {{ include('depense/_form.html.twig') }}
+	<h1>Nouvelle dépense</h1>
 
-    <a href="{{ path('app_depense_index') }}">back to list</a>
-{% endblock %}
+	<div class="row d-flex justify-content-center">
+		<div class="col-10">
+			<div class="card p-3 m-3" style="border-radius: 20px">
+				{{ include('depense/_form.html.twig') }}
+			</div>
+		</div>
+	</div>
+
+	<div class="text-center">
+		<a href="{{ path('app_depense_index') }}">Retour à la liste</a>
+	</div>
+</div>{% endblock %}
