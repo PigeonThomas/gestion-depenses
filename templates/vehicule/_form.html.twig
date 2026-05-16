@@ -1,4 +1,53 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+<div class="row d-flex justify-content-between gap-3">
+	<div class="col mt-3">
+		{{form_label(form.surnom_vehicule)}}
+		{{ form_widget(form.surnom_vehicule) }}
+	</div>
+	<div class="col mt-3">
+		{{form_label(form.immat_vehicule)}}
+		{{ form_widget(form.immat_vehicule) }}
+	</div>
+</div>
+<div class="row d-flex justify-content-between gap-3">
+	<div class="col mt-3">
+		{{form_label(form.type_vehicule)}}
+		{{ form_widget(form.type_vehicule) }}
+	</div>
+	<div class="col mt-3">
+		{{form_label(form.annee_circulation_vehicule)}}
+		{{ form_widget(form.annee_circulation_vehicule) }}
+	</div>
+</div>
+<div class="row d-flex justify-content-between gap-3">
+	<div class="col mt-3">
+		{{form_label(form.marque_vehicule)}}
+		{{ form_widget(form.marque_vehicule) }}
+	</div>
+	<div class="col mt-3">
+		{{form_label(form.modele_vehicule)}}
+		{{ form_widget(form.modele_vehicule) }}
+	</div>
+</div>
+<div class="row d-flex justify-content-between gap-3">
+	<div class="col mt-3">
+		{{form_label(form.energie_vehicule)}}
+		{{ form_widget(form.energie_vehicule) }}
+	</div>
+	<div class="col mt-3">
+		{{form_label(form.kmAchat_vehicule)}}
+		{{ form_widget(form.kmAchat_vehicule) }}
+	</div>
+</div>
+
+<div class="row d-flex justify-content-between gap-3">
+	<div class="col mt-3">
+		{{form_label(form.image_vehicule)}}
+		{{ form_widget(form.image_vehicule) }}
+	</div>
+</div>
+<div class="text-center">
+	{{form_widget(form.save) }}
+</div>
+
 {{ form_end(form) }}
