@@ -23,6 +23,7 @@ final class DepenseController extends AbstractController
         $totalDepenseActualMonth = $depenseRepository->findTotalDepenseByMonth($annee, $mois);
         $totalDepenseLastMonth = $depenseRepository->findTotalDepenseByMonth($annee, $mois - 1);
         return $this->render('depense/index.html.twig', [
+            'title' => 'Dashboard',
             'depenses' => $depenseRepository->findAll(),
             'totalDepenseActualMonth' => $totalDepenseActualMonth,
             'totalDepenseLastMonth' => $totalDepenseLastMonth,
@@ -44,6 +45,7 @@ final class DepenseController extends AbstractController
         }
 
         return $this->render('depense/new.html.twig', [
+            'title' => 'Créer une dépense',
             'depense' => $depense,
             'form' => $form,
         ]);
@@ -53,6 +55,7 @@ final class DepenseController extends AbstractController
     public function show(Depense $depense): Response
     {
         return $this->render('depense/show.html.twig', [
+            'title' => 'Détails de la dépense',
             'depense' => $depense,
         ]);
     }
@@ -70,6 +73,7 @@ final class DepenseController extends AbstractController
         }
 
         return $this->render('depense/edit.html.twig', [
+            'title' => 'Modifier la dépense',
             'depense' => $depense,
             'form' => $form,
         ]);

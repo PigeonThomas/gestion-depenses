@@ -18,6 +18,7 @@ final class VehiculeController extends AbstractController
     public function index(VehiculeRepository $vehiculeRepository): Response
     {
         return $this->render('vehicule/index.html.twig', [
+            'title' => 'Véhicules',
             'vehicules' => $vehiculeRepository->findAll(),
         ]);
     }
@@ -30,6 +31,16 @@ final class VehiculeController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $imageFile = $form->get('image_vehicule')->getData();
+            if ($imageFile) {
+                $newFilename = $vehicule->getId().'.'.$vehicule->getSurnomVehicule().'.'.$imageFile->getClientOriginalExtension();
+                $imageFile->move(
+                    $this->getParameter('kernel.project_dir').'/public/images/vehicules',
+                    $newFilename
+                );
+                $vehicule->setImageVehicule($newFilename);            
+            }
+            
             $entityManager->persist($vehicule);
             $entityManager->flush();
 
@@ -37,6 +48,7 @@ final class VehiculeController extends AbstractController
         }
 
         return $this->render('vehicule/new.html.twig', [
+            'title' => 'Créer un véhicule',
             'vehicule' => $vehicule,
             'form' => $form,
         ]);
@@ -46,6 +58,7 @@ final class VehiculeController extends AbstractController
     public function show(Vehicule $vehicule): Response
     {
         return $this->render('vehicule/show.html.twig', [
+            'title' => 'Détails du véhicule',
             'vehicule' => $vehicule,
         ]);
     }
@@ -57,12 +70,22 @@ final class VehiculeController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $imageFile = $form->get('image_vehicule')->getData();
+            if ($imageFile) {
+                $newFilename = $vehicule->getId().'.'.$vehicule->getSurnomVehicule().'.'.$imageFile->getClientOriginalExtension();
+                $imageFile->move(
+                    $this->getParameter('kernel.project_dir').'/public/images/vehicules',
+                    $newFilename
+                );
+                $vehicule->setImageVehicule($newFilename);
+            }
             $entityManager->flush();
 
             return $this->redirectToRoute('app_vehicule_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('vehicule/edit.html.twig', [
+            'title' => 'Modifier le véhicule',
             'vehicule' => $vehicule,
             'form' => $form,
         ]);
