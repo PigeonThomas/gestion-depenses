@@ -1,3 +1,5 @@
+
+
 .form-label {
     font-family: Quicksand;
     text-transform: uppercase;
@@ -10,8 +12,16 @@
 }
 
 .form-control {
-    
-    background-color: rgb(242 244 246 / var(--tw-bg-opacity, 1));;
+    background-color: rgb(242 244 246 / var(--tw-bg-opacity, 1));
     border-radius: 1rem;
-    
+}
+
+@media (max-width: 767.98px) {
+    body {
+        overflow: auto;
+    }
+
+    .app-shell {
+        height: auto;
+    }
 }
