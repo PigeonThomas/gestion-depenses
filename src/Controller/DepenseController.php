@@ -17,8 +17,15 @@ final class DepenseController extends AbstractController
     #[Route(name: 'app_depense_index', methods: ['GET'])]
     public function index(DepenseRepository $depenseRepository): Response
     {
+        $now = new \DateTime();
+        $annee = (int) $now->format('Y');
+        $mois = (int) $now->format('n');
+        $totalDepenseActualMonth = $depenseRepository->findTotalDepenseByMonth($annee, $mois);
+        $totalDepenseLastMonth = $depenseRepository->findTotalDepenseByMonth($annee, $mois - 1);
         return $this->render('depense/index.html.twig', [
             'depenses' => $depenseRepository->findAll(),
+            'totalDepenseActualMonth' => $totalDepenseActualMonth,
+            'totalDepenseLastMonth' => $totalDepenseLastMonth,
         ]);
     }
 
