@@ -11,10 +11,10 @@
 		<h2>Bienvenue sur votre tableau de bord de gestion des dépenses !</h2>
 		<p>
 			Ici, vous pouvez suivre et gérer toutes vos dépenses liées à votre véhicule. 
-																																																																																																																																				Que ce soit pour l'entretien, les réparations ou les frais de carburant, 
-																																																																																																																																				notre tableau de bord vous offre une vue d'ensemble claire et organisée de toutes vos dépenses. 
-																																																																																																																																				Utilisez les fonctionnalités pour ajouter, modifier ou supprimer des entrées, 
-																																																																																																																																				et gardez un œil sur vos finances automobiles en toute simplicité.
+																																																																																																																																													Que ce soit pour l'entretien, les réparations ou les frais de carburant, 
+																																																																																																																																													notre tableau de bord vous offre une vue d'ensemble claire et organisée de toutes vos dépenses. 
+																																																																																																																																													Utilisez les fonctionnalités pour ajouter, modifier ou supprimer des entrées, 
+																																																																																																																																													et gardez un œil sur vos finances automobiles en toute simplicité.
 		</p>
 
 		<div class="container">
@@ -22,16 +22,20 @@
 				<div class="col">
 					<div class="card bg-primary text-white" style="border-radius: 20px;">
 						<div class="card-body">
-							<h5 class="card-title">Titre1</h5>
-							<p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+							<h5 class="card-title">Dépenses du mois</h5>
+							<p class="card-text">Total des dépenses pour le mois en cours :
+								{{ totalDepenseActualMonth }}
+								€</p>
 						</div>
 					</div>
 				</div>
 				<div class="col">
 					<div class="card " style="border-radius: 20px;">
 						<div class="card-body">
-							<h5 class="card-title">Titre2</h5>
-							<p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+							<h5 class="card-title">Dépenses du mois précédent</h5>
+							<p class="card-text">Total des dépenses pour le mois précédent :
+								{{ totalDepenseLastMonth }}
+								€</p>
 						</div>
 					</div>
 				</div>

@@ -16,6 +16,24 @@ class DepenseRepository extends ServiceEntityRepository
         parent::__construct($registry, Depense::class);
     }
 
+    /**
+     * Return the total expenses amount for a given month.
+     */
+    public function findTotalDepenseByMonth(int $annee, int $mois): string
+    {
+        $start = new \DateTimeImmutable(sprintf('%04d-%02d-01', $annee, $mois));
+        $end = $start->modify('first day of next month');
+
+        return (string) $this->createQueryBuilder('d')
+            ->select('COALESCE(SUM(d.montant_depense), 0)')
+            ->where('d.date_depense >= :start')
+            ->andWhere('d.date_depense < :end')
+            ->setParameter('start', $start)
+            ->setParameter('end', $end)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
     //    /**
     //     * @return Depense[] Returns an array of Depense objects
     //     */
