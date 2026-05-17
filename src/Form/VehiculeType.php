@@ -12,6 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class VehiculeType extends AbstractType
 {
@@ -83,6 +84,17 @@ class VehiculeType extends AbstractType
                 'label' => 'Image du véhicule (JPG, PNG)',
                 'label_attr' => ['class' => 'form-label'],
                 'attr' => ['class' => 'form-control'],
+                'mapped' => false,
+                'constraints' => [
+                    new Assert\Image([
+                        'maxSize' => '5M',
+                        'mimeTypes' => [
+                            'image/jpeg',
+                            'image/png',
+                        ],
+                        'mimeTypesMessage' => 'Veuillez télécharger une image valide (JPG ou PNG)',
+                    ]),
+                ],
                 'required' => false,
             ])
             ->add('save', SubmitType::class, [
