@@ -31,16 +31,7 @@ final class VehiculeController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $imageFile = $form->get('image_vehicule')->getData();
-            if ($imageFile) {
-                $newFilename = $vehicule->getId().'.'.$vehicule->getSurnomVehicule().'.'.$imageFile->getClientOriginalExtension();
-                $imageFile->move(
-                    $this->getParameter('kernel.project_dir').'/public/images/vehicules',
-                    $newFilename
-                );
-                $vehicule->setImageVehicule($newFilename);            
-            }
-            
+                        
             $entityManager->persist($vehicule);
             $entityManager->flush();
 
@@ -70,15 +61,7 @@ final class VehiculeController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $imageFile = $form->get('image_vehicule')->getData();
-            if ($imageFile) {
-                $newFilename = $vehicule->getId().'.'.$vehicule->getSurnomVehicule().'.'.$imageFile->getClientOriginalExtension();
-                $imageFile->move(
-                    $this->getParameter('kernel.project_dir').'/public/images/vehicules',
-                    $newFilename
-                );
-                $vehicule->setImageVehicule($newFilename);
-            }
+            
             $entityManager->flush();
 
             return $this->redirectToRoute('app_vehicule_index', [], Response::HTTP_SEE_OTHER);

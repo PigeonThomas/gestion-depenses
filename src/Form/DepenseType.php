@@ -41,7 +41,7 @@ class DepenseType extends AbstractType
                 'attr' => ['class' => 'form-control'],
                 'required' => false,
             ])
-            ->add('facture_depense', FileType::class, [
+            ->add('factureFile', FileType::class, [
                 'label' => 'Reçu/Facture (PDF, JPG, PNG)',
                 'label_attr' => ['class' => 'form-label'],
                 'attr' => ['class' => 'form-control'],
@@ -72,7 +72,7 @@ class DepenseType extends AbstractType
                 'attr' => ['class' => 'form-control'],
                 'required' => false,
             ])
-            ->add('repa_photos', FileType::class, [
+            ->add('repaPhotosFile', FileType::class, [
                 'label' => 'Photos de la réparation (3 photos maximum)',
                 'label_attr' => ['class' => 'form-label'],
                 'attr' => ['class' => 'form-control'],
@@ -101,6 +101,7 @@ class DepenseType extends AbstractType
                 'placeholder' => 'Sélectionnez un véhicule',
                 'class' => Vehicule::class,
                 'choice_label' => 'surnom_vehicule',
+                'required' => false,
             ])
             ->add('user', EntityType::class, [
                 'label' => 'Utilisateur',
@@ -110,7 +111,7 @@ class DepenseType extends AbstractType
                 'class' => User::class,
                 'choice_label' => 'nom_user',
             ])
-            ->add ('save', SubmitType::class, [
+            ->add('save', SubmitType::class, [
                 'label' => 'Enregistrer la dépense',
                 'attr' => ['class' => 'btn btn-primary mt-3'],
             ])

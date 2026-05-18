@@ -7,8 +7,13 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Validator\Constraints as Assert;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: VehiculeRepository::class)]
+#[Vich\Uploadable]
+#[ORM\HasLifecycleCallbacks]
 class Vehicule
 {
     #[ORM\Id]
@@ -43,11 +48,25 @@ class Vehicule
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $image_vehicule = null;
 
+    #[Vich\UploadableField(mapping: "vehicules", fileNameProperty: "image_vehicule")]
+    #[Assert\Image(
+        maxSize: '5M',
+        mimeTypes: ['image/jpeg', 'image/png'],
+        mimeTypesMessage: 'Veuillez télécharger une image valide (JPG ou PNG)',
+    )]
+    private ?File $imageVehiculeFile = null;
+
     /**
      * @var Collection<int, Depense>
      */
     #[ORM\OneToMany(targetEntity: Depense::class, mappedBy: 'vehicule')]
     private Collection $depenses;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $createdAt = null;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $updatedAt = null;
 
     public function __construct()
     {
@@ -195,5 +214,68 @@ class Vehicule
         }
 
         return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(\DateTimeImmutable $updatedAt): static
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of imageVehiculeFile
+     */ 
+    public function getImageVehiculeFile()
+    {
+        return $this->imageVehiculeFile;
+    }
+
+    /**
+     * Set the value of imageVehiculeFile
+     *
+     * @return  static
+     */ 
+    public function setImageVehiculeFile(?File $imageVehiculeFile): static
+    {
+        $this->imageVehiculeFile = $imageVehiculeFile;
+
+        if ($imageVehiculeFile !== null) {
+            $this->updatedAt = new \DateTimeImmutable();
+        }
+
+        return $this;
+    }
+
+    #[ORM\PrePersist]
+    public function updateTimestampsOnCreate(): void
+    {
+        $now = new \DateTimeImmutable();
+
+        $this->createdAt ??= $now;
+        $this->updatedAt = $now;
+    }
+
+    #[ORM\PreUpdate]
+    public function updateTimestampOnUpdate(): void
+    {
+        $this->updatedAt = new \DateTimeImmutable();
     }
 }

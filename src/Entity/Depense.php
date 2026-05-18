@@ -5,8 +5,13 @@ namespace App\Entity;
 use App\Repository\DepenseRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Validator\Constraints as Assert;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: DepenseRepository::class)]
+#[Vich\Uploadable]
+#[ORM\HasLifecycleCallbacks]
 class Depense
 {
     #[ORM\Id]
@@ -26,6 +31,14 @@ class Depense
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $facture_depense = null;
 
+    #[Vich\UploadableField(mapping: "factures", fileNameProperty: "facture_depense")]
+    #[Assert\File(
+        maxSize: '5M',
+        mimeTypes: ['application/pdf', 'image/jpeg', 'image/png'],
+        mimeTypesMessage: 'Veuillez télécharger un fichier PDF, JPEG ou PNG valide.',
+    )]
+    private ?File $factureFile = null;
+
     #[ORM\Column(type: Types::DECIMAL, precision: 8, scale: 2, nullable: true)]
     private ?string $km_vehicule = null;
 
@@ -41,6 +54,14 @@ class Depense
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $repa_photos = null;
 
+    #[Vich\UploadableField(mapping: "reparations", fileNameProperty: "repa_photos")]
+    #[Assert\Image(
+        maxSize: '5M',
+        mimeTypes: ['image/jpeg', 'image/png'],
+        mimeTypesMessage: 'Veuillez télécharger une image valide (JPG ou PNG).',
+    )]
+    private ?File $repaPhotosFile = null;
+
     #[ORM\ManyToOne(inversedBy: 'depenses')]
     private ?Categorie $categorie = null;
 
@@ -53,6 +74,9 @@ class Depense
     #[ORM\ManyToOne(inversedBy: 'depenses')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $updatedAt = null;
 
     public function getId(): ?int
     {
@@ -213,5 +237,69 @@ class Depense
         $this->user = $user;
 
         return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(\DateTimeImmutable $updatedAt): static
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of factureFile
+     */ 
+    public function getFactureFile()
+    {
+        return $this->factureFile;
+    }
+
+    /**
+     * Set the value of factureFile
+     *
+     * @return  static
+     */ 
+    public function setFactureFile(?File $factureFile): static
+    {
+        $this->factureFile = $factureFile;
+
+        if ($factureFile !== null) {
+            $this->updatedAt = new \DateTimeImmutable();
+        }
+
+        return $this;
+    }
+
+    public function getRepaPhotosFile(): ?File
+    {
+        return $this->repaPhotosFile;
+    }
+
+    public function setRepaPhotosFile(?File $repaPhotosFile): static
+    {
+        $this->repaPhotosFile = $repaPhotosFile;
+
+        if ($repaPhotosFile !== null) {
+            $this->updatedAt = new \DateTimeImmutable();
+        }
+
+        return $this;
+    }
+
+    #[ORM\PrePersist]
+    public function updateTimestampOnCreate(): void
+    {
+        $this->updatedAt ??= new \DateTimeImmutable();
+    }
+
+    #[ORM\PreUpdate]
+    public function updateTimestampOnUpdate(): void
+    {
+        $this->updatedAt = new \DateTimeImmutable();
     }
 }
