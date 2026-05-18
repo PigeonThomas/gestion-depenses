@@ -24,6 +24,10 @@ class MagasinType extends AbstractType
                 'label' => 'En ligne',
                 'label_attr' => ['class' => 'form-label'],
                 'attr' => ['class' => 'form-check-input'],
+                'choice' => [
+                    'Oui' => true,
+                    'Non' => false,
+                ],
             ])
             ->add('adresse_magasin', TextType::class, [
                 'label' => 'Adresse',

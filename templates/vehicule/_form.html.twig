@@ -42,12 +42,13 @@
 
 <div class="row d-flex justify-content-between gap-3">
 	<div class="col mt-3">
-		{{form_label(form.image_vehicule)}}
-		{{ form_widget(form.image_vehicule) }}
+		{{form_label(form.imageVehiculeFile)}}
+		{{ form_widget(form.imageVehiculeFile) }}
 	</div>
 </div>
+
 <div class="text-center">
 	{{form_widget(form.save) }}
 </div>
-
+{{ form_rest(form) }}
 {{ form_end(form) }}

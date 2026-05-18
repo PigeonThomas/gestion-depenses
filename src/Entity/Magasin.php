@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: MagasinRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Magasin
 {
     #[ORM\Id]
@@ -32,6 +33,12 @@ class Magasin
      */
     #[ORM\OneToMany(targetEntity: Depense::class, mappedBy: 'magasin')]
     private Collection $depenses;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $createdAt = null;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $updatedAt = null;
 
     public function __construct()
     {
@@ -119,5 +126,44 @@ class Magasin
         }
 
         return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(\DateTimeImmutable $updatedAt): static
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    #[ORM\PrePersist]
+    public function updateTimestampsOnCreate(): void
+    {
+        $now = new \DateTimeImmutable();
+
+        $this->createdAt ??= $now;
+        $this->updatedAt = $now;
+    }
+
+    #[ORM\PreUpdate]
+    public function updateTimestampOnUpdate(): void
+    {
+        $this->updatedAt = new \DateTimeImmutable();
     }
 }

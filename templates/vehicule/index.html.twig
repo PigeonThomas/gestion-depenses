@@ -35,7 +35,7 @@
 								</div>
 								<div class="card-image col">
 									{% if vehicule.imageVehicule %}
-										<img class="img-fluid" src="/images/vehicules/{{ vehicule.imageVehicule }}" alt="{{ vehicule.surnomVehicule }}">
+										<img class="img-fluid" src="{{ vich_uploader_asset(vehicule, 'imageVehiculeFile') }}" alt="{{ vehicule.surnomVehicule }}">
 									{% endif %}
 								</div>
 							</div>

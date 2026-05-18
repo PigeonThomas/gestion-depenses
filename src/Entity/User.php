@@ -8,9 +8,13 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
+#[Vich\Uploadable]
+#[ORM\HasLifecycleCallbacks]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -47,6 +51,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\OneToMany(targetEntity: Depense::class, mappedBy: 'user')]
     private Collection $depenses;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $createdAt = null;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $updatedAt = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $image_user = null;
+
+    #[Vich\UploadableField(mapping: "users", fileNameProperty: "image_user")]
+    private ?File $imageUserFile = null;
+
 
     public function __construct()
     {
@@ -198,5 +215,80 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(\DateTimeImmutable $updatedAt): static
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    public function getImageUser(): ?string
+    {
+        return $this->image_user;
+    }
+
+    public function setImageUser(?string $image_user): static
+    {
+        $this->image_user = $image_user;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of imageUserFile
+     */ 
+    public function getImageUserFile()
+    {
+        return $this->imageUserFile;
+    }
+
+    /**
+     * Set the value of imageUserFile
+     *
+     * @return  static
+     */ 
+    public function setImageUserFile(?File $imageUserFile): static
+    {
+        $this->imageUserFile = $imageUserFile;
+
+        if ($imageUserFile !== null) {
+            $this->updatedAt = new \DateTimeImmutable();
+        }
+
+        return $this;
+    }
+
+    #[ORM\PrePersist]
+    public function updateTimestampsOnCreate(): void
+    {
+        $now = new \DateTimeImmutable();
+
+        $this->createdAt ??= $now;
+        $this->updatedAt = $now;
+    }
+
+    #[ORM\PreUpdate]
+    public function updateTimestampOnUpdate(): void
+    {
+        $this->updatedAt = new \DateTimeImmutable();
     }
 }
