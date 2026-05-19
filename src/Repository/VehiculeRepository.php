@@ -16,6 +16,18 @@ class VehiculeRepository extends ServiceEntityRepository
         parent::__construct($registry, Vehicule::class);
     }
 
+    /**
+     * find initial km of vehicule
+     *
+     * @param int $vehiculeId The ID of the vehicle to find the initial Km for.
+     * @return string|null The initial Km for the specified vehicle.
+     */
+    public function findInitialKmByVehicule(int $vehiculeId) : ?string
+    {
+        $vehicule = $this->find($vehiculeId);
+
+        return $vehicule?->getKmAchatVehicule();
+    }
     //    /**
     //     * @return Vehicule[] Returns an array of Vehicule objects
     //     */

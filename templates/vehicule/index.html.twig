@@ -14,6 +14,55 @@
 			Ici, vous pouvez suivre et gérer toutes vos véhicules.
 		</p>
 
+		<div class="row g-4 my-2">
+			<div class="col-4">
+				<div class="card " style="border-radius: 20px;">
+					<div class="card-body">
+						<h5 class="card-title">Kilométres parcourus</h5>
+						<p class="card-text">Kilométres parcourus pour le mois en cours :
+							<strong>
+								{{ totalDistance }}
+								km</strong>
+						</p>
+					</div>
+				</div>
+			</div>
+			<div class="col-4">
+				<div class="card " style="border-radius: 20px;">
+					<div class="card-body">
+						<h5 class="card-title">Dépenses en essence</h5>
+						<p class="card-text">Dépenses en essence en
+							{{ mois }}/{{ annee }}
+							:
+							<strong>{{ totalEssenceActualMonth }}
+								€</strong>
+						</p>
+						<p class="card-text">Dépenses en essence pour le mois en précédent :
+							<strong>{{ totalEssenceLastMonth }}
+								€</strong>
+						</p>
+					</div>
+				</div>
+			</div>
+			<div class="col-4">
+				<div class="card " style="border-radius: 20px;">
+					<div class="card-body">
+						<h5 class="card-title">Dépenses en réparations</h5>
+						<p class="card-text">Dépenses en réparations en
+							{{ mois }}/{{ annee }}
+							:
+							<strong>{{ totalReparationActualMonth }}
+								€</strong>
+						</p>
+						<p class="card-text">Dépenses en réparations pour le mois en précédent :
+							<strong>{{ totalReparationLastMonth }}
+								€</strong>
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+
 		<div class="container">
 			<div class="row g-4">
 				{% for vehicule in vehicules %}
@@ -42,7 +91,7 @@
 							<div class="card-footer d-flex justify-content-end gap-2">
 								<a href="{{ path('app_vehicule_show', {'id': vehicule.id}) }}" class="btn btn-primary">
 									<i class="fas fa-eye"></i>
-									Afficher</a>
+									Détails</a>
 								<a href="{{ path('app_vehicule_edit', {'id': vehicule.id}) }}" class="btn btn-secondary">
 									<i class="fas fa-pencil-alt"></i>
 									Modifier</a>
@@ -55,24 +104,7 @@
 				{% endfor %}
 			</div>
 
-			<div class="row g-4 mt-2">
-				<div class="col-8">
-					<div class="card " style="border-radius: 20px;">
-						<div class="card-body">
-							<h5 class="card-title">Titre4</h5>
-							<p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-						</div>
-					</div>
-				</div>
-				<div class="col-4">
-					<div class="card " style="border-radius: 20px;">
-						<div class="card-body">
-							<h5 class="card-title">Titre5</h5>
-							<p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-						</div>
-					</div>
-				</div>
-			</div>
+
 		</div>
 	</div>
 {% endblock %}
