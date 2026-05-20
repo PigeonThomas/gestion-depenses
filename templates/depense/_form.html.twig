@@ -16,7 +16,7 @@
 <div class="row d-flex justify-content-between gap-3">
 	<div class="col mt-3">
 		{{form_label(form.categorie)}}
-		{{ form_widget(form.categorie) }}
+		{{ form_widget(form.categorie, {'attr': {'class': 'form-control', 'data-depense-categorie': 'true'}}) }}
 	</div>
 	<div class="col mt-3">
 		{{form_label(form.magasin)}}
@@ -28,10 +28,42 @@
 	{{ form_widget(form.factureFile) }}
 </div>
 
+<div class="row justify-content-between gap-3" data-depense-section="vehicule-common" hidden>
+	<div class="col mt-3">
+		{{ form_label(form.vehicule)}}
+		{{ form_widget(form.vehicule) }}
+	</div>
+	<div class="col mt-3">
+		{{ form_label(form.km_vehicule)}}
+		{{ form_widget(form.km_vehicule) }}
+	</div>
+</div>
+
+<div class="mt-3" data-depense-section="carburant" hidden>
+	{{ form_label(form.carbu_prix_litre)}}
+	{{ form_widget(form.carbu_prix_litre) }}
+</div>
+
+<div data-depense-section="vehicule-reparation" hidden>
+	<div class="row d-flex justify-content-between gap-3">
+		<div class="col mt-3">
+			{{ form_label(form.repa_ref_pieces)}}
+			{{ form_widget(form.repa_ref_pieces) }}
+		</div>
+		<div class="col mt-3">
+			{{ form_label(form.repaPhotosFile)}}
+			{{ form_widget(form.repaPhotosFile) }}
+		</div>
+	</div>
+	<div class="mt-3">
+		{{ form_label(form.repa_description)}}
+		{{ form_widget(form.repa_description) }}
+	</div>
+</div>
 
 {{ form_row(form.user) }}
 <div class="text-center">
 	{{form_widget(form.save) }}
 </div>
-{{form_rest(form)}}
+
 {{ form_end(form) }}

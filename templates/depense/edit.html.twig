@@ -1,13 +1,19 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit Depense{% endblock %}
+{% block title %}Edit Depense
+{% endblock %}
 
 {% block body %}
-    <h1>Edit Depense</h1>
+	<h1>Edit Depense</h1>
 
-    {{ include('depense/_form.html.twig', {'button_label': 'Update'}) }}
+	{{ include('depense/_form.html.twig', {'button_label': 'Update'}) }}
 
-    <a href="{{ path('app_depense_index') }}">back to list</a>
+	<a href="{{ path('app_depense_index') }}">back to list</a>
 
-    {{ include('depense/_delete_form.html.twig') }}
+	{{ include('depense/_delete_form.html.twig') }}
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	<script src="{{ asset('js/depense-form.js') }}"></script>
 {% endblock %}
