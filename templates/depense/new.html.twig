@@ -18,4 +18,9 @@
 	<div class="text-center">
 		<a href="{{ path('app_depense_index') }}">Retour à la liste</a>
 	</div>
-</div>{% endblock %}
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	<script src="{{ asset('js/depense-form.js') }}"></script>
+{% endblock %}
