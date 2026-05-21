@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Register
+{% endblock %}
+
+{% block body %}
+	{% include 'partials/_navbar.html.twig' %}
+	<section class="auth-page">
+		<div class="auth-panel text-center">
+			<div class="auth-mark mx-auto mb-4">
+				<i class="fa-solid fa-user-plus"></i>
+			</div>
+
+			<h1 class="h3 mb-3 fw-normal">Créer un compte</h1>
+			<p class="text-body-secondary mb-4">Inscrivez-vous pour accéder à votre espace ToolSpend.</p>
+
+			{{ form_errors(registrationForm) }}
+
+			{{ form_start(registrationForm) }}
+			<div class="auth-field text-start">{{ form_row(registrationForm.email) }}</div>
+			<div class="auth-field text-start">{{ form_row(registrationForm.nom_user) }}</div>
+			<div class="auth-field text-start">{{ form_row(registrationForm.prenom_user) }}</div>
+			<div class="auth-field text-start">{{ form_row(registrationForm.adresse_user) }}</div>
+			<div class="auth-field text-start">{{ form_row(registrationForm.imageUserFile) }}</div>
+			<div class="auth-field text-start">{{ form_row(registrationForm.plainPassword) }}</div>
+			<div class="auth-field text-start">{{ form_row(registrationForm.agreeTerms) }}</div>
+			{{ form_row(registrationForm.save, { attr: { class: 'btn btn-primary w-100 py-2 mt-3' } }) }}
+			{{ form_end(registrationForm) }}
+
+			<p class="mt-4 mb-0 text-body-secondary">Déjà inscrit ?
+				<a class="auth-helper-link" href="{{ path('app_login') }}">Se connecter</a>
+			</p>
+		</div>
+	</section>
+{% endblock %}
