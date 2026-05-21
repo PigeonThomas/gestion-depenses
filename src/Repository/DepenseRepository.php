@@ -17,13 +17,14 @@ class DepenseRepository extends ServiceEntityRepository
     }
 
     /**
-     * Return the total expenses amount for a given month.
+     * Return the total expenses amount for a given month by User.
      * @param int $annee The year of the month to calculate the total for.
      * @param int $mois The month to calculate the total for (1-12).
      * @return string The total expenses amount for the specified month.
      */
-    public function findTotalDepenseByMonth(int $annee, int $mois): string
+    public function findTotalDepenseByMonth(int $annee, int $mois, int $userId): string
     {
+        
         $start = new \DateTimeImmutable(sprintf('%04d-%02d-01', $annee, $mois));
         $end = $start->modify('first day of next month');
 
@@ -31,19 +32,21 @@ class DepenseRepository extends ServiceEntityRepository
             ->select('COALESCE(SUM(d.montant_depense), 0)')
             ->where('d.date_depense >= :start')
             ->andWhere('d.date_depense < :end')
+            ->andWhere('d.user = :userId')
             ->setParameter('start', $start)
             ->setParameter('end', $end)
+            ->setParameter('userId', $userId)
             ->getQuery()
             ->getSingleScalarResult();
     }
 
         /**
-        * Return the total essence expenses amount for a given month.
+        * Return the total essence expenses amount for a given month by User.
         * @param int $annee The year of the month to calculate the total for.
         * @param int $mois The month to calculate the total for (1-12).
         * @return string The total essence expenses amount for the specified month.
         */
-    public function findTotalEssenceByMonth(int $annee, int $mois): string
+    public function findTotalEssenceByMonth(int $annee, int $mois, int $userId): string
     {
         $start = new \DateTimeImmutable(sprintf('%04d-%02d-01', $annee, $mois));
         $end = $start->modify('first day of next month');
@@ -52,21 +55,23 @@ class DepenseRepository extends ServiceEntityRepository
             ->select('COALESCE(SUM(d.montant_depense), 0)')
             ->where('d.date_depense >= :start')
             ->andWhere('d.date_depense < :end')
-            ->andWhere('d.categorie = :categorie') 
+            ->andWhere('d.categorie = :categorie')
+            ->andWhere('d.user = :userId')
             ->setParameter('start', $start)
             ->setParameter('end', $end)
             ->setParameter('categorie', '10') // Adjust the category name as needed
+            ->setParameter('userId', $userId)
             ->getQuery()
             ->getSingleScalarResult();
     }
 
     /**
-     * Return the total reparation expenses amount for a given month.
+     * Return the total reparation expenses amount for a given month by User.
      * @param int $annee The year of the month to calculate the total for.
      * @param int $mois The month to calculate the total for (1-12).
      * @return int The total reparation expenses amount for the specified month.
      */
-    public function findTotalReparationByMonth(int $annee, int $mois): int
+    public function findTotalReparationByMonth(int $annee, int $mois, int $userId): int
     {
         $start = new \DateTimeImmutable(sprintf('%04d-%02d-01', $annee, $mois));
         $end = $start->modify('first day of next month');
@@ -75,22 +80,24 @@ class DepenseRepository extends ServiceEntityRepository
             ->select('COALESCE(SUM(d.montant_depense), 0)')
             ->where('d.date_depense >= :start')
             ->andWhere('d.date_depense < :end')
-            ->andWhere('d.categorie = :categorie') // Assuming 'reparation' is the category name for repair expenses
+            ->andWhere('d.categorie = :categorie') 
+            ->andWhere('d.user = :userId')
             ->setParameter('start', $start)
             ->setParameter('end', $end)
             ->setParameter('categorie', '2') // Adjust the category name as needed
+            ->setParameter('userId', $userId)
             ->getQuery()
             ->getSingleScalarResult();
     }
 
     /**
-     * Find last Km for a given vehicle for a given month for carbuant expenses (id : 10).
+     * Find last Km for a given vehicle for a given month for carbuant expenses (id : 10) by User.
      * @param int $vehiculeId The ID of the vehicle to find the last Km for.
      * @param int $annee The year of the month to find the last Km for.
      * @param int $mois The month to find the last Km for (1-12).
      * @return string|null The last Km for the specified vehicle and month.
      */
-    public function findLastKmByVehiculeAndMonth(int $vehiculeId, int $annee, int $mois): ?string
+    public function findLastKmByVehiculeAndMonth(int $vehiculeId, int $annee, int $mois, int $userId): ?string
     {
         $start = new \DateTimeImmutable(sprintf('%04d-%02d-01', $annee, $mois));
         $end = $start->modify('first day of next month');
@@ -101,10 +108,12 @@ class DepenseRepository extends ServiceEntityRepository
             ->andWhere('d.date_depense < :end')
             ->andWhere('d.categorie = :categorie') // Assuming 'carbuant' is the category name for fuel expenses
             ->andWhere('d.vehicule = :vehiculeId')
+            ->andWhere('d.user = :userId')
             ->setParameter('start', $start)
             ->setParameter('end', $end)
             ->setParameter('categorie', '10') // Adjust the category name as needed
             ->setParameter('vehiculeId', $vehiculeId)
+            ->setParameter('userId', $userId)
             ->orderBy('d.date_depense', 'DESC')
             ->setMaxResults(1)
             ->getQuery()
@@ -113,6 +122,20 @@ class DepenseRepository extends ServiceEntityRepository
         return $result['km_vehicule'] ?? null;
     }
 
+    /**
+     * Fonction pour trouver toutes les dépenses d'un utilisateur spécifique
+     * @param int $userId
+     * @return Depense[]
+     */
+    public function findByUserId(int $userId): array
+    {
+        return $this->createQueryBuilder('d')
+            ->andWhere('d.user = :userId')
+            ->setParameter('userId', $userId)
+            ->orderBy('d.date_depense', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
     
     //    /**
     //     * @return Depense[] Returns an array of Depense objects

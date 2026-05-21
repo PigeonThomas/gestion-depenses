@@ -62,6 +62,9 @@ class Vehicule
     #[ORM\OneToMany(targetEntity: Depense::class, mappedBy: 'vehicule')]
     private Collection $depenses;
 
+    #[ORM\ManyToOne(inversedBy: 'vehicules')]
+    private ?User $user = null;
+
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
@@ -212,6 +215,18 @@ class Vehicule
                 $depense->setVehicule(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
 
         return $this;
     }

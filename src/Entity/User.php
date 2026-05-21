@@ -6,6 +6,7 @@ use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\HttpFoundation\File\File;
@@ -15,6 +16,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
 #[Vich\Uploadable]
 #[ORM\HasLifecycleCallbacks]
+#[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -52,6 +54,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Depense::class, mappedBy: 'user')]
     private Collection $depenses;
 
+    /**
+     * @var Collection<int, Magasin>
+     */
+    #[ORM\OneToMany(targetEntity: Magasin::class, mappedBy: 'user')]
+    private Collection $magasins;
+
+    /**
+     * @var Collection<int, Vehicule>
+     */
+    #[ORM\OneToMany(targetEntity: Vehicule::class, mappedBy: 'user')]
+    private Collection $vehicules;
+
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
@@ -68,6 +82,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __construct()
     {
         $this->depenses = new ArrayCollection();
+        $this->magasins = new ArrayCollection();
+        $this->vehicules = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -211,6 +227,64 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($depense->getUser() === $this) {
                 $depense->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Magasin>
+     */
+    public function getMagasins(): Collection
+    {
+        return $this->magasins;
+    }
+
+    public function addMagasin(Magasin $magasin): static
+    {
+        if (!$this->magasins->contains($magasin)) {
+            $this->magasins->add($magasin);
+            $magasin->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMagasin(Magasin $magasin): static
+    {
+        if ($this->magasins->removeElement($magasin)) {
+            if ($magasin->getUser() === $this) {
+                $magasin->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Vehicule>
+     */
+    public function getVehicules(): Collection
+    {
+        return $this->vehicules;
+    }
+
+    public function addVehicule(Vehicule $vehicule): static
+    {
+        if (!$this->vehicules->contains($vehicule)) {
+            $this->vehicules->add($vehicule);
+            $vehicule->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVehicule(Vehicule $vehicule): static
+    {
+        if ($this->vehicules->removeElement($vehicule)) {
+            if ($vehicule->getUser() === $this) {
+                $vehicule->setUser(null);
             }
         }
 

@@ -24,7 +24,7 @@ class DistanceVehiculeService
      * @param integer $mois
      * @return string
      */
-    public function calculateDistance(int $vehiculeId, int $annee, int $mois): string
+    public function calculateDistance(int $vehiculeId, int $annee, int $mois, int $userId): string
     {
         $totalKmOfMonth = '0';
 
@@ -32,8 +32,8 @@ class DistanceVehiculeService
         $moisPrecedent = $mois === 1 ? 12 : $mois - 1;
         $anneePrecedente = $mois === 1 ? $annee - 1 : $annee;
 
-        $lastKmActualMonth = $this->depenseRepository->findLastKmByVehiculeAndMonth($vehiculeId, $annee, $mois);
-        $lastKmLastMonth = $this->depenseRepository->findLastKmByVehiculeAndMonth($vehiculeId, $anneePrecedente, $moisPrecedent);
+        $lastKmActualMonth = $this->depenseRepository->findLastKmByVehiculeAndMonth($vehiculeId, $annee, $mois, $userId);
+        $lastKmLastMonth = $this->depenseRepository->findLastKmByVehiculeAndMonth($vehiculeId, $anneePrecedente, $moisPrecedent, $userId);
 
         if ($lastKmActualMonth === null || $lastKmActualMonth === '') {
             return $totalKmOfMonth; // Return 0 if there are no distance records for the month

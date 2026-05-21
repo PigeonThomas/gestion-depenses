@@ -124,11 +124,18 @@ DATABASE_URL="mysql://app:app@db:3306/gestion_depenses?serverVersion=8.0&charset
     - Utilisateur : `app`
     - Mot de passe : `app`
     - Base : `gestion_depenses`
+- **Adminer** : http://localhost:8081
+    - Système : `MySQL`
+    - Serveur : `db`
+    - Utilisateur : `app`
+    - Mot de passe : `app`
+    - Base : `gestion_depenses`
 
 ### Services Docker
 
 - **app** : Conteneur PHP/Apache (port 8080)
 - **db** : Conteneur MySQL (port 3308)
+- **adminer** : Interface d'administration SQL locale (port 8081, développement uniquement via `compose.override.yaml`)
 
 ## Utilisation
 

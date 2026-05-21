@@ -1,30 +1,32 @@
 <!-- Desktop Side Navigation -->
 <div class="d-flex flex-column justify-content-between vh-100">
-	<div class="">
+	<div class="bg-light">
 		<a href="/" class="d-block p-3 link-dark text-decoration-none" data-bs-toggle="tooltip" data-bs-placement="right">
 			ToolSpend
 		</a>
-		<div class="dropdown border-top">
-			<a href="/fr/docs/5.2/examples/sidebars/#" class="d-flex align-items-center justify-content-center p-3 link-dark text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-				<img src="https://github.com/mdo.png" alt="mdo" class="rounded-circle" width="24" height="24">
-			</a>
-			<ul class="dropdown-menu text-small shadow">
-				<li>
-					<a class="dropdown-item" href="/fr/docs/5.2/examples/sidebars/#">Nouveau projet...</a>
-				</li>
-				<li>
-					<a class="dropdown-item" href="/fr/docs/5.2/examples/sidebars/#">Réglages</a>
-				</li>
-				<li>
-					<a class="dropdown-item" href="/fr/docs/5.2/examples/sidebars/#">Profil</a>
-				</li>
-				<li>
-					<hr class="dropdown-divider"></li>
-				<li>
-					<a class="dropdown-item" href="/fr/docs/5.2/examples/sidebars/#">Déconnexion</a>
-				</li>
-			</ul>
-		</div>
+		{% if app.user %}
+			{# Vérifie si l'utilisateur est connecté #}
+			<div class="dropdown border-top">
+				<button class="btn w-100 d-flex align-items-center gap-2 p-3 link-dark text-decoration-none dropdown-toggle border-0 rounded-0 text-start" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+					{% if app.user.imageUser %}
+						<img src="{{ vich_uploader_asset(app.user, 'imageUserFile') }}" alt="Avatar de {{ app.user.prenomUser ?: app.user.nomUser ?: app.user.userIdentifier }}" class="rounded-circle object-fit-cover flex-shrink-0" width="32" height="32">
+					{% else %}
+						<span class="rounded-circle bg-secondary text-white d-inline-flex align-items-center justify-content-center flex-shrink-0" style="width: 32px; height: 32px;">
+							<i class="fa-solid fa-user"></i>
+						</span>
+					{% endif %}
+					<span class="fw-semibold small text-truncate flex-grow-1">{{ app.user.prenomUser ?: app.user.nomUser ?: app.user.userIdentifier }}</span>
+				</button>
+				<ul class="dropdown-menu text-small shadow w-100">
+					<li>
+						<a class="dropdown-item" href="{{ path('app_profile_edit') }}">Profil</a>
+					</li>
+					<li>
+						<a class="dropdown-item" href="{{ path('app_logout') }}">Déconnexion</a>
+					</li>
+				</ul>
+			</div>
+		{% endif %}
 		<ul class="nav nav-pills nav-flush flex-column mb-auto">
 			<li class="nav-item">
 				<a href="{{ path('app_depense_index') }}" class="nav-link {{ app.current_route == 'app_depense_index' ? 'active' : '' }} py-3 border-bottom rounded-0" aria-current="page" data-bs-toggle="tooltip" data-bs-placement="right" aria-label="Maison">
@@ -44,18 +46,20 @@
 					Magasins
 				</a>
 			</li>
-			<li class="nav-item">
-				<a href="{{ path('app_categorie_index') }}" class="nav-link {{ app.current_route == 'app_categorie_index' ? 'active' : '' }} py-3 border-bottom rounded-0" data-bs-toggle="tooltip" data-bs-placement="right" aria-label="Catégories">
-					<i class="fa-solid fa-box"></i>
-					Catégories
-				</a>
-			</li>
-			<li class="nav-item">
-				<a href="#" class="nav-link py-3 border-bottom rounded-0" data-bs-toggle="tooltip" data-bs-placement="right" aria-label="Profil">
-					<i class="fa-solid fa-user"></i>
-					Profil
-				</a>
-			</li>
+			{% if is_granted('ROLE_ADMIN') %}
+				<li class="nav-item">
+					<a href="{{ path('app_categorie_index') }}" class="nav-link {{ app.current_route == 'app_categorie_index' ? 'active' : '' }} py-3 border-bottom rounded-0" data-bs-toggle="tooltip" data-bs-placement="right" aria-label="Catégories">
+						<i class="fa-solid fa-box"></i>
+						Catégories
+					</a>
+				</li>
+				<li class="nav-item">
+					<a href="{{ path('app_user_index') }}" class="nav-link {{ app.current_route == 'app_user_index' or app.current_route == 'app_user_edit' ? 'active' : '' }} py-3 border-bottom rounded-0" data-bs-toggle="tooltip" data-bs-placement="right" aria-label="Utilisateurs">
+						<i class="fa-solid fa-users"></i>
+						Utilisateurs
+					</a>
+				</li>
+			{% endif %}
 		</ul>
 	</div>
 	<div class="my-5">

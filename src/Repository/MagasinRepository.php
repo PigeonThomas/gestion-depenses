@@ -16,6 +16,21 @@ class MagasinRepository extends ServiceEntityRepository
         parent::__construct($registry, Magasin::class);
     }
 
+    /**
+     * Fonction pour trouver tous les magasins d'un utilisateur spécifique
+     * @param int $userId
+     * @return Magasin[]
+     */
+    public function findByUserId(int $userId): array
+    {
+        return $this->createQueryBuilder('m')
+            ->andWhere('m.user = :userId')
+            ->setParameter('userId', $userId)
+            ->orderBy('m.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
     //    /**
     //     * @return Magasin[] Returns an array of Magasin objects
     //     */
