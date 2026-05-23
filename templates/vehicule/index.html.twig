@@ -1,51 +1,110 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Vehicule index{% endblock %}
+{% block title %}
+	{{ title }}
+{% endblock %}
 
 {% block body %}
-    <h1>Vehicule index</h1>
+	<div class="container my-3">
+		<h1>
+			<strong>{{ title }}</strong>
+		</h1>
+		<h2>Voici la liste de vos véhicules</h2>
+		<p>
+			Ici, vous pouvez suivre et gérer toutes vos véhicules.
+		</p>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Immat_vehicule</th>
-                <th>Surnom_vehicule</th>
-                <th>Type_vehicule</th>
-                <th>Marque_vehicule</th>
-                <th>Modele_vehicule</th>
-                <th>Annee_circulation_vehicule</th>
-                <th>Energie_vehicule</th>
-                <th>KmAchat_vehicule</th>
-                <th>Image_vehicule</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for vehicule in vehicules %}
-            <tr>
-                <td>{{ vehicule.id }}</td>
-                <td>{{ vehicule.immatVehicule }}</td>
-                <td>{{ vehicule.surnomVehicule }}</td>
-                <td>{{ vehicule.typeVehicule }}</td>
-                <td>{{ vehicule.marqueVehicule }}</td>
-                <td>{{ vehicule.modeleVehicule }}</td>
-                <td>{{ vehicule.anneeCirculationVehicule ? vehicule.anneeCirculationVehicule|date('Y-m-d') : '' }}</td>
-                <td>{{ vehicule.energieVehicule }}</td>
-                <td>{{ vehicule.kmAchatVehicule }}</td>
-                <td>{{ vehicule.imageVehicule }}</td>
-                <td>
-                    <a href="{{ path('app_vehicule_show', {'id': vehicule.id}) }}">show</a>
-                    <a href="{{ path('app_vehicule_edit', {'id': vehicule.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="11">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+		<div class="row g-4 my-2">
+			<div class="col-4">
+				<div class="card " style="border-radius: 20px;">
+					<div class="card-body">
+						<h5 class="card-title">Kilométres parcourus</h5>
+						<p class="card-text">Kilométres parcourus pour le mois en cours :
+							<strong>
+								{{ totalDistance }}
+								km</strong>
+						</p>
+					</div>
+				</div>
+			</div>
+			<div class="col-4">
+				<div class="card " style="border-radius: 20px;">
+					<div class="card-body">
+						<h5 class="card-title">Dépenses en essence</h5>
+						<p class="card-text">Dépenses en essence en
+							{{ mois }}/{{ annee }}
+							:
+							<strong>{{ totalEssenceActualMonth }}
+								€</strong>
+						</p>
+						<p class="card-text">Dépenses en essence pour le mois en précédent :
+							<strong>{{ totalEssenceLastMonth }}
+								€</strong>
+						</p>
+					</div>
+				</div>
+			</div>
+			<div class="col-4">
+				<div class="card " style="border-radius: 20px;">
+					<div class="card-body">
+						<h5 class="card-title">Dépenses en réparations</h5>
+						<p class="card-text">Dépenses en réparations en
+							{{ mois }}/{{ annee }}
+							:
+							<strong>{{ totalReparationActualMonth }}
+								€</strong>
+						</p>
+						<p class="card-text">Dépenses en réparations pour le mois en précédent :
+							<strong>{{ totalReparationLastMonth }}
+								€</strong>
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
 
-    <a href="{{ path('app_vehicule_new') }}">Create new</a>
+		<div class="container">
+			<div class="row g-4">
+				{% for vehicule in vehicules %}
+					<div class="col-6">
+						<div class="card" style="border-radius: 20px;">
+
+							<div class="card-body row d-flex align-items-center">
+								<h4 class="card-title text-center">{{ vehicule.surnomVehicule }}</h4>
+								<div class="col-5">
+
+									<div class="card-text">
+										<p>{{ vehicule.immatVehicule }}</p>
+										<p>{{ vehicule.marqueVehicule }}
+											{{ vehicule.modeleVehicule }}</p>
+										<p>{{ vehicule.anneeCirculationVehicule ? vehicule.anneeCirculationVehicule|date('Y') : '' }}</p>
+										<p>{{ vehicule.energieVehicule ? vehicule.energieVehicule : '' }}</p>
+										<p>{{ vehicule.kmAchatVehicule ? vehicule.kmAchatVehicule : '' }}</p>
+									</div>
+								</div>
+								<div class="card-image col">
+									{% if vehicule.imageVehicule %}
+										<img class="img-fluid" src="{{ vich_uploader_asset(vehicule, 'imageVehiculeFile') }}" alt="{{ vehicule.surnomVehicule }}">
+									{% endif %}
+								</div>
+							</div>
+							<div class="card-footer d-flex justify-content-end gap-2">
+								<a href="{{ path('app_vehicule_show', {'id': vehicule.id}) }}" class="btn btn-primary">
+									<i class="fas fa-eye"></i>
+									Détails</a>
+								<a href="{{ path('app_vehicule_edit', {'id': vehicule.id}) }}" class="btn btn-secondary">
+									<i class="fas fa-pencil-alt"></i>
+									Modifier</a>
+								<a href="{{ path('app_vehicule_delete', {'id': vehicule.id}) }}" class="btn btn-danger">
+									<i class="fas fa-trash"></i>
+									Supprimer</a>
+							</div>
+						</div>
+					</div>
+				{% endfor %}
+			</div>
+
+
+		</div>
+	</div>
 {% endblock %}

@@ -1,0 +1,25 @@
+{{ form_start(form) }}
+<div class="row g-3">
+	<div class="col-12 col-md-6">
+		{{ form_row(form.email) }}
+	</div>
+	<div class="col-12 col-md-6">
+		{{ form_row(form.nom_user) }}
+	</div>
+	<div class="col-12 col-md-6">
+		{{ form_row(form.prenom_user) }}
+	</div>
+	<div class="col-12 col-md-6">
+		{{ form_row(form.adresse_user) }}
+	</div>
+	<div class="col-12 col-md-6">
+		{{ form_row(form.imageUserFile) }}
+	</div>
+	<div class="col-12 col-md-6">
+		{{ form_row(form.roles) }}
+	</div>
+</div>
+<div class="mt-4">
+	{{ form_row(form.save) }}
+</div>
+{{ form_end(form) }}

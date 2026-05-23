@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Log in!
+{% endblock %}
+
+{% block body %}
+	{% include 'partials/_navbar.html.twig' %}
+	<section class="auth-page">
+		<div class="auth-panel text-center">
+			<form method="post">
+				<div class="auth-mark mx-auto mb-4">
+					<i class="fa-solid fa-lock"></i>
+				</div>
+
+				<h1 class="h3 mb-3 fw-normal">Veuillez vous connecter</h1>
+				<p class="text-body-secondary mb-4">Accédez à votre espace de gestion des dépenses.</p>
+
+				{% if error %}
+					<div class="alert alert-danger text-start">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+				{% endif %}
+
+				{% if app.user %}
+					<div class="alert alert-info text-start">
+						Vous êtes connecté en tant que
+						{{ app.user.userIdentifier }}.
+						<a href="{{ logout_path() }}" class="alert-link">Se déconnecter</a>
+					</div>
+				{% endif %}
+
+				<div class="form-floating mb-3">
+					<input type="email" value="{{ last_username }}" name="_username" id="username" class="form-control" placeholder="name@example.com" autocomplete="email" required autofocus>
+					<label for="username">Adresse email</label>
+				</div>
+				<div class="form-floating">
+					<input type="password" name="_password" id="password" class="form-control" placeholder="Mot de passe" autocomplete="current-password" required>
+					<label for="password">Mot de passe</label>
+				</div>
+
+				<input type="hidden" name="_csrf_token" data-controller="csrf-protection" value="{{ csrf_token('authenticate') }}">
+
+				<div class="form-check text-start my-3">
+					<input class="form-check-input" type="checkbox" name="_remember_me" id="_remember_me">
+					<label class="form-check-label" for="_remember_me">Se souvenir de moi</label>
+				</div>
+
+				<button class="btn btn-primary w-100 py-2" type="submit">Connexion</button>
+				<p class="mt-4 mb-0 text-body-secondary">Pas encore de compte ?
+					<a class="auth-helper-link" href="{{ path('app_register') }}">S'inscrire</a>
+				</p>
+			</form>
+		</div>
+	</section>
+{% endblock %}

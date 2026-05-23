@@ -1,0 +1,97 @@
+<!-- Desktop Side Navigation -->
+<div class="d-flex flex-column justify-content-between vh-100">
+	<div class="bg-light">
+		<a href="/" class="d-block p-3 link-dark text-decoration-none" data-bs-toggle="tooltip" data-bs-placement="right">
+			ToolSpend
+		</a>
+		{% if app.user %}
+			{# Vérifie si l'utilisateur est connecté #}
+			<div class="dropdown border-top">
+				<button class="btn w-100 d-flex align-items-center gap-2 p-3 link-dark text-decoration-none dropdown-toggle border-0 rounded-0 text-start" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+					{% if app.user.imageUser %}
+						<img src="{{ vich_uploader_asset(app.user, 'imageUserFile') }}" alt="Avatar de {{ app.user.prenomUser ?: app.user.nomUser ?: app.user.userIdentifier }}" class="rounded-circle object-fit-cover flex-shrink-0" width="32" height="32">
+					{% else %}
+						<span class="rounded-circle bg-secondary text-white d-inline-flex align-items-center justify-content-center flex-shrink-0" style="width: 32px; height: 32px;">
+							<i class="fa-solid fa-user"></i>
+						</span>
+					{% endif %}
+					<span class="fw-semibold small text-truncate flex-grow-1">{{ app.user.prenomUser ?: app.user.nomUser ?: app.user.userIdentifier }}</span>
+				</button>
+				<ul class="dropdown-menu text-small shadow w-100">
+					<li>
+						<a class="dropdown-item" href="{{ path('app_profile_edit') }}">Profil</a>
+					</li>
+					<li>
+						<a class="dropdown-item" href="{{ path('app_logout') }}">Déconnexion</a>
+					</li>
+				</ul>
+			</div>
+		{% endif %}
+		<ul class="nav nav-pills nav-flush flex-column mb-auto">
+			<li class="nav-item">
+				<a href="{{ path('app_depense_index') }}" class="nav-link {{ app.current_route == 'app_depense_index' ? 'active' : '' }} py-3 border-bottom rounded-0" aria-current="page" data-bs-toggle="tooltip" data-bs-placement="right" aria-label="Maison">
+					<i class="fa-solid fa-house"></i>
+					Home
+				</a>
+			</li>
+			<li class="nav-item">
+				<a href="{{ path('app_vehicule_index') }}" class="nav-link {{ app.current_route == 'app_vehicule_index' ? 'active' : '' }} py-3 border-bottom rounded-0" data-bs-toggle="tooltip" data-bs-placement="right" aria-label="Véhicules">
+					<i class="fa-solid fa-car"></i>
+					Véhicules
+				</a>
+			</li>
+			<li class="nav-item">
+				<a href="{{ path('app_magasin_index') }}" class="nav-link {{ app.current_route == 'app_magasin_index' ? 'active' : '' }} py-3 border-bottom rounded-0" data-bs-toggle="tooltip" data-bs-placement="right" aria-label="Magasins">
+					<i class="fa-solid fa-store"></i>
+					Magasins
+				</a>
+			</li>
+			{% if is_granted('ROLE_ADMIN') %}
+				<li class="nav-item">
+					<a href="{{ path('app_categorie_index') }}" class="nav-link {{ app.current_route == 'app_categorie_index' ? 'active' : '' }} py-3 border-bottom rounded-0" data-bs-toggle="tooltip" data-bs-placement="right" aria-label="Catégories">
+						<i class="fa-solid fa-box"></i>
+						Catégories
+					</a>
+				</li>
+				<li class="nav-item">
+					<a href="{{ path('app_user_index') }}" class="nav-link {{ app.current_route == 'app_user_index' or app.current_route == 'app_user_edit' ? 'active' : '' }} py-3 border-bottom rounded-0" data-bs-toggle="tooltip" data-bs-placement="right" aria-label="Utilisateurs">
+						<i class="fa-solid fa-users"></i>
+						Utilisateurs
+					</a>
+				</li>
+			{% endif %}
+		</ul>
+	</div>
+	<div class="my-5">
+		{% if app.current_route == 'app_depense_index' %}
+			<div class="text-center">
+				<a href="{{ path('app_depense_new') }}" class="btn btn-primary" data-bs-toggle="tooltip" data-bs-placement="right" aria-label="Ajouter une dépense">
+					<i class="fa-solid fa-plus"></i>
+					Ajouter une dépense
+				</a>
+			</div>
+		{% elseif app.current_route == 'app_vehicule_index' %}
+			<div class="text-center">
+				<a href="{{ path('app_vehicule_new') }}" class="btn btn-primary" data-bs-toggle="tooltip" data-bs-placement="right" aria-label="Ajouter un véhicule">
+					<i class="fa-solid fa-plus"></i>
+					Ajouter un véhicule
+				</a>
+			</div>
+		{% elseif app.current_route == 'app_magasin_index' %}
+			<div class="text-center">
+				<a href="{{ path('app_magasin_new') }}" class="btn btn-primary" data-bs-toggle="tooltip" data-bs-placement="right" aria-label="Ajouter un magasin">
+					<i class="fa-solid fa-plus"></i>
+					Ajouter un magasin
+				</a>
+			</div>
+		{% elseif app.current_route == 'app_categorie_index' %}
+			<div class="text-center">
+				<a href="{{ path('app_categorie_new') }}" class="btn btn-primary" data-bs-toggle="tooltip" data-bs-placement="right" aria-label="Ajouter une catégorie">
+					<i class="fa-solid fa-plus"></i>
+					Ajouter une catégorie
+				</a>
+			</div>
+		{% endif %}
+	</div>
+
+</div>

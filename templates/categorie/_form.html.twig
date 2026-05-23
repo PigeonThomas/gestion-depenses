@@ -1,4 +1,19 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+<div class="row d-flex justify-content-between gap-3">
+	<div class="col mt-3">
+		{{form_label(form.nom_categorie)}}
+		{{ form_widget(form.nom_categorie) }}
+	</div>
+	<div class="col mt-3">
+		{{form_label(form.couleur_categorie)}}
+		{{ form_widget(form.couleur_categorie) }}
+	</div>
+	<div class="col mt-3">
+		{{form_label(form.icone_categorie)}}
+		{{ form_widget(form.icone_categorie) }}
+	</div>
+</div>
+<div class="text-center">
+	{{form_widget(form.save) }}
+</div>
 {{ form_end(form) }}
