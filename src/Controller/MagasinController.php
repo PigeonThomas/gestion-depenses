@@ -27,6 +27,7 @@ final class MagasinController extends AbstractController
         }
 
         return $this->render('magasin/index.html.twig', [
+            'title' => 'Mes magasins',
             'magasins' => $magasinRepository->findByUserId($user->getId()),
         ]);
     }
@@ -53,6 +54,7 @@ final class MagasinController extends AbstractController
         }
 
         return $this->render('magasin/new.html.twig', [
+            'title' => 'Ajouter un magasin',
             'magasin' => $magasin,
             'form' => $form,
         ]);
@@ -69,6 +71,7 @@ final class MagasinController extends AbstractController
         }
 
         return $this->render('magasin/show.html.twig', [
+            'title' => 'Détails du magasin',
             'magasin' => $magasin,
         ]);
     }
@@ -93,6 +96,7 @@ final class MagasinController extends AbstractController
         }
 
         return $this->render('magasin/edit.html.twig', [
+            'title' => 'Modifier le magasin',
             'magasin' => $magasin,
             'form' => $form,
         ]);
