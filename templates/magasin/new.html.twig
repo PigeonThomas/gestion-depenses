@@ -1,11 +1,13 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Magasin{% endblock %}
+{% block title %}
+	{{ title }}
+{% endblock %}
 
 {% block body %}
-    <h1>Create new Magasin</h1>
+	<h1>{{ title }}</h1>
 
-    {{ include('magasin/_form.html.twig') }}
+	{{ include('magasin/_form.html.twig') }}
 
-    <a href="{{ path('app_magasin_index') }}">back to list</a>
+	<a href="{{ path('app_magasin_index') }}">back to list</a>
 {% endblock %}

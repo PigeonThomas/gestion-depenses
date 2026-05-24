@@ -8,7 +8,14 @@
 <div class="row d-flex justify-content-between gap-3">
 	<div class="col mt-3">
 		{{form_label(form.online_magasin)}}
-		{{ form_widget(form.online_magasin) }}
+		<div>
+			{% for choices in form.online_magasin %}
+				<div class="form-check form-check-inline">
+					{{ form_widget(choices, {'attr': {'class': 'form-check-input'}}) }}
+					{{ form_label(choices, null, {'label_attr': {'class': 'form-check-label'}}) }}
+				</div>
+			{% endfor %}
+		</div>
 	</div>
 	<div class="col mt-3">
 		{{form_label(form.lien_magasin)}}

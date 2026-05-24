@@ -70,7 +70,6 @@
 			<table class="table">
 				<thead>
 					<tr>
-						<th>Id</th>
 						<th>Date</th>
 						<th>Montant</th>
 						<th>Commentaire</th>
@@ -81,7 +80,6 @@
 				<tbody>
 					{% for depense in depenses %}
 						<tr>
-							<td>{{ depense.id }}</td>
 							<td>{{ depense.dateDepense ? depense.dateDepense|date('d-m-Y') : '' }}</td>
 							<td>{{ depense.montantDepense }}
 								€</td>
@@ -98,7 +96,7 @@
 						</tr>
 					{% else %}
 						<tr>
-							<td colspan="6">no records found</td>
+							<td colspan="5">no records found</td>
 						</tr>
 					{% endfor %}
 				</tbody>

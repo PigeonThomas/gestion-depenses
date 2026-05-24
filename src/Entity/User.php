@@ -152,13 +152,31 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * Ensure the session doesn't contain actual password hashes by CRC32C-hashing them, as supported since Symfony 7.3.
-     */
+     * it is important to serialize the minimal set of properties needed to identify the user and their roles, while excluding sensitive information like the actual password hash.
+     * This approach allows the session to be secure while still enabling the necessary functionality for user authentication and authorization. 
+     * no need to serialize profile picture or other non-essential data, as it can be retrieved from the database when needed, ensuring that the session remains lightweight and secure.
+    */
     public function __serialize(): array
     {
-        $data = (array) $this;
-        $data["\0".self::class."\0password"] = hash('crc32c', $this->password);
-
-        return $data;
+        return [
+        'id' => $this->id,
+        'email' => $this->email,
+        'roles' => $this->roles,
+        'password' => hash('crc32c', (string) $this->password),
+    ];
+    }
+    
+    /**
+     * The __unserialize method should be implemented to restore the state of the object from the serialized data. 
+     * It should assign the values from the $data array back to the corresponding properties of the User object. 
+     * This allows the session to correctly restore the user's identity and roles when they log in, while ensuring that sensitive information like the actual password hash is not stored in the session.
+    */
+    public function __unserialize(array $data): void
+    {
+        $this->id = $data['id'] ?? null;
+        $this->email = $data['email'] ?? null;
+        $this->roles = $data['roles'] ?? [];
+        $this->password = $data['password'] ?? null;
     }
 
     #[\Deprecated]

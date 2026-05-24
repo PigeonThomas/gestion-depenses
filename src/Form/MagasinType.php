@@ -7,7 +7,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class MagasinType extends AbstractType
@@ -20,14 +20,16 @@ class MagasinType extends AbstractType
                 'label_attr' => ['class' => 'form-label'],
                 'attr' => ['class' => 'form-control', 'placeholder' => 'Ex: Kokopelli, Carrefour, etc.'],
             ])
-            ->add('online_magasin', CheckboxType::class, [
-                'label' => 'En ligne',
+            ->add('online_magasin', ChoiceType::class, [
+                'label' => 'En ligne ?',
                 'label_attr' => ['class' => 'form-label'],
-                'attr' => ['class' => 'form-check-input'],
-                'choice' => [
+                'choices' => [
                     'Oui' => true,
                     'Non' => false,
                 ],
+                'expanded' => true,
+                'multiple' => false,
+                
             ])
             ->add('adresse_magasin', TextType::class, [
                 'label' => 'Adresse',

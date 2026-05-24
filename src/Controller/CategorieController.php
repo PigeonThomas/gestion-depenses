@@ -20,6 +20,7 @@ final class CategorieController extends AbstractController
     public function index(CategorieRepository $categorieRepository): Response
     {
         return $this->render('categorie/index.html.twig', [
+            'title' => 'Liste des catégories',
             'categories' => $categorieRepository->findAll(),
         ]);
     }
@@ -39,6 +40,7 @@ final class CategorieController extends AbstractController
         }
 
         return $this->render('categorie/new.html.twig', [
+            'title' => 'Nouvelle catégorie',
             'categorie' => $categorie,
             'form' => $form,
         ]);
@@ -48,6 +50,7 @@ final class CategorieController extends AbstractController
     public function show(Categorie $categorie): Response
     {
         return $this->render('categorie/show.html.twig', [
+            'title' => 'Détails de la catégorie',
             'categorie' => $categorie,
         ]);
     }
@@ -65,6 +68,7 @@ final class CategorieController extends AbstractController
         }
 
         return $this->render('categorie/edit.html.twig', [
+            'title' => 'Modifier la catégorie',
             'categorie' => $categorie,
             'form' => $form,
         ]);
