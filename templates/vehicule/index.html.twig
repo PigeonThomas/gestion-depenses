@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block body %}
-	<div class="container my-3">
+	<div class="container-fluid my-3">
 		<h1>
 			<strong>{{ title }}</strong>
 		</h1>
@@ -15,7 +15,7 @@
 		</p>
 
 		<div class="row g-4 my-2">
-			<div class="col-4">
+			<div class="col-md-4">
 				<div class="card " style="border-radius: 20px;">
 					<div class="card-body">
 						<h5 class="card-title">Kilométres parcourus</h5>
@@ -27,7 +27,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="col-4">
+			<div class="col-md-4">
 				<div class="card " style="border-radius: 20px;">
 					<div class="card-body">
 						<h5 class="card-title">Dépenses en essence</h5>
@@ -44,7 +44,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="col-4">
+			<div class="col-md-4">
 				<div class="card " style="border-radius: 20px;">
 					<div class="card-body">
 						<h5 class="card-title">Dépenses en réparations</h5>
@@ -66,7 +66,7 @@
 		<div class="container">
 			<div class="row g-4">
 				{% for vehicule in vehicules %}
-					<div class="col-6">
+					<div class="col-lg-6">
 						<div class="card" style="border-radius: 20px;">
 
 							<div class="card-body row d-flex align-items-center">
