@@ -36,11 +36,15 @@ final class VehiculeController extends AbstractController
         $annee = (int) $now->format('Y');
         $mois = (int) $now->format('n');
 
+        $lastMonthDate = new \DateTime('first day of last month');
+        $anneeLastMonth = (int) $lastMonthDate->format('Y');
+        $moisLastMonth  = (int) $lastMonthDate->format('n');
+
         $totalEssenceActualMonth = $depenseRepository->findTotalEssenceByMonth($annee, $mois, $user->getId());
-        $totalEssenceLastMonth = $depenseRepository->findTotalEssenceByMonth($annee, $mois - 1, $user->getId());
+        $totalEssenceLastMonth = $depenseRepository->findTotalEssenceByMonth($anneeLastMonth, $moisLastMonth, $user->getId());
         
         $totalReparationActualMonth = $depenseRepository->findTotalReparationByMonth($annee, $mois, $user->getId());
-        $totalReparationLastMonth = $depenseRepository->findTotalReparationByMonth($annee, $mois - 1, $user->getId());
+        $totalReparationLastMonth = $depenseRepository->findTotalReparationByMonth($anneeLastMonth, $moisLastMonth, $user->getId());
 
         $totalDistance = 0;
         foreach ($vehiculeRepository->findByUserId($user->getId()) as $vehicule) {

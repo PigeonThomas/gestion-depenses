@@ -12,13 +12,14 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\CategorieDepenseGraphService;
 
 #[Route('/depense')]
 #[IsGranted('ROLE_USER')]
 final class DepenseController extends AbstractController
 {
     #[Route(name: 'app_depense_index', methods: ['GET'])]
-    public function index(DepenseRepository $depenseRepository): Response
+    public function index(DepenseRepository $depenseRepository, CategorieDepenseGraphService $categorieDepenseGraphService): Response
     {
         // Vérifie que l'utilisateur est connecté
         $user = $this->getUser();
@@ -29,13 +30,22 @@ final class DepenseController extends AbstractController
         $now = new \DateTime();
         $annee = (int) $now->format('Y');
         $mois = (int) $now->format('n');
+
+        $lastMonthDate = new \DateTime('first day of last month');
+        $anneeLastMonth = (int) $lastMonthDate->format('Y');
+        $moisLastMonth  = (int) $lastMonthDate->format('n');
+
         $totalDepenseActualMonth = $depenseRepository->findTotalDepenseByMonth($annee, $mois, $user->getId());
-        $totalDepenseLastMonth = $depenseRepository->findTotalDepenseByMonth($annee, $mois - 1, $user->getId());
+        $totalDepenseLastMonth = $depenseRepository->findTotalDepenseByMonth($anneeLastMonth, $moisLastMonth, $user->getId());
+        
+        $chart = $categorieDepenseGraphService->categorieDepenseGraph($annee, $mois, $user->getId());
+
         return $this->render('depense/index.html.twig', [
             'title' => 'Dashboard',
             'depenses' => $depenseRepository->findByUserId($user->getId()),
             'totalDepenseActualMonth' => $totalDepenseActualMonth,
             'totalDepenseLastMonth' => $totalDepenseLastMonth,
+            'chart' => $chart,
         ]);
     }
 

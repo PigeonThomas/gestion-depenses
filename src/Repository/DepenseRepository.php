@@ -136,6 +136,31 @@ class DepenseRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * Return the total categories expenses amount for a given month by User
+     * @param int $annee The year of the month to calculate the total for.
+     * @param int $mois The month to calculate the total for (1-12).
+     * @param int $userId The ID of the user to calculate the total for.
+     * @return array An array of total expenses amount for each category for the specified month.
+     */
+    public function findTotalByCategoryAndMonth(int $annee, int $mois, int $userId): array
+    {
+        $start = new \DateTimeImmutable(sprintf('%04d-%02d-01', $annee, $mois));
+        $end = $start->modify('first day of next month');
+        return $this->createQueryBuilder('d')
+            ->select('c.nom_categorie AS category', 'COALESCE(SUM(d.montant_depense), 0) AS total', 'c.couleur_categorie AS color')
+            ->join('d.categorie', 'c')
+            ->where('d.date_depense >= :start')
+            ->andWhere('d.date_depense < :end')
+            ->andWhere('d.user = :userId')
+            ->setParameter('start', $start)
+            ->setParameter('end', $end)
+            ->setParameter('userId', $userId)
+            ->groupBy('c.nom_categorie', 'c.couleur_categorie')
+            ->getQuery()
+            ->getResult();
+    }
     
     //    /**
     //     * @return Depense[] Returns an array of Depense objects
