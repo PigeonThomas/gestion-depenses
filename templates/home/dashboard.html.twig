@@ -1,0 +1,73 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+	{{ title }}
+{% endblock %}
+
+{% block body %}
+	<div class="container my-3">
+		<h1>
+			<strong>Dashboard</strong>
+		</h1>
+		<h2>Bienvenue sur votre tableau de bord de gestion des dépenses !</h2>
+		<p>
+			Ici, vous pouvez suivre et gérer toutes vos dépenses.
+		</p>
+
+		<div class="container">
+			<div class="row g-4">
+				<div class="col-md">
+					<div class="card bg-primary text-white rounded-5">
+						<div class="card-body">
+							<h5 class="card-title">Dépenses du mois</h5>
+							<p class="card-text">Total des dépenses pour le mois en cours :
+								{{ totalDepenseActualMonth }}
+								€</p>
+						</div>
+					</div>
+				</div>
+				<div class="col-md">
+					<div class="card rounded-5">
+						<div class="card-body">
+							<h5 class="card-title">Dépenses du mois précédent</h5>
+							<p class="card-text">Total des dépenses pour le mois précédent :
+								{{ totalDepenseLastMonth }}
+								€</p>
+						</div>
+					</div>
+				</div>
+				<div class="col-md">
+					<div class="card rounded-5">
+						<div class="card-body">
+							<h5 class="card-title">Titre3</h5>
+							<p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="row g-4 mt-2">
+				<div class="col-md-6">
+					<div class="card rounded-5 shadow">
+						<div class="card-body">
+							<h5 class="card-title text-center">Dépenses par catégories</h5>
+							<div style="height: 400px; width: 100%;">
+								{{ render_chart(chartCategorie) }}
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="card rounded-5 shadow">
+						<div class="card-body">
+							<h5 class="card-title text-center">Dépenses par magasins</h5>
+							<div style="height: 400px; width: 100%;">
+								{{ render_chart(chartMagasin) }}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

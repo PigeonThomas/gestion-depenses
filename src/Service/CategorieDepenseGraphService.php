@@ -18,7 +18,7 @@ class CategorieDepenseGraphService
     }
 
     /**
-     * Methode permettant de récupérer les données pour le graphique des dépenses par catégorie
+     * Methode permettant de créer le graphique des dépenses par catégorie
      * @param int $year L'année pour laquelle récupérer les données
      * @param int $month Le mois pour lequel récupérer les données
      * @param int $userId L'id de l'utilisateur pour lequel récupérer les données
