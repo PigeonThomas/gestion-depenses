@@ -76,8 +76,25 @@ class Categorie
         return $this->icone_categorie;
     }
 
+    public function getIconeCategorieClass(): ?string
+    {
+        if ($this->icone_categorie === null) {
+            return null;
+        }
+
+        if (preg_match('/class="([^"]+)"/', $this->icone_categorie, $matches) === 1) {
+            return $matches[1];
+        }
+
+        return $this->icone_categorie;
+    }
+
     public function setIconeCategorie(?string $icone_categorie): static
     {
+        if ($icone_categorie !== null && preg_match('/class="([^"]+)"/', $icone_categorie, $matches) === 1) {
+            $icone_categorie = $matches[1];
+        }
+
         $this->icone_categorie = $icone_categorie;
 
         return $this;

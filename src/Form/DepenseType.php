@@ -24,13 +24,13 @@ class DepenseType extends AbstractType
     {
         $builder
             ->add('date_depense',DateType::class, [
-                'label' => 'Date de la dépense',
+                'label' => 'Date de la dépense*',
                 'label_attr' => ['class' => 'form-label'],
                 'attr' => ['class' => 'form-control'],
                 'widget' => 'single_text',
             ])
             ->add('montant_depense', MoneyType::class, [
-                'label' => 'Montant de la dépense',
+                'label' => 'Montant de la dépense*',
                 'label_attr' => ['class' => 'form-label'],
                 'attr' => ['class' => 'form-control', 'placeholder' => '0.00'],
                 'scale' => 2,
@@ -79,7 +79,7 @@ class DepenseType extends AbstractType
                 'required' => false,
             ])
             ->add('categorie', EntityType::class, [
-                'label' => 'Catégorie de dépense',
+                'label' => 'Catégorie de dépense*',
                 'label_attr' => ['class' => 'form-label'],
                 'attr' => ['class' => 'form-control'],
                 'placeholder' => 'Sélectionnez une catégorie',
@@ -87,7 +87,7 @@ class DepenseType extends AbstractType
                 'choice_label' => 'nom_categorie',
             ])
             ->add('magasin', EntityType::class, [
-                'label' => 'Magasin',
+                'label' => 'Magasin*',
                 'label_attr' => ['class' => 'form-label'],
                 'attr' => ['class' => 'form-control'],
                 'placeholder' => 'Sélectionnez un magasin',
@@ -102,14 +102,6 @@ class DepenseType extends AbstractType
                 'class' => Vehicule::class,
                 'choice_label' => 'surnom_vehicule',
                 'required' => false,
-            ])
-            ->add('user', EntityType::class, [
-                'label' => 'Utilisateur',
-                'label_attr' => ['class' => 'form-label'],
-                'attr' => ['class' => 'form-control'],
-                'placeholder' => 'Sélectionnez un utilisateur',
-                'class' => User::class,
-                'choice_label' => 'nom_user',
             ])
             ->add('save', SubmitType::class, [
                 'label' => 'Enregistrer la dépense',
