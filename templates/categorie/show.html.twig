@@ -19,11 +19,17 @@
 			</tr>
 			<tr>
 				<th>Couleur_categorie</th>
-				<td>{{ categorie.couleurCategorie }}</td>
+				<td>
+					<span class="border rounded-circle d-inline-block" style="width: 2.5rem; height: 2.5rem; background-color: {{ categorie.couleurCategorie }};"></span>
+				</td>
 			</tr>
 			<tr>
 				<th>Icone_categorie</th>
-				<td>{{ categorie.iconeCategorie }}</td>
+				<td>
+					{% if categorie.iconeCategorieClass %}
+						<i class="{{ categorie.iconeCategorieClass }}"></i>
+					{% endif %}
+				</td>
 			</tr>
 		</tbody>
 	</table>

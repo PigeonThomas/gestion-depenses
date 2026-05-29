@@ -7,9 +7,26 @@
 {% block body %}
 	<h1>{{ title }}</h1>
 
-	{{ include('categorie/_form.html.twig', {'button_label': 'Update'}) }}
+	<div class="row d-flex justify-content-center">
+		<div class="col-10">
+			<div class="card p-3 m-3" style="border-radius: 20px">
+				{{ include('categorie/_form.html.twig', {'button_label': 'Update'}) }}
+				<p>* Champs obligatoires</p>
+			</div>
+		</div>
+	</div>
 
-	<a href="{{ path('app_categorie_index') }}">back to list</a>
+	<div class="d-flex justify-content-between mb-3">
+		<a href="{{ path('app_categorie_index') }}" class="btn btn-secondary">
+			<i class="fas fa-arrow-left"></i>
+			Retour à la liste</a>
+		{{ include('categorie/_delete_form.html.twig') }}
+	</div>
 
-	{{ include('categorie/_delete_form.html.twig') }}
+
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	<script src="{{ asset('js/categorie-form.js') }}"></script>
 {% endblock %}

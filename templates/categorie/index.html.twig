@@ -20,8 +20,14 @@
 			{% for categorie in categories %}
 				<tr>
 					<td>{{ categorie.nomCategorie }}</td>
-					<td>{{ categorie.couleurCategorie }}</td>
-					<td>{{ categorie.iconeCategorie }}</td>
+					<td>
+						<span class="border rounded-circle d-inline-block" style="width: 2.5rem; height: 2.5rem; background-color: {{ categorie.couleurCategorie }};"></span>
+					</td>
+					<td style="color: {{ categorie.couleurCategorie }};">
+						{% if categorie.iconeCategorieClass %}
+							<i class="{{ categorie.iconeCategorieClass }}"></i>
+						{% endif %}
+					</td>
 					<td>
 						<a href="{{ path('app_categorie_show', {'id': categorie.id}) }}">
 							<i class="fas fa-eye"></i>
