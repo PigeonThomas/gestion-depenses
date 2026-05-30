@@ -82,6 +82,7 @@ final class VehiculeController extends AbstractController
             $vehicule->setUser($user);
             $entityManager->persist($vehicule);
             $entityManager->flush();
+            $this->addFlash('success', 'Véhicule créé avec succès.');
 
             return $this->redirectToRoute('app_vehicule_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -125,6 +126,7 @@ final class VehiculeController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             
             $entityManager->flush();
+            $this->addFlash('success', 'Véhicule modifié avec succès.');
 
             return $this->redirectToRoute('app_vehicule_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -149,6 +151,7 @@ final class VehiculeController extends AbstractController
         if ($this->isCsrfTokenValid('delete'.$vehicule->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($vehicule);
             $entityManager->flush();
+            $this->addFlash('success', 'Véhicule supprimé avec succès.');
         }
 
         return $this->redirectToRoute('app_vehicule_index', [], Response::HTTP_SEE_OTHER);

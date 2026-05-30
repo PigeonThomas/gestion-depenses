@@ -16,12 +16,12 @@ class MagasinType extends AbstractType
     {
         $builder
             ->add('nom_magasin', TextType::class, [
-                'label' => 'Nom du magasin',
+                'label' => 'Nom du magasin*',
                 'label_attr' => ['class' => 'form-label'],
                 'attr' => ['class' => 'form-control', 'placeholder' => 'Ex: Kokopelli, Carrefour, etc.'],
             ])
             ->add('online_magasin', ChoiceType::class, [
-                'label' => 'En ligne ?',
+                'label' => 'En ligne ?*',
                 'label_attr' => ['class' => 'form-label'],
                 'choices' => [
                     'Oui' => true,

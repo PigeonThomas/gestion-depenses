@@ -49,6 +49,7 @@ final class MagasinController extends AbstractController
             $magasin->setUser($user);
             $entityManager->persist($magasin);
             $entityManager->flush();
+            $this->addFlash('success', 'Magasin créé avec succès.');
 
             return $this->redirectToRoute('app_magasin_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -91,7 +92,7 @@ final class MagasinController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
-
+            $this->addFlash('success', 'Magasin modifié avec succès.');
             return $this->redirectToRoute('app_magasin_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -115,6 +116,7 @@ final class MagasinController extends AbstractController
         if ($this->isCsrfTokenValid('delete'.$magasin->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($magasin);
             $entityManager->flush();
+            $this->addFlash('success', 'Magasin supprimé avec succès.');
         }
 
         return $this->redirectToRoute('app_magasin_index', [], Response::HTTP_SEE_OTHER);

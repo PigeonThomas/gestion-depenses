@@ -52,6 +52,7 @@ final class DepenseController extends AbstractController
             $depense->setUser($user);
             $entityManager->persist($depense);
             $entityManager->flush();
+            $this->addFlash('success', 'Dépense créée avec succès.');
 
             return $this->redirectToRoute('app_depense_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -94,6 +95,7 @@ final class DepenseController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
+            $this->addFlash('success', 'Dépense modifiée avec succès.');
 
             return $this->redirectToRoute('app_depense_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -118,6 +120,7 @@ final class DepenseController extends AbstractController
         if ($this->isCsrfTokenValid('delete'.$depense->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($depense);
             $entityManager->flush();
+            $this->addFlash('success', 'Dépense supprimée avec succès.');
         }
 
         return $this->redirectToRoute('app_depense_index', [], Response::HTTP_SEE_OTHER);

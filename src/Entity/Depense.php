@@ -19,16 +19,25 @@ class Depense
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTime $date_depense = null;
+    #[ORM\Column(type: Types::DATE_IMMUTABLE)]
+    #[Assert\NotBlank(message: 'La date de la dépense ne peut pas être vide')]
+    #[Assert\LessThanOrEqual('today', message: 'La date de la dépense ne peut pas être dans le futur')]
+    private ?\DateTimeImmutable $date_depense = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 9, scale: 2)]
-    private ?string $montant_depense = null;
+    #[Assert\NotBlank(message: 'Le montant de la dépense ne peut pas être vide')]
+    #[Assert\Positive(message: 'Le montant de la dépense doit être un nombre positif')]
+    #[Assert\Type(type: 'numeric', message: 'Le montant de la dépense doit être un nombre valide')]
+    private string $montant_depense = '0.00';
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
+    #[Assert\Length(
+        max: 255,
+        maxMessage: 'Le commentaire de la dépense ne peut pas dépasser {{ limit }} caractères'
+    )]
     private ?string $commentaire_depense = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
     private ?string $facture_depense = null;
 
     #[Vich\UploadableField(mapping: "factures", fileNameProperty: "facture_depense")]
@@ -40,18 +49,30 @@ class Depense
     private ?File $factureFile = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 8, scale: 2, nullable: true)]
+    #[Assert\Positive(message: 'Le kilométrage doit être un nombre positif')]
+    #[Assert\Type(type: 'numeric', message: 'Le kilométrage doit être un nombre valide')]
     private ?string $km_vehicule = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 3, nullable: true)]
+    #[Assert\Positive(message: 'Le prix du carburant doit être un nombre positif')]
+    #[Assert\Type(type: 'numeric', message: 'Le prix du carburant doit être un nombre valide')]
     private ?string $carbu_prix_litre = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
+    #[Assert\Length(
+        max: 255,
+        maxMessage: 'La description de la réparation ne peut pas dépasser {{ limit }} caractères'
+    )]
     private ?string $repa_description = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
+    #[Assert\Length(
+        max: 255,
+        maxMessage: 'La référence des pièces de la réparation ne peut pas dépasser {{ limit }} caractères'
+    )]
     private ?string $repa_ref_pieces = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
     private ?string $repa_photos = null;
 
     #[Vich\UploadableField(mapping: "reparations", fileNameProperty: "repa_photos")]
@@ -75,7 +96,7 @@ class Depense
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private ?\DateTimeImmutable $updatedAt = null;
 
     public function getId(): ?int
@@ -83,12 +104,12 @@ class Depense
         return $this->id;
     }
 
-    public function getDateDepense(): ?\DateTime
+    public function getDateDepense(): ?\DateTimeImmutable
     {
         return $this->date_depense;
     }
 
-    public function setDateDepense(\DateTime $date_depense): static
+    public function setDateDepense(\DateTimeImmutable $date_depense): static
     {
         $this->date_depense = $date_depense;
 
@@ -292,12 +313,16 @@ class Depense
     }
 
     #[ORM\PrePersist]
+    /** Met à jour la date de mise à jour lors de la création d'une dépense
+     * Si updatedAt n'est pas déjà défini, il sera initialisé à la date actuelle
+     */
     public function updateTimestampOnCreate(): void
     {
         $this->updatedAt ??= new \DateTimeImmutable();
     }
 
     #[ORM\PreUpdate]
+    /** Met à jour la date de mise à jour lors de la modification d'une dépense */
     public function updateTimestampOnUpdate(): void
     {
         $this->updatedAt = new \DateTimeImmutable();

@@ -1,33 +1,48 @@
 {{ form_start(form) }}
+{{ form_errors(form) }}
 {% set selectedColor = form.couleur_categorie.vars.value ?: '#3b82f6' %}
+{% set couleurHasErrors = form.couleur_categorie.vars.errors|length > 0 %}
+{% set iconeHasErrors = form.icone_categorie.vars.errors|length > 0 %}
 <div class="row d-flex justify-content-between gap-3">
 	<div class="col mt-3">
-		{{form_label(form.nom_categorie)}}
-		{{ form_widget(form.nom_categorie) }}
+		{{form_row(form.nom_categorie)}}
 	</div>
 	<div class="col mt-3">
 		{{form_label(form.couleur_categorie)}}
 		<div class="d-flex align-items-center gap-3">
-			{{ form_widget(form.couleur_categorie) }}
+			{{ form_widget(form.couleur_categorie, {
+				attr: {
+					class: (form.couleur_categorie.vars.attr.class|default('') ~ (couleurHasErrors ? ' is-invalid' : ''))|trim,
+					'aria-invalid': couleurHasErrors ? 'true' : 'false',
+					'aria-describedby': couleurHasErrors ? form.couleur_categorie.vars.id ~ '_errors' : null,
+				}
+			}) }}
 			<span data-categorie-color-preview="true" data-default-color="{{ selectedColor }}" class="border rounded-circle d-inline-block" style="width: 2.5rem; height: 2.5rem; background-color: {{ selectedColor }};"></span>
 			<span data-categorie-color-value="true" class="text-muted">{{ selectedColor }}</span>
+		</div>
+		<div id="{{ form.couleur_categorie.vars.id }}_errors" class="invalid-feedback d-block">
+			{{ form_errors(form.couleur_categorie) }}
 		</div>
 		{{ form_help(form.couleur_categorie) }}
 	</div>
 </div>
 <div class="col mt-3">
 	{{form_label(form.icone_categorie)}}
-	<div class="d-flex flex-wrap gap-2">
+	<div class="d-flex flex-wrap gap-2 p-2 rounded {% if iconeHasErrors %}border border-danger{% endif %}" {% if iconeHasErrors %} aria-invalid="true" aria-describedby="{{ form.icone_categorie.vars.id }}_errors" {% endif %}>
 		{% for choice in form.icone_categorie %}
-			{{ form_widget(choice) }}
-			<label for="{{ choice.vars.id }}" class="btn btn-outline-secondary d-inline-flex align-items-center justify-content-center" style="width: 3rem; height: 3rem;">
+			<input type="radio" class="btn-check" name="{{ choice.vars.full_name }}" id="{{ choice.vars.id }}" value="{{ choice.vars.value }}" autocomplete="off" {% if choice.vars.checked %} checked {% endif %}>
+			<label class="btn {% if iconeHasErrors %}btn-outline-danger{% else %}btn-outline-secondary{% endif %} d-inline-flex align-items-center justify-content-center" for="{{ choice.vars.id }}" style="width: 3rem; height: 3rem;">
 				<i class="{{ choice.vars.value }}" aria-hidden="true"></i>
 			</label>
 		{% endfor %}
+	</div>
+	<div id="{{ form.icone_categorie.vars.id }}_errors" class="invalid-feedback d-block">
+		{{ form_errors(form.icone_categorie) }}
 	</div>
 </div>
 
 <div class="text-center">
 	{{form_widget(form.save) }}
 </div>
-{{ form_end(form) }}
+{{ form_widget(form._token) }}
+{{ form_end(form, {'render_rest': false}) }}
