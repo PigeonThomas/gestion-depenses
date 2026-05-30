@@ -26,26 +26,15 @@ class VehiculeType extends AbstractType
                 'required' => false,
             ])
             ->add('surnom_vehicule', TextType::class, [
-                'label' => 'Surnom',
+                'label' => 'Surnom*',
                 'label_attr' => ['class' => 'form-label'],
                 'attr' => ['class' => 'form-control'],
             ])
             ->add('type_vehicule', ChoiceType::class, [
-                'label' => 'Type',
+                'label' => 'Type*',
                 'label_attr' => ['class' => 'form-label'],
                 'attr' => ['class' => 'form-control'],
-                'choices' => [
-                    'Voiture' => 'voiture',
-                    'Moto' => 'moto',
-                    'Camion' => 'camion',
-                    'Van' => 'van',
-                    'Camping-car' => 'camping-car',
-                    'Vélo' => 'velo',
-                    'Trottinette' => 'trottinette',
-                    'Bus' => 'bus',
-                    'Hélicoptère' => 'helicoptere', 
-                    'Autre' => 'autre',
-                ],
+                'choices' => Vehicule::TYPE_CHOICES,
                 'placeholder' => 'Choisissez un type',
                 'required' => false,
             ])

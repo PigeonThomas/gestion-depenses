@@ -35,6 +35,7 @@ final class CategorieController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($categorie);
             $entityManager->flush();
+            $this->addFlash('success', 'Catégorie créée avec succès.');
 
             return $this->redirectToRoute('app_categorie_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -63,6 +64,7 @@ final class CategorieController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
+            $this->addFlash('success', 'Catégorie modifiée avec succès.');
 
             return $this->redirectToRoute('app_categorie_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -80,6 +82,7 @@ final class CategorieController extends AbstractController
         if ($this->isCsrfTokenValid('delete'.$categorie->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($categorie);
             $entityManager->flush();
+            $this->addFlash('success', 'Catégorie supprimée avec succès.');
         }
 
         return $this->redirectToRoute('app_categorie_index', [], Response::HTTP_SEE_OTHER);

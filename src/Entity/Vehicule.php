@@ -10,42 +10,106 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: VehiculeRepository::class)]
 #[Vich\Uploadable]
 #[ORM\HasLifecycleCallbacks]
+#[UniqueEntity(fields: ['immat_vehicule'], message: 'Il existe déjà un véhicule avec cette immatriculation')]
+#[UniqueEntity(fields: ['surnom_vehicule'], message: 'Il existe déjà un véhicule avec ce surnom')]
+
 class Vehicule
 {
+    public const TYPE_CHOICES = [
+        'Voiture' => 'voiture',
+        'Moto' => 'moto',
+        'Camion' => 'camion',
+        'Van' => 'van',
+        'Camping-car' => 'camping-car',
+        'Vélo' => 'velo',
+        'Trottinette' => 'trottinette',
+        'Bus' => 'bus',
+        'Hélicoptère' => 'helicoptere',
+        'Autre' => 'autre',
+    ];
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true, unique: true)]
+    #[Assert\Length(
+        max: 255,
+        maxMessage: 'L\'immatriculation du véhicule ne peut pas dépasser {{ limit }} caractères'
+    )]
+    #[Assert\Regex(
+        pattern: '/^[\p{L}\p{N}\s\-]+$/u',
+        message: 'L\'immatriculation ne doit contenir que des lettres, chiffres, tirets et espaces'
+    )]
+    #[Assert\NoSuspiciousCharacters(
+        invisibleMessage: 'L\'immatriculation ne doit pas contenir de caractères invisibles.',
+        mixedNumbersMessage: 'L\'immatriculation ne doit pas mélanger des chiffres de plusieurs alphabets.',
+        hiddenOverlayMessage: 'L\'immatriculation contient des caractères interdits.',
+        restrictionLevelMessage: 'L\'immatriculation contient des caractères non autorisés.'
+    )]
     private ?string $immat_vehicule = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $surnom_vehicule = null;
+    #[ORM\Column(type: 'string', length: 255, unique: true)]
+    #[Assert\NotBlank(message: 'Le surnom du véhicule ne peut pas être vide')]
+    #[Assert\Length(
+        max: 255,
+        maxMessage: 'Le surnom du véhicule ne peut pas dépasser {{ limit }} caractères'
+    )]
+    #[Assert\NoSuspiciousCharacters(
+        invisibleMessage: 'Le surnom du véhicule ne doit pas contenir de caractères invisibles.',
+        mixedNumbersMessage: 'Le surnom du véhicule ne doit pas mélanger des chiffres de plusieurs alphabets.',
+        hiddenOverlayMessage: 'Le surnom du véhicule contient des caractères interdits.',
+        restrictionLevelMessage: 'Le surnom du véhicule contient des caractères non autorisés.'
+    )]
+    private string $surnom_vehicule = '';
 
-    #[ORM\Column(length: 255)]
-    private ?string $type_vehicule = null;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Assert\NotBlank(message: 'Le type du véhicule ne peut pas être vide')]
+    #[Assert\Choice(choices: self::TYPE_CHOICES, message: 'Le type de véhicule sélectionné est invalide')]
+    private string $type_vehicule = '';
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Assert\Length(
+        max: 255,
+        maxMessage: 'La marque du véhicule ne peut pas dépasser {{ limit }} caractères'
+    )]
+    #[Assert\NoSuspiciousCharacters(
+        invisibleMessage: 'La marque du véhicule ne doit pas contenir de caractères invisibles.',
+        mixedNumbersMessage: 'La marque du véhicule ne doit pas mélanger des chiffres de plusieurs  alphabets.',
+        hiddenOverlayMessage: 'La marque du véhicule contient des caractères interdits.',
+        restrictionLevelMessage: 'La marque du véhicule contient des caractères non autorisés.'
+    )]
     private ?string $marque_vehicule = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Assert\Length(
+        max: 255,
+        maxMessage: 'Le modèle du véhicule ne peut pas dépasser {{ limit }} caractères'
+    )]
     private ?string $modele_vehicule = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    private ?\DateTime $annee_circulation_vehicule = null;
+    #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
+    #[Assert\LessThanOrEqual('today', message: 'L\'année de circulation du véhicule ne peut pas être dans le futur')]
+    private ?\DateTimeImmutable $annee_circulation_vehicule = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Assert\Length(
+        max: 255,
+        maxMessage: 'L\'énergie du véhicule ne peut pas dépasser {{ limit }} caractères'
+    )]
     private ?string $energie_vehicule = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 7, scale: 0, nullable: true)]
+    #[Assert\Positive(message: 'Le kilométrage à l\'achat doit être un nombre positif')]
+    #[Assert\Type(type: 'numeric', message: 'Le kilométrage à l\'achat doit être un nombre valide')]
     private ?string $kmAchat_vehicule = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $image_vehicule = null;
 
     #[Vich\UploadableField(mapping: "vehicules", fileNameProperty: "image_vehicule")]
@@ -65,10 +129,10 @@ class Vehicule
     #[ORM\ManyToOne(inversedBy: 'vehicules')]
     private ?User $user = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private ?\DateTimeImmutable $createdAt = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private ?\DateTimeImmutable $updatedAt = null;
 
     public function __construct()
@@ -141,12 +205,12 @@ class Vehicule
         return $this;
     }
 
-    public function getAnneeCirculationVehicule(): ?\DateTime
+    public function getAnneeCirculationVehicule(): ?\DateTimeImmutable
     {
         return $this->annee_circulation_vehicule;
     }
 
-    public function setAnneeCirculationVehicule(?\DateTime $annee_circulation_vehicule): static
+    public function setAnneeCirculationVehicule(?\DateTimeImmutable $annee_circulation_vehicule): static
     {
         $this->annee_circulation_vehicule = $annee_circulation_vehicule;
 
