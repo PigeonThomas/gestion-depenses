@@ -6,17 +6,17 @@
 
 {% block body %}
 	<h1>
-		<strong>{{ title }}</strong>
+		{{ title }}
 	</h1>
 	<h2>Voici la liste de vos dépenses</h2>
 	<div class="container m-2">
 		<table class="table">
 			<thead>
 				<tr>
-					<th>Date</th>
-					<th>Montant</th>
+					<th>{{ knp_pagination_sortable(depenses, 'Date', 'd.date_depense') }}</th>
+					<th>{{ knp_pagination_sortable(depenses, 'Montant', 'd.montant_depense') }}</th>
 					<th>Commentaire</th>
-					<th>Catégorie</th>
+					<th>{{ knp_pagination_sortable(depenses, 'Catégorie', 'c.nom_categorie') }}</th>
 					<th>Actions</th>
 				</tr>
 			</thead>
@@ -44,5 +44,8 @@
 				{% endfor %}
 			</tbody>
 		</table>
+		<div class="d-flex justify-content-center">
+			{{ knp_pagination_render(depenses) }}
+		</div>
 	</div>
 {% endblock %}

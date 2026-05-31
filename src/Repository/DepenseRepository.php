@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Depense;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -14,6 +15,22 @@ class DepenseRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Depense::class);
+    }
+
+    /**
+     * Return a query of expenses for a given user, ready to be paginated.
+     * @param int $userId The ID of the user to retrieve expenses for.
+     * @return Query
+     */
+    public function queryByUserId(int $userId): Query
+    {
+        return $this->createQueryBuilder('d')
+            ->leftJoin('d.categorie', 'c')
+            ->addSelect('c')
+            ->andWhere('d.user = :userId')
+            ->setParameter('userId', $userId)
+            ->orderBy('d.date_depense', 'DESC')
+            ->getQuery();
     }
 
     /**

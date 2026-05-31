@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Form\DepenseType;
 use App\Repository\DepenseRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,7 +20,9 @@ final class DepenseController extends AbstractController
 {
     #[Route(name: 'app_depense_index', methods: ['GET'])]
     public function index(
-        DepenseRepository $depenseRepository, 
+        DepenseRepository $depenseRepository,
+        PaginatorInterface $paginator,
+        Request $request
         ): Response
     {
         // Vérifie que l'utilisateur est connecté
@@ -27,10 +30,25 @@ final class DepenseController extends AbstractController
         if (!$user instanceof User) {
             throw $this->createAccessDeniedException('Vous devez être connecté pour accéder à vos dépenses.');
         }
-        
+
+        // Récupère les dépenses de l'utilisateur avec pagination
+        $page = $request->query->getInt('page', 1);
+        $limit = 8; // Nombre de dépenses par page
+        $depenses = $paginator->paginate(
+            $depenseRepository->queryByUserId($user->getId()),
+            $page,
+            $limit,
+            [
+                'distinct' => true, // Assure que les résultats sont distincts pour éviter les doublons
+                'sortFieldAllowList' => ['d.date_depense', 'd.montant_depense', 'c.nom_categorie'], // Champs autorisés pour le tri
+                'defaultSortFieldName' => 'd.date_depense', // Champ de tri par défaut
+                'defaultSortDirection' => 'desc', // Direction de tri par défaut
+            ]
+        );
+
         return $this->render('depense/index.html.twig', [
             'title' => 'Mes dépenses',
-            'depenses' => $depenseRepository->findByUserId($user->getId()),
+            'depenses' => $depenses,
         ]);
     }
 
