@@ -8,6 +8,7 @@ use App\Form\MagasinType;
 use App\Repository\MagasinRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -18,7 +19,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 final class MagasinController extends AbstractController
 {
     #[Route(name: 'app_magasin_index', methods: ['GET'])]
-    public function index(MagasinRepository $magasinRepository): Response
+    public function index(MagasinRepository $magasinRepository, PaginatorInterface $paginator, Request $request): Response
     {
         //Vérifie que l'utilisateur est connecté
         $user = $this->getUser();
@@ -26,9 +27,24 @@ final class MagasinController extends AbstractController
             throw $this->createAccessDeniedException('Vous devez être connecté pour accéder à vos magasins.');
         }
 
+        // Récupère les magasins de l'utilisateur avec pagination
+        $page = $request->query->getInt('page', 1);
+        $limit = 8; // Nombre de magasins par page
+        $magasins = $paginator->paginate(
+            $magasinRepository->queryByUserId($user->getId()),
+            $page,
+            $limit,
+            [
+                'distinct' => true, // Assure que les résultats sont distincts pour éviter les doublons
+                'sortFieldAllowList' => ['m.nom_magasin', 'm.online_magasin', 'm.createdAt'], // Champs autorisés pour le tri
+                'defaultSortFieldName' => 'm.createdAt', // Champ de tri par défaut
+                'defaultSortDirection' => 'desc', // Direction de tri par défaut
+            ]
+        );
+
         return $this->render('magasin/index.html.twig', [
             'title' => 'Mes magasins',
-            'magasins' => $magasinRepository->findByUserId($user->getId()),
+            'magasins' => $magasins,
         ]);
     }
 
