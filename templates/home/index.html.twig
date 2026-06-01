@@ -6,7 +6,7 @@
 {% block body %}
 	{% include 'partials/_navbar.html.twig' %}
 
-	<div class="container py-4 bg-light">
+	<div class="container py-4">
 		<div class="row mt-2">
 			<div class="col-md-7 d-flex flex-column justify-content-center">
 				<p class="col-md-5 btn btn-info text-uppercase rounded-pill">
@@ -84,14 +84,16 @@
 				<p>Obtenez des insights détaillés sur vos dépenses pour mieux planifier vos finances.</p>
 			</div>
 		</div>
-		<div class="bg-primary text-white p-5 rounded-5 m-5">
-			<h2 class="text-center">
-				<strong>Prêt à transformer votre gestion financière ?</strong>
-			</h2>
-			<p class="text-center">Rejoignez plus de 10 000 utilisateurs qui ont choisi la simplicité et le plaisir pour leurs dépenses.</p>
-			<div class="d-flex justify-content-center gap-3">
-				<a href="{{ path('app_register') }}" class="btn btn-light rounded-pill">Créer mon compte</a>
-				<button class="btn btn-outline-light rounded-pill">Parler à un expert</button>
+		<div class="p-5 bg-white">
+			<div class="bg-primary text-white p-5 rounded-5 m-5">
+				<h2 class="text-center">
+					<strong>Prêt à transformer votre gestion financière ?</strong>
+				</h2>
+				<p class="text-center">Rejoignez plus de 10 000 utilisateurs qui ont choisi la simplicité et le plaisir pour leurs dépenses.</p>
+				<div class="d-flex justify-content-center gap-3">
+					<a href="{{ path('app_register') }}" class="btn btn-light rounded-pill">Créer mon compte</a>
+					<button class="btn btn-outline-light rounded-pill">Parler à un expert</button>
+				</div>
 			</div>
 		</div>
 	</div>

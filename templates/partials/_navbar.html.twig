@@ -1,18 +1,18 @@
-<nav class="navbar navbar-expand-md navbar-secondary bg-secondary" aria-label="Fourth navbar example">
+<nav class="navbar navbar-expand-md navbar-secondary bg-white sticky-top py-3 shadow-sm" aria-label="Fourth navbar example">
 	<div class="container-fluid">
-		<a class="navbar-brand text-white" href="/">ToolSpend</a>
+		<a class="navbar-brand" href="/">ToolSpend</a>
 		<div class="justify-content-end">
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
 			</button>
 
 			<div class="collapse navbar-collapse">
-				<ul class="navbar-nav me-auto mb-2 mb-md-0">
+				<ul class="navbar-nav me-auto mb-2 mb-md-0 gap-3 px-3">
 					<li class="nav-item">
-						<a class="nav-link active text-white" aria-current="page" href="{{ path('app_register') }}">Inscription</a>
+						<a class="nav-link active " aria-current="page" href="{{ path('app_register') }}">Inscription</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link active text-white" aria-current="page" href="{{ path('app_login') }}">Connexion</a>
+						<a class="nav-link active btn btn-primary rounded-pill text-white" aria-current="page" href="{{ path('app_login') }}">Connexion</a>
 					</li>
 				</ul>
 			</div>
