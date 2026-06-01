@@ -6,6 +6,7 @@ use App\Entity\Depense;
 use App\Entity\User;
 use App\Form\DepenseType;
 use App\Repository\DepenseRepository;
+use App\Service\KilometrageValidationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -53,7 +54,7 @@ final class DepenseController extends AbstractController
     }
 
     #[Route('/new', name: 'app_depense_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, KilometrageValidationService $kmValidation): Response
     {
         //Vérifie que l'utilisateur est connecté
         $user = $this->getUser();
@@ -67,6 +68,17 @@ final class DepenseController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $kmError = $kmValidation->validate($depense);
+            if ($kmError !== null) {
+                $this->addFlash('danger', $kmError);
+
+                return $this->render('depense/new.html.twig', [
+                    'title' => 'Créer une dépense',
+                    'depense' => $depense,
+                    'form' => $form,
+                ]);
+            }
+
             $depense->setUser($user);
             $entityManager->persist($depense);
             $entityManager->flush();
@@ -99,7 +111,7 @@ final class DepenseController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_depense_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Depense $depense, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Depense $depense, EntityManagerInterface $entityManager, KilometrageValidationService $kmValidation): Response
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
 
@@ -112,6 +124,17 @@ final class DepenseController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $kmError = $kmValidation->validate($depense);
+            if ($kmError !== null) {
+                $this->addFlash('danger', $kmError);
+
+                return $this->render('depense/edit.html.twig', [
+                    'title' => 'Modifier la dépense',
+                    'depense' => $depense,
+                    'form' => $form,
+                ]);
+            }
+
             $entityManager->flush();
             $this->addFlash('success', 'Dépense modifiée avec succès.');
 

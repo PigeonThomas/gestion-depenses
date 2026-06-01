@@ -99,7 +99,16 @@ gestion-depenses/
     docker compose exec php php bin/console doctrine:migrations:migrate
     ```
 
-7. **Charger les données de test**
+7. **Installer les assets front-end (AssetMapper)**
+
+    ```bash
+    docker compose exec php php bin/console importmap:install
+    ```
+
+    > ⚠️ Cette commande est obligatoire après chaque `composer install` ou `git clone`. Elle télécharge les dépendances JS (Chart.js, Stimulus…) dans `assets/vendor/`, dossier exclu du dépôt Git.
+
+8. **Charger les données de test**
+
     ```bash
     docker compose exec php php bin/console doctrine:fixtures:load
     ```
@@ -199,3 +208,16 @@ Assurez-vous que le port 8080 n'est pas déjà utilisé.
 ### Les données de test ne se chargent pas
 
 Assurez-vous que la base de données existe et que les migrations ont été appliquées avant de charger les fixtures.
+
+### Les graphiques du dashboard ne s'affichent pas
+
+Deux causes possibles :
+
+1. **Assets JS manquants** — le dossier `assets/vendor/` n'a pas été généré (il est exclu du dépôt Git). Lancez :
+
+    ```bash
+    docker compose exec php php bin/console importmap:install
+    docker compose exec php php bin/console cache:clear
+    ```
+
+2. **Aucune donnée pour la période** — les graphiques affichent les dépenses du mois en cours. S'il n'y a aucune dépense enregistrée pour ce mois, les graphiques restent vides. Chargez les fixtures ou ajoutez des dépenses via l'interface.

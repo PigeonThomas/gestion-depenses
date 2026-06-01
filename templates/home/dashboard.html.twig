@@ -46,28 +46,34 @@
 				</div>
 			</div>
 
-			<div class="row g-4 mt-2">
-				<div class="col-md-6">
-					<div class="card rounded-5 shadow">
-						<div class="card-body">
-							<h5 class="card-title text-center">Dépenses par catégories</h5>
-							<div style="height: 400px; width: 100%;">
-								{{ render_chart(chartCategorie) }}
+			{% if totalDepenseActualMonth != 0 %}
+				<div class="row g-4 mt-2">
+					<div class="col-md-6">
+						<div class="card rounded-5 shadow">
+							<div class="card-body">
+								<h5 class="card-title text-center">Dépenses par catégories</h5>
+								<div style="height: 400px; width: 100%;">
+									{{ render_chart(chartCategorie) }}
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="card rounded-5 shadow">
+							<div class="card-body">
+								<h5 class="card-title text-center">Dépenses par magasins</h5>
+								<div style="height: 400px; width: 100%;">
+									{{ render_chart(chartMagasin) }}
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-				<div class="col-md-6">
-					<div class="card rounded-5 shadow">
-						<div class="card-body">
-							<h5 class="card-title text-center">Dépenses par magasins</h5>
-							<div style="height: 400px; width: 100%;">
-								{{ render_chart(chartMagasin) }}
-							</div>
-						</div>
-					</div>
+			{% else %}
+				<div class="alert alert-info mt-4">
+					Aucun graphique disponible pour le mois en cours.
 				</div>
-			</div>
+			{% endif %}
 		</div>
 	</div>
 {% endblock %}

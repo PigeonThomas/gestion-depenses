@@ -4,10 +4,12 @@
 	<div class="col mt-3">
 		{{form_label(form.date_depense)}}
 		{{ form_widget(form.date_depense) }}
+		{{ form_errors(form.date_depense) }}
 	</div>
 	<div class="col mt-3">
 		{{form_label(form.montant_depense)}}
 		{{ form_widget(form.montant_depense) }}
+		{{ form_errors(form.montant_depense) }}
 	</div>
 </div>
 <div class="mt-3">
@@ -33,10 +35,12 @@
 	<div class="col mt-3">
 		{{ form_label(form.vehicule)}}
 		{{ form_widget(form.vehicule) }}
+		{{ form_errors(form.vehicule) }}
 	</div>
 	<div class="col mt-3">
 		{{ form_label(form.km_vehicule)}}
 		{{ form_widget(form.km_vehicule) }}
+		{{ form_errors(form.km_vehicule) }}
 	</div>
 </div>
 

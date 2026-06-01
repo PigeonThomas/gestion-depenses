@@ -108,6 +108,36 @@ class DepenseRepository extends ServiceEntityRepository
     }
 
     /**
+     * Find the last km recorded for a given vehicle across all dates (carburant or réparation categories).
+     * Optionally excludes a specific depense (useful in edit context).
+     * @param int $vehiculeId
+     * @param int|null $excludeDepenseId ID of the depense to exclude (for edit)
+     * @return string|null
+     */
+    public function findLastKmByVehicule(int $vehiculeId, ?int $excludeDepenseId = null): ?string
+    {
+        $qb = $this->createQueryBuilder('d')
+            ->select('d.km_vehicule')
+            ->where('d.vehicule = :vehiculeId')
+            ->andWhere('d.km_vehicule IS NOT NULL')
+            ->andWhere('d.categorie IN (:categories)')
+            ->setParameter('vehiculeId', $vehiculeId)
+            ->setParameter('categories', [2, 10])
+            ->orderBy('d.date_depense', 'DESC')
+            ->addOrderBy('d.id', 'DESC')
+            ->setMaxResults(1);
+
+        if ($excludeDepenseId !== null) {
+            $qb->andWhere('d.id != :excludeId')
+               ->setParameter('excludeId', $excludeDepenseId);
+        }
+
+        $result = $qb->getQuery()->getOneOrNullResult();
+
+        return $result['km_vehicule'] ?? null;
+    }
+
+    /**
      * Find last Km for a given vehicle for a given month for carbuant expenses (id : 10) by User.
      * @param int $vehiculeId The ID of the vehicle to find the last Km for.
      * @param int $annee The year of the month to find the last Km for.
