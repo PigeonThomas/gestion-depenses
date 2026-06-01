@@ -7,6 +7,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: DepenseRepository::class)]
@@ -326,5 +327,15 @@ class Depense
     public function updateTimestampOnUpdate(): void
     {
         $this->updatedAt = new \DateTimeImmutable();
+    }
+
+    #[Assert\Callback]
+    public function validateKmRequiredWhenVehicule(ExecutionContextInterface $context): void
+    {
+        if ($this->vehicule !== null && ($this->km_vehicule === null || trim((string) $this->km_vehicule) === '')) {
+            $context->buildViolation('Le kilométrage du véhicule est obligatoire lorsqu\'un véhicule est sélectionné.')
+                ->atPath('km_vehicule')
+                ->addViolation();
+        }
     }
 }

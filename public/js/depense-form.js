@@ -30,13 +30,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const updateVisibleFields = () => {
         const selectedOption = categoryField.options[categoryField.selectedIndex]; // On récupère l'option sélectionnée dans le champ de catégorie
         const categoryLabel = selectedOption ? normalizeValue(selectedOption.textContent) : ''; // On normalise le texte de l'option sélectionnée pour faciliter les comparaisons
-        const isVehicleCategory = categoryLabel === 'vehicule'; // On vérifie si la catégorie sélectionnée est "véhicule"
+        const isVehicleCategory = categoryLabel === 'reparation'; // On vérifie si la catégorie sélectionnée est "réparation"
         const isFuelCategory = categoryLabel === 'carburant'; // On vérifie si la catégorie sélectionnée est "carburant"
-        const needsVehicleFields = isVehicleCategory || isFuelCategory; // Les champs communs au véhicule sont nécessaires pour les catégories "véhicule" et "carburant"
+        const needsVehicleFields = isVehicleCategory || isFuelCategory; // Les champs communs au véhicule sont nécessaires pour les catégories "réparation" et "carburant"
 
-        toggleSections(commonVehicleSections, needsVehicleFields);  // On affiche les champs communs au véhicule si la catégorie est "véhicule" ou "carburant", sinon on les cache
+        toggleSections(commonVehicleSections, needsVehicleFields);  // On affiche les champs communs au véhicule si la catégorie est "réparation" ou "carburant", sinon on les cache
         toggleSections(fuelSections, isFuelCategory); // On affiche les champs spécifiques au carburant si la catégorie est "carburant", sinon on les cache
-        toggleSections(repairSections, isVehicleCategory); // On affiche les champs spécifiques à la réparation si la catégorie est "véhicule", sinon on les cache
+        toggleSections(repairSections, isVehicleCategory); // On affiche les champs spécifiques à la réparation si la catégorie est "réparation", sinon on les cache
     };
 
     categoryField.addEventListener('change', updateVisibleFields); // On écoute l'événement de changement sur le champ de catégorie pour mettre à jour les sections du formulaire en conséquence
