@@ -4,6 +4,7 @@
 	<div class="col mt-3">
 		{{form_label(form.nom_magasin)}}
 		{{ form_widget(form.nom_magasin) }}
+		{{ form_errors(form.nom_magasin) }}
 	</div>
 </div>
 <div class="row d-flex justify-content-between gap-3">
@@ -17,16 +18,19 @@
 				</div>
 			{% endfor %}
 		</div>
+		{{ form_errors(form.online_magasin) }}
 	</div>
 	<div class="col mt-3">
 		{{form_label(form.lien_magasin)}}
 		{{ form_widget(form.lien_magasin) }}
+		{{ form_errors(form.lien_magasin) }}
 	</div>
 </div>
 <div class="row d-flex justify-content-between gap-3">
 	<div class="col mt-3">
 		{{form_label(form.adresse_magasin)}}
 		{{ form_widget(form.adresse_magasin) }}
+		{{ form_errors(form.adresse_magasin) }}
 	</div>
 </div>
 <div class="text-center">

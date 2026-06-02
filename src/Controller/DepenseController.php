@@ -64,11 +64,16 @@ final class DepenseController extends AbstractController
         }
 
         $depense = new Depense();
-        $form = $this->createForm(DepenseType::class, $depense);
+        $form = $this->createForm(DepenseType::class, $depense, [
+            'user' => $user, // Passe l'utilisateur connecté au formulaire pour filtrer les choix
+        ]);
         $form->handleRequest($request);
 
+        //Vérifie que le formulaire est soumis et valide
         if ($form->isSubmitted() && $form->isValid()) {
             $kmError = $kmValidation->validate($depense);
+
+            // Si une erreur de validation du kilométrage est détectée, affiche un message d'erreur et redirige vers le formulaire de création de dépense
             if ($kmError !== null) {
                 $this->addFlash('danger', $kmError);
 
@@ -120,7 +125,9 @@ final class DepenseController extends AbstractController
             throw $this->createAccessDeniedException('Vous n\'avez pas accès à cette dépense.');
         }
 
-        $form = $this->createForm(DepenseType::class, $depense);
+        $form = $this->createForm(DepenseType::class, $depense, [
+            'user' => $this->getUser(), // Passe l'utilisateur connecté au formulaire pour filtrer les choix
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

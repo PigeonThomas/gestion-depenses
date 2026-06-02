@@ -5,8 +5,9 @@ namespace App\Form;
 use App\Entity\Categorie;
 use App\Entity\Depense;
 use App\Entity\Magasin;
-use App\Entity\User;
 use App\Entity\Vehicule;
+use App\Repository\MagasinRepository;
+use App\Repository\VehiculeRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -87,6 +88,12 @@ class DepenseType extends AbstractType
                 'choice_label' => 'nom_categorie',
             ])
             ->add('magasin', EntityType::class, [
+                'query_builder' => function (MagasinRepository $magasinRepository) use ($options) {
+                    return $magasinRepository->createQueryBuilder('m')
+                        ->andWhere('m.user = :user')
+                        ->setParameter('user', $options['user'])
+                        ->orderBy('m.createdAt', 'DESC');
+                },
                 'label' => 'Magasin*',
                 'label_attr' => ['class' => 'form-label'],
                 'attr' => ['class' => 'form-control'],
@@ -95,6 +102,12 @@ class DepenseType extends AbstractType
                 'choice_label' => 'nom_magasin',
             ])
             ->add('vehicule', EntityType::class, [
+                'query_builder' => function (VehiculeRepository $vehiculeRepository) use ($options) {
+                    return $vehiculeRepository->createQueryBuilder('v')
+                        ->andWhere('v.user = :user')
+                        ->setParameter('user', $options['user'])
+                        ->orderBy('v.createdAt', 'DESC');
+                },
                 'label' => 'Véhicule',
                 'label_attr' => ['class' => 'form-label'],
                 'attr' => ['class' => 'form-control'],
@@ -114,6 +127,7 @@ class DepenseType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Depense::class,
+            'user' => null, // Ajout de l'option user pour passer l'utilisateur connecté
         ]);
     }
 }

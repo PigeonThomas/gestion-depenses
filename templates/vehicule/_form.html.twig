@@ -4,40 +4,48 @@
 	<div class="col mt-3">
 		{{form_label(form.surnom_vehicule)}}
 		{{ form_widget(form.surnom_vehicule) }}
+		{{ form_errors(form.surnom_vehicule) }}
 	</div>
 	<div class="col mt-3">
 		{{form_label(form.immat_vehicule)}}
 		{{ form_widget(form.immat_vehicule) }}
+		{{ form_errors(form.immat_vehicule) }}
 	</div>
 </div>
 <div class="row d-flex justify-content-between gap-3">
 	<div class="col mt-3">
 		{{form_label(form.type_vehicule)}}
 		{{ form_widget(form.type_vehicule) }}
+		{{ form_errors(form.type_vehicule) }}
 	</div>
 	<div class="col mt-3">
 		{{form_label(form.annee_circulation_vehicule)}}
 		{{ form_widget(form.annee_circulation_vehicule) }}
+		{{ form_errors(form.annee_circulation_vehicule) }}
 	</div>
 </div>
 <div class="row d-flex justify-content-between gap-3">
 	<div class="col mt-3">
 		{{form_label(form.marque_vehicule)}}
 		{{ form_widget(form.marque_vehicule) }}
+		{{ form_errors(form.marque_vehicule) }}
 	</div>
 	<div class="col mt-3">
 		{{form_label(form.modele_vehicule)}}
 		{{ form_widget(form.modele_vehicule) }}
+		{{ form_errors(form.modele_vehicule) }}
 	</div>
 </div>
 <div class="row d-flex justify-content-between gap-3">
 	<div class="col mt-3">
 		{{form_label(form.energie_vehicule)}}
 		{{ form_widget(form.energie_vehicule) }}
+		{{ form_errors(form.energie_vehicule) }}
 	</div>
 	<div class="col mt-3">
 		{{form_label(form.kmAchat_vehicule)}}
 		{{ form_widget(form.kmAchat_vehicule) }}
+		{{ form_errors(form.kmAchat_vehicule) }}
 	</div>
 </div>
 
@@ -45,6 +53,7 @@
 	<div class="col mt-3">
 		{{form_label(form.imageVehiculeFile)}}
 		{{ form_widget(form.imageVehiculeFile) }}
+		{{ form_errors(form.imageVehiculeFile) }}
 	</div>
 </div>
 

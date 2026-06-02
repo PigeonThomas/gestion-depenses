@@ -16,7 +16,6 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 #[Vich\Uploadable]
 #[ORM\HasLifecycleCallbacks]
 #[UniqueEntity(fields: ['immat_vehicule'], message: 'Il existe déjà un véhicule avec cette immatriculation')]
-#[UniqueEntity(fields: ['surnom_vehicule'], message: 'Il existe déjà un véhicule avec ce surnom')]
 
 class Vehicule
 {
@@ -54,7 +53,7 @@ class Vehicule
     )]
     private ?string $immat_vehicule = null;
 
-    #[ORM\Column(type: 'string', length: 255, unique: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: false)]
     #[Assert\NotBlank(message: 'Le surnom du véhicule ne peut pas être vide')]
     #[Assert\Length(
         max: 255,
