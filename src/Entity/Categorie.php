@@ -32,6 +32,7 @@ class Categorie
         'Carburant' => 'fa-solid fa-gas-pump',
         'Achats' => 'fa-solid fa-bag-shopping',
         'Train' => 'fa-solid fa-train',
+        'Tabac' => 'fa-solid fa-smoking',
     ];
 
     #[ORM\Id]

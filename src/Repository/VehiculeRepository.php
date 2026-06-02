@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Vehicule;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\Query;
 
 /**
  * @extends ServiceEntityRepository<Vehicule>
@@ -14,6 +15,20 @@ class VehiculeRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Vehicule::class);
+    }
+
+    /**
+     * Return a query of Vehicules for a given user, ready to be paginated.
+     * @param int $userId The ID of the user to retrieve vehicules for.
+     * @return Query
+     */
+    public function queryByUserId(int $userId): Query
+    {
+        return $this->createQueryBuilder('v')
+            ->andWhere('v.user = :userId')
+            ->setParameter('userId', $userId)
+            ->orderBy('v.createdAt', 'DESC')
+            ->getQuery();
     }
 
     /**

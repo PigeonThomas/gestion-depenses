@@ -15,20 +15,24 @@
 <div class="mt-3">
 	{{form_label(form.commentaire_depense)}}
 	{{ form_widget(form.commentaire_depense) }}
+	{{ form_errors(form.commentaire_depense) }}
 </div>
 <div class="row d-flex justify-content-between gap-3">
 	<div class="col mt-3">
 		{{form_label(form.categorie)}}
 		{{ form_widget(form.categorie, {'attr': {'class': 'form-control', 'data-depense-categorie': 'true'}}) }}
+		{{ form_errors(form.categorie) }}
 	</div>
 	<div class="col mt-3">
 		{{form_label(form.magasin)}}
 		{{ form_widget(form.magasin) }}
+		{{ form_errors(form.magasin) }}
 	</div>
 </div>
 <div class="mt-3">
 	{{ form_label(form.factureFile)}}
 	{{ form_widget(form.factureFile) }}
+	{{ form_errors(form.factureFile) }}
 </div>
 
 <div class="row justify-content-between gap-3" data-depense-section="vehicule-common" hidden>
@@ -47,6 +51,7 @@
 <div class="mt-3" data-depense-section="carburant" hidden>
 	{{ form_label(form.carbu_prix_litre)}}
 	{{ form_widget(form.carbu_prix_litre) }}
+	{{ form_errors(form.carbu_prix_litre) }}
 </div>
 
 <div data-depense-section="vehicule-reparation" hidden>
@@ -54,15 +59,18 @@
 		<div class="col mt-3">
 			{{ form_label(form.repa_ref_pieces)}}
 			{{ form_widget(form.repa_ref_pieces) }}
+			{{ form_errors(form.repa_ref_pieces) }}
 		</div>
 		<div class="col mt-3">
 			{{ form_label(form.repaPhotosFile)}}
 			{{ form_widget(form.repaPhotosFile) }}
+			{{ form_errors(form.repaPhotosFile) }}
 		</div>
 	</div>
 	<div class="mt-3">
 		{{ form_label(form.repa_description)}}
 		{{ form_widget(form.repa_description) }}
+		{{ form_errors(form.repa_description) }}
 	</div>
 </div>
 
