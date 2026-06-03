@@ -1,0 +1,37 @@
+<div class="navbar d-md-none justify-content-between border-bottom bg-light" style="z-index: 1040; border-bottom-left-radius: 1.5rem; border-bottom-right-radius: 1.5rem;">
+	<div>
+		{% if app.user %}
+			<a href="{{ path('app_dashboard') }}" class="d-block p-3 link-dark text-decoration-none" data-bs-toggle="tooltip" data-bs-placement="right">
+				ToolSpend
+			</a>
+		{% else %}
+			<a href="{{ path('app_home') }}" class="d-block p-3 link-dark text-decoration-none" data-bs-toggle="tooltip" data-bs-placement="right">
+				ToolSpend
+			</a>
+		{% endif %}
+	</div>
+	{% if app.user %}
+		{# Vérifie si l'utilisateur est connecté #}
+		<div class="dropdown">
+			<button class="btn w-100 d-flex align-items-center gap-2 p-3 link-dark text-decoration-none dropdown-toggle border-0 rounded-0 text-start" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+				<span class="fw-semibold small text-truncate flex-grow-1">{{ app.user.prenomUser ?: app.user.nomUser ?: app.user.userIdentifier }}</span>
+				{% if app.user.imageUser %}
+					<img src="{{ vich_uploader_asset(app.user, 'imageUserFile') }}" alt="Avatar de {{ app.user.prenomUser ?: app.user.nomUser ?: app.user.userIdentifier }}" class="rounded-circle object-fit-cover flex-shrink-0" width="32" height="32">
+				{% else %}
+					<span class="rounded-circle bg-secondary text-white d-inline-flex align-items-center justify-content-center flex-shrink-0" style="width: 32px; height: 32px;">
+						<i class="fa-solid fa-user"></i>
+					</span>
+				{% endif %}
+			</button>
+			<ul class="dropdown-menu text-small shadow w-100">
+				<li>
+					<a class="dropdown-item" href="{{ path('app_profile_edit') }}">Profil</a>
+				</li>
+				<li>
+					<a class="dropdown-item" href="{{ path('app_logout') }}">Déconnexion</a>
+				</li>
+			</ul>
+		</div>
+	{% endif %}
+
+</div>

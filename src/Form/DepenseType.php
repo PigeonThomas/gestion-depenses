@@ -5,8 +5,9 @@ namespace App\Form;
 use App\Entity\Categorie;
 use App\Entity\Depense;
 use App\Entity\Magasin;
-use App\Entity\User;
 use App\Entity\Vehicule;
+use App\Repository\MagasinRepository;
+use App\Repository\VehiculeRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -24,13 +25,13 @@ class DepenseType extends AbstractType
     {
         $builder
             ->add('date_depense',DateType::class, [
-                'label' => 'Date de la dépense',
+                'label' => 'Date de la dépense*',
                 'label_attr' => ['class' => 'form-label'],
                 'attr' => ['class' => 'form-control'],
                 'widget' => 'single_text',
             ])
             ->add('montant_depense', MoneyType::class, [
-                'label' => 'Montant de la dépense',
+                'label' => 'Montant de la dépense*',
                 'label_attr' => ['class' => 'form-label'],
                 'attr' => ['class' => 'form-control', 'placeholder' => '0.00'],
                 'scale' => 2,
@@ -79,7 +80,7 @@ class DepenseType extends AbstractType
                 'required' => false,
             ])
             ->add('categorie', EntityType::class, [
-                'label' => 'Catégorie de dépense',
+                'label' => 'Catégorie de dépense*',
                 'label_attr' => ['class' => 'form-label'],
                 'attr' => ['class' => 'form-control'],
                 'placeholder' => 'Sélectionnez une catégorie',
@@ -87,7 +88,13 @@ class DepenseType extends AbstractType
                 'choice_label' => 'nom_categorie',
             ])
             ->add('magasin', EntityType::class, [
-                'label' => 'Magasin',
+                'query_builder' => function (MagasinRepository $magasinRepository) use ($options) {
+                    return $magasinRepository->createQueryBuilder('m')
+                        ->andWhere('m.user = :user')
+                        ->setParameter('user', $options['user'])
+                        ->orderBy('m.createdAt', 'DESC');
+                },
+                'label' => 'Magasin*',
                 'label_attr' => ['class' => 'form-label'],
                 'attr' => ['class' => 'form-control'],
                 'placeholder' => 'Sélectionnez un magasin',
@@ -95,6 +102,12 @@ class DepenseType extends AbstractType
                 'choice_label' => 'nom_magasin',
             ])
             ->add('vehicule', EntityType::class, [
+                'query_builder' => function (VehiculeRepository $vehiculeRepository) use ($options) {
+                    return $vehiculeRepository->createQueryBuilder('v')
+                        ->andWhere('v.user = :user')
+                        ->setParameter('user', $options['user'])
+                        ->orderBy('v.createdAt', 'DESC');
+                },
                 'label' => 'Véhicule',
                 'label_attr' => ['class' => 'form-label'],
                 'attr' => ['class' => 'form-control'],
@@ -102,14 +115,6 @@ class DepenseType extends AbstractType
                 'class' => Vehicule::class,
                 'choice_label' => 'surnom_vehicule',
                 'required' => false,
-            ])
-            ->add('user', EntityType::class, [
-                'label' => 'Utilisateur',
-                'label_attr' => ['class' => 'form-label'],
-                'attr' => ['class' => 'form-control'],
-                'placeholder' => 'Sélectionnez un utilisateur',
-                'class' => User::class,
-                'choice_label' => 'nom_user',
             ])
             ->add('save', SubmitType::class, [
                 'label' => 'Enregistrer la dépense',
@@ -122,6 +127,7 @@ class DepenseType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Depense::class,
+            'user' => null, // Ajout de l'option user pour passer l'utilisateur connecté
         ]);
     }
 }

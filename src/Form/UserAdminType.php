@@ -18,12 +18,12 @@ class UserAdminType extends AbstractType
     {
         $builder
             ->add('email', EmailType::class, [
-                'label' => 'Email',
+                'label' => 'Email*',
                 'label_attr' => ['class' => 'form-label'],
                 'attr' => ['class' => 'form-control'],
             ])
             ->add('nom_user', TextType::class, [
-                'label' => 'Nom',
+                'label' => 'Nom*',
                 'label_attr' => ['class' => 'form-label'],
                 'attr' => ['class' => 'form-control'],
             ])

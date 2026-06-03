@@ -1,34 +1,42 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Categorie{% endblock %}
+{% block title %}
+	{{ title }}
+{% endblock %}
 
 {% block body %}
-    <h1>Categorie</h1>
+	<h1>{{ title }}</h1>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ categorie.id }}</td>
-            </tr>
-            <tr>
-                <th>Nom_categorie</th>
-                <td>{{ categorie.nomCategorie }}</td>
-            </tr>
-            <tr>
-                <th>Couleur_categorie</th>
-                <td>{{ categorie.couleurCategorie }}</td>
-            </tr>
-            <tr>
-                <th>Icone_categorie</th>
-                <td>{{ categorie.iconeCategorie }}</td>
-            </tr>
-        </tbody>
-    </table>
+	<table class="table">
+		<tbody>
+			<tr>
+				<th>Id</th>
+				<td>{{ categorie.id }}</td>
+			</tr>
+			<tr>
+				<th>Nom_categorie</th>
+				<td>{{ categorie.nomCategorie }}</td>
+			</tr>
+			<tr>
+				<th>Couleur_categorie</th>
+				<td>
+					<span class="border rounded-circle d-inline-block" style="width: 2.5rem; height: 2.5rem; background-color: {{ categorie.couleurCategorie }};"></span>
+				</td>
+			</tr>
+			<tr>
+				<th>Icone_categorie</th>
+				<td>
+					{% if categorie.iconeCategorieClass %}
+						<i class="{{ categorie.iconeCategorieClass }}"></i>
+					{% endif %}
+				</td>
+			</tr>
+		</tbody>
+	</table>
 
-    <a href="{{ path('app_categorie_index') }}">back to list</a>
+	<a href="{{ path('app_categorie_index') }}">back to list</a>
 
-    <a href="{{ path('app_categorie_edit', {'id': categorie.id}) }}">edit</a>
+	<a href="{{ path('app_categorie_edit', {'id': categorie.id}) }}">edit</a>
 
-    {{ include('categorie/_delete_form.html.twig') }}
+	{{ include('categorie/_delete_form.html.twig') }}
 {% endblock %}

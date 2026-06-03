@@ -36,11 +36,15 @@ final class VehiculeController extends AbstractController
         $annee = (int) $now->format('Y');
         $mois = (int) $now->format('n');
 
+        $lastMonthDate = new \DateTime('first day of last month');
+        $anneeLastMonth = (int) $lastMonthDate->format('Y');
+        $moisLastMonth  = (int) $lastMonthDate->format('n');
+
         $totalEssenceActualMonth = $depenseRepository->findTotalEssenceByMonth($annee, $mois, $user->getId());
-        $totalEssenceLastMonth = $depenseRepository->findTotalEssenceByMonth($annee, $mois - 1, $user->getId());
+        $totalEssenceLastMonth = $depenseRepository->findTotalEssenceByMonth($anneeLastMonth, $moisLastMonth, $user->getId());
         
         $totalReparationActualMonth = $depenseRepository->findTotalReparationByMonth($annee, $mois, $user->getId());
-        $totalReparationLastMonth = $depenseRepository->findTotalReparationByMonth($annee, $mois - 1, $user->getId());
+        $totalReparationLastMonth = $depenseRepository->findTotalReparationByMonth($anneeLastMonth, $moisLastMonth, $user->getId());
 
         $totalDistance = 0;
         foreach ($vehiculeRepository->findByUserId($user->getId()) as $vehicule) {
@@ -78,6 +82,7 @@ final class VehiculeController extends AbstractController
             $vehicule->setUser($user);
             $entityManager->persist($vehicule);
             $entityManager->flush();
+            $this->addFlash('success', 'Véhicule créé avec succès.');
 
             return $this->redirectToRoute('app_vehicule_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -121,6 +126,7 @@ final class VehiculeController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             
             $entityManager->flush();
+            $this->addFlash('success', 'Véhicule modifié avec succès.');
 
             return $this->redirectToRoute('app_vehicule_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -145,6 +151,7 @@ final class VehiculeController extends AbstractController
         if ($this->isCsrfTokenValid('delete'.$vehicule->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($vehicule);
             $entityManager->flush();
+            $this->addFlash('success', 'Véhicule supprimé avec succès.');
         }
 
         return $this->redirectToRoute('app_vehicule_index', [], Response::HTTP_SEE_OTHER);

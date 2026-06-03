@@ -1,38 +1,40 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Magasin{% endblock %}
+{% block title %}
+	{{ title }}
+{% endblock %}
 
 {% block body %}
-    <h1>Magasin</h1>
+	<h1>{{ title }}</h1>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ magasin.id }}</td>
-            </tr>
-            <tr>
-                <th>Nom_magasin</th>
-                <td>{{ magasin.nomMagasin }}</td>
-            </tr>
-            <tr>
-                <th>Online_magasin</th>
-                <td>{{ magasin.onlineMagasin ? 'Yes' : 'No' }}</td>
-            </tr>
-            <tr>
-                <th>Adresse_magasin</th>
-                <td>{{ magasin.adresseMagasin }}</td>
-            </tr>
-            <tr>
-                <th>Lien_magasin</th>
-                <td>{{ magasin.lienMagasin }}</td>
-            </tr>
-        </tbody>
-    </table>
+	<table class="table">
+		<tbody>
+			<tr>
+				<th>Id</th>
+				<td>{{ magasin.id }}</td>
+			</tr>
+			<tr>
+				<th>Nom_magasin</th>
+				<td>{{ magasin.nomMagasin }}</td>
+			</tr>
+			<tr>
+				<th>Online_magasin</th>
+				<td>{{ magasin.onlineMagasin ? 'Yes' : 'No' }}</td>
+			</tr>
+			<tr>
+				<th>Adresse_magasin</th>
+				<td>{{ magasin.adresseMagasin }}</td>
+			</tr>
+			<tr>
+				<th>Lien_magasin</th>
+				<td>{{ magasin.lienMagasin }}</td>
+			</tr>
+		</tbody>
+	</table>
 
-    <a href="{{ path('app_magasin_index') }}">back to list</a>
+	<a href="{{ path('app_magasin_index') }}">back to list</a>
 
-    <a href="{{ path('app_magasin_edit', {'id': magasin.id}) }}">edit</a>
+	<a href="{{ path('app_magasin_edit', {'id': magasin.id}) }}">edit</a>
 
-    {{ include('magasin/_delete_form.html.twig') }}
+	{{ include('magasin/_delete_form.html.twig') }}
 {% endblock %}

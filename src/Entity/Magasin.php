@@ -2,13 +2,18 @@
 
 namespace App\Entity;
 
+use Doctrine\DBAL\Types\Types;
 use App\Repository\MagasinRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: MagasinRepository::class)]
 #[ORM\HasLifecycleCallbacks]
+#[UniqueEntity(fields: ['lien_magasin'], message: 'Il existe déjà un magasin avec ce lien')]
+
 class Magasin
 {
     #[ORM\Id]
@@ -16,16 +21,38 @@ class Magasin
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $nom_magasin = null;
+    #[ORM\Column(type: Types::STRING, length: 255)]
+    #[Assert\NotBlank(message: 'Le nom du magasin ne peut pas être vide')]
+    #[Assert\Length(
+        max: 255,
+        maxMessage: 'Le nom du magasin ne peut pas dépasser {{ limit }} caractères'
+    )]
+    #[Assert\NoSuspiciousCharacters(
+        invisibleMessage: 'Le nom du magasin ne doit pas contenir de caractères invisibles.',
+        mixedNumbersMessage: 'Le nom du magasin ne doit pas mélanger des chiffres de plusieurs alphabets.',
+        hiddenOverlayMessage: 'Le nom du magasin contient des caractères interdits.',
+        restrictionLevelMessage: 'Le nom du magasin contient des caractères non autorisés.'
+    )]
+    private string $nom_magasin = '';
 
-    #[ORM\Column]
+    #[ORM\Column(type: Types::BOOLEAN)]
+    #[Assert\NotNull(message: 'Le statut en ligne du magasin ne peut pas être vide')]
+    #[Assert\Type(type: 'bool', message: 'Le statut en ligne du magasin doit être un booléen')]
     private ?bool $online_magasin = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
+    #[Assert\Length(
+        max: 255,
+        maxMessage: 'L\'adresse du magasin ne peut pas dépasser {{ limit }} caractères'
+    )]
     private ?string $adresse_magasin = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true, unique: true)]
+    #[Assert\Length(
+        max: 255,
+        maxMessage: 'Le lien du magasin ne peut pas dépasser {{ limit }} caractères'
+    )]
+    #[Assert\Url(message: 'Le lien du magasin doit être une URL valide')]
     private ?string $lien_magasin = null;
 
     /**
@@ -37,10 +64,10 @@ class Magasin
     #[ORM\ManyToOne(inversedBy: 'magasins')]
     private ?User $user = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private ?\DateTimeImmutable $createdAt = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private ?\DateTimeImmutable $updatedAt = null;
 
     public function __construct()

@@ -19,17 +19,20 @@ Application web permettant de gérer les dépenses d'une famille ou d'une organi
 - 👥 Gestion des utilisateurs
 - 📈 Visualisation et rapports des dépenses
 - 🔐 Authentification sécurisée
+- 📄 Pagination et tri des listes (dépenses, magasins, catégories, véhicules, utilisateurs)
 
 ## Architecture
 
 Le projet est construit avec les technologies suivantes :
 
-- **Framework** : Symfony 5+
+- **Framework** : Symfony 7.4
 - **Base de données** : MySQL 8.0
 - **ORM** : Doctrine ORM
 - **Serveur web** : Apache 2.4 avec PHP 8.2
 - **Containerisation** : Docker & Docker Compose
 - **Template** : Twig
+- **Pagination** : KnpPaginatorBundle v6.10
+- **Traduction** : symfony/translation
 
 ### Structure du projet
 
@@ -69,36 +72,45 @@ gestion-depenses/
 2. **Construire les images Docker**
 
     ```bash
-    docker-compose build
+    docker compose build
     ```
 
 3. **Lancer les conteneurs**
 
     ```bash
-    docker-compose up -d
+    docker compose up -d
     ```
 
 4. **Installer les dépendances PHP**
 
     ```bash
-    docker-compose exec php composer install
+    docker compose exec php composer install
     ```
 
 5. **Créer la base de données**
 
     ```bash
-    docker-compose exec php php bin/console doctrine:database:create
+    docker compose exec php php bin/console doctrine:database:create
     ```
 
 6. **Exécuter les migrations**
 
     ```bash
-    docker-compose exec php php bin/console doctrine:migrations:migrate
+    docker compose exec php php bin/console doctrine:migrations:migrate
     ```
 
-7. **Charger les données de test**
+7. **Installer les assets front-end (AssetMapper)**
+
     ```bash
-    docker-compose exec php php bin/console doctrine:fixtures:load
+    docker compose exec php php bin/console importmap:install
+    ```
+
+    > ⚠️ Cette commande est obligatoire après chaque `composer install` ou `git clone`. Elle télécharge les dépendances JS (Chart.js, Stimulus…) dans `assets/vendor/`, dossier exclu du dépôt Git.
+
+8. **Charger les données de test**
+
+    ```bash
+    docker compose exec php php bin/console doctrine:fixtures:load
     ```
 
 ## Configuration
@@ -143,33 +155,33 @@ DATABASE_URL="mysql://app:app@db:3306/gestion_depenses?serverVersion=8.0&charset
 
 ```bash
 # Accéder au conteneur PHP
-docker-compose exec php bash
+docker compose exec php bash
 
 # Afficher les logs
-docker-compose logs -f php
-docker-compose logs -f db
+docker compose logs -f php
+docker compose logs -f db
 
 # Arrêter les conteneurs
-docker-compose down
+docker compose down
 
 # Reconstruire sans cache
-docker-compose build --no-cache
+docker compose build --no-cache
 ```
 
 ### Gestion de la base de données
 
 ```bash
 # Créer les migrations
-docker-compose exec php php bin/console make:migration
+docker compose exec php php bin/console make:migration
 
 # Exécuter les migrations
-docker-compose exec php php bin/console doctrine:migrations:migrate
+docker compose exec php php bin/console doctrine:migrations:migrate
 
 # Charger les fixtures de test
-docker-compose exec php php bin/console doctrine:fixtures:load
+docker compose exec php php bin/console doctrine:fixtures:load
 
 # Afficher la structure de la BD
-docker-compose exec php php bin/console doctrine:schema:update --dump-sql
+docker compose exec php php bin/console doctrine:schema:update --dump-sql
 ```
 
 ## Dépannage
@@ -179,20 +191,33 @@ docker-compose exec php php bin/console doctrine:schema:update --dump-sql
 Vérifiez les logs :
 
 ```bash
-docker-compose logs php
+docker compose logs php
 ```
 
 Assurez-vous que le port 8080 n'est pas déjà utilisé.
 
 ### Erreur de connexion à la base de données
 
-1. Vérifiez que le conteneur MySQL est bien lancé : `docker-compose ps`
+1. Vérifiez que le conteneur MySQL est bien lancé : `docker compose ps`
 2. Attendez quelques secondes que MySQL finisse son initialisation
 3. Testez la connexion :
     ```bash
-    docker-compose exec php php bin/console doctrine:query:sql "SELECT 1"
+    docker compose exec php php bin/console doctrine:query:sql "SELECT 1"
     ```
 
 ### Les données de test ne se chargent pas
 
 Assurez-vous que la base de données existe et que les migrations ont été appliquées avant de charger les fixtures.
+
+### Les graphiques du dashboard ne s'affichent pas
+
+Deux causes possibles :
+
+1. **Assets JS manquants** — le dossier `assets/vendor/` n'a pas été généré (il est exclu du dépôt Git). Lancez :
+
+    ```bash
+    docker compose exec php php bin/console importmap:install
+    docker compose exec php php bin/console cache:clear
+    ```
+
+2. **Aucune donnée pour la période** — les graphiques affichent les dépenses du mois en cours. S'il n'y a aucune dépense enregistrée pour ce mois, les graphiques restent vides. Chargez les fixtures ou ajoutez des dépenses via l'interface.

@@ -1,9 +1,15 @@
 <!-- Desktop Side Navigation -->
 <div class="d-flex flex-column justify-content-between vh-100">
 	<div class="bg-light">
-		<a href="/" class="d-block p-3 link-dark text-decoration-none" data-bs-toggle="tooltip" data-bs-placement="right">
-			ToolSpend
-		</a>
+		{% if app.user %}
+			<a href="{{ path('app_dashboard') }}" class="d-block p-3 link-dark text-decoration-none" data-bs-toggle="tooltip" data-bs-placement="right">
+				ToolSpend
+			</a>
+		{% else %}
+			<a href="{{ path('app_home') }}" class="d-block p-3 link-dark text-decoration-none" data-bs-toggle="tooltip" data-bs-placement="right">
+				ToolSpend
+			</a>
+		{% endif %}
 		{% if app.user %}
 			{# Vérifie si l'utilisateur est connecté #}
 			<div class="dropdown border-top">
@@ -29,9 +35,16 @@
 		{% endif %}
 		<ul class="nav nav-pills nav-flush flex-column mb-auto">
 			<li class="nav-item">
-				<a href="{{ path('app_depense_index') }}" class="nav-link {{ app.current_route == 'app_depense_index' ? 'active' : '' }} py-3 border-bottom rounded-0" aria-current="page" data-bs-toggle="tooltip" data-bs-placement="right" aria-label="Maison">
+				<a href="{{ path('app_dashboard') }}" class="nav-link {{ app.current_route == 'app_dashboard' ? 'active' : '' }} py-3 border-bottom rounded-0" aria-current="page" data-bs-toggle="tooltip" data-bs-placement="right" aria-label="Dashboard">
 					<i class="fa-solid fa-house"></i>
-					Home
+					Dashboard
+				</a>
+			</li>
+
+			<li class="nav-item">
+				<a href="{{ path('app_depense_index') }}" class="nav-link {{ app.current_route == 'app_depense_index' ? 'active' : '' }} py-3 border-bottom rounded-0" aria-current="page" data-bs-toggle="tooltip" data-bs-placement="right" aria-label="Dépenses">
+					<i class="fa-solid fa-money-bill"></i>
+					Dépenses
 				</a>
 			</li>
 			<li class="nav-item">
@@ -63,7 +76,7 @@
 		</ul>
 	</div>
 	<div class="my-5">
-		{% if app.current_route == 'app_depense_index' %}
+		{% if app.current_route == 'app_depense_index' or app.current_route == 'app_dashboard' %}
 			<div class="text-center">
 				<a href="{{ path('app_depense_new') }}" class="btn btn-primary" data-bs-toggle="tooltip" data-bs-placement="right" aria-label="Ajouter une dépense">
 					<i class="fa-solid fa-plus"></i>

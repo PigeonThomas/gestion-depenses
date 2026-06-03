@@ -6,12 +6,14 @@
 			{% block title %}Welcome!
 			{% endblock %}
 		</title>
+		{% block importmap %}
+			{{ importmap('app') }}
+		{% endblock %}
+		<!-- Bootstrap CSS -->
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
 		{% block stylesheets %}
 			<link rel="stylesheet" href="/css/style.css">
 		{% endblock %}
-		<!-- Bootstrap CSS -->
-		<link
-		href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
 		<!-- Font Awesome CSS -->
 		<script src="https://kit.fontawesome.com/ecf8c8511d.js" crossorigin="anonymous"></script>
 
@@ -24,34 +26,44 @@
 			<script src="https://cdn.jsdelivr.net/npm/frankenphp-hot-reload/+esm" type="module"></script>
 		{% endif %}
 	</head>
-	<body>
+	<body class="bg-light">
 		<div class="container-fluid app-shell">
 			<div class="row h-100">
 
 				{%if is_granted('ROLE_USER')%}
-					<aside class="col-12 col-md-3 bg-light border-end position-md-fixed top-0 start-0 vh-100 overflow-auto">
+					<aside class="d-none d-md-block col-12 col-md-3 bg-light border-end position-md-fixed top-0 start-0 vh-100 overflow-auto">
 						{% block aside %}
 							{% include 'partials/_aside.html.twig' %}
 						{% endblock %}
 					</aside>
+
+					<div class="d-block d-md-none">
+						{% block top_navbar %}
+							{% include 'partials/_top_navbar.html.twig' %}
+						{% endblock %}
+						{% block bottom_navbar %}
+							{% include 'partials/_bottom_navbar.html.twig' %}
+						{% endblock %}
+					</div>
 				{% endif %}
-				<main class="{{ is_granted('ROLE_USER') ? 'col-12 col-md-9 vh-100 overflow-scroll' : 'col-12 min-vh-100' }}">
-					<div class="{{ is_granted('ROLE_USER') ? 'm-3 min-vh-100' : 'container min-vh-100' }}">
+				<main class="{{ is_granted('ROLE_USER') ? 'app-main col-12 col-md-9' : 'col-12 min-vh-100' }}">
+					<div class="{{ is_granted('ROLE_USER') ? 'm-3 min-vh-100 pb-5 mb-5' : 'container min-vh-100' }}">
+						{% block flash %}
+							{% include 'partials/_flash.html.twig' %}
+						{% endblock %}
 						{% block body %}
 							{# Le contenu par défaut (optionnel) #}
 						{% endblock %}
-
-						<footer>
-							{% block footer %}
-								{% include 'partials/_footer.html.twig' %}
-							{% endblock %}
-						</footer>
 					</div>
+					<footer>
+						{% block footer %}
+							{% include 'partials/_footer.html.twig' %}
+						{% endblock %}
+					</footer>
 				</main>
 			</div>
 		</div>
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"></script>
 		{% block javascripts %}{% endblock %}
-
 	</body>
 </html>

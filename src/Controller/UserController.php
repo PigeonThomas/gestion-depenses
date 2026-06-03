@@ -20,6 +20,7 @@ final class UserController extends AbstractController
     public function index(UserRepository $userRepository): Response
     {
         return $this->render('user/index.html.twig', [
+            'title' => 'Liste des utilisateurs',
             'users' => $userRepository->findBy([], ['createdAt' => 'DESC']),
         ]);
     }
@@ -32,11 +33,13 @@ final class UserController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
+            $this->addFlash('success', 'Utilisateur modifié avec succès.');
 
             return $this->redirectToRoute('app_user_index');
         }
 
         return $this->render('user/edit.html.twig', [
+            'title' => 'Modifier un utilisateur',
             'user' => $user,
             'form' => $form,
         ]);
@@ -54,6 +57,7 @@ final class UserController extends AbstractController
         if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($user);
             $entityManager->flush();
+            $this->addFlash('success', 'Utilisateur supprimé avec succès.');
         }
 
         return $this->redirectToRoute('app_user_index');

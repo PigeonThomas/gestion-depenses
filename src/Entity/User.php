@@ -11,12 +11,12 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
 #[Vich\Uploadable]
 #[ORM\HasLifecycleCallbacks]
-#[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
+#[UniqueEntity(fields: ['email'], message: 'Il existe déjà un compte avec cet email')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -24,28 +24,59 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 180)]
-    private ?string $email = null;
+    #[ORM\Column(type: 'string', length: 180, unique: true)]
+    #[Assert\NotBlank(message: 'L\'email ne peut pas être vide')]
+    #[Assert\Email(message: 'L\'email doit être une adresse email valide')]
+    #[Assert\Length(
+        max: 180,
+        maxMessage: 'L\'email ne peut pas dépasser {{ limit }} caractères'
+    )]
+    private string $email = '';
 
     /**
      * @var list<string> The user roles
      */
-    #[ORM\Column]
+    #[ORM\Column(type: 'json')]
     private array $roles = [];
 
     /**
      * @var string The hashed password
      */
-    #[ORM\Column]
-    private ?string $password = null;
+    #[ORM\Column(type: 'string', length: 255)]
+    private string $password = '';
 
-    #[ORM\Column(length: 255)]
-    private ?string $nom_user = null;
+    #[ORM\Column(type: 'string', length: 255)]
+    #[Assert\NotBlank(message: 'Le nom ne peut pas être vide')]
+    #[Assert\Length(
+        max: 255,
+        maxMessage: 'Le nom ne peut pas dépasser {{ limit }} caractères'
+    )]
+    #[Assert\NoSuspiciousCharacters(
+        invisibleMessage: 'Le nom ne doit pas contenir de caractères invisibles.',
+        mixedNumbersMessage: 'Le nom ne doit pas mélanger des chiffres de plusieurs alphabets.',
+        hiddenOverlayMessage: 'Le nom contient des caractères interdits.',
+        restrictionLevelMessage: 'Le nom contient des caractères non autorisés.'
+    )]
+    private string $nom_user = '';
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Assert\Length(
+        max: 255,
+        maxMessage: 'Le prénom ne peut pas dépasser {{ limit }} caractères'
+    )]
+    #[Assert\NoSuspiciousCharacters(
+        invisibleMessage: 'Le prénom ne doit pas contenir de caractères invisibles.',
+        mixedNumbersMessage: 'Le prénom ne doit pas mélanger des chiffres de plusieurs alphabets.',
+        hiddenOverlayMessage: 'Le prénom contient des caractères interdits.',
+        restrictionLevelMessage: 'Le prénom contient des caractères non autorisés.'
+    )]
     private ?string $prenom_user = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Assert\Length(
+        max: 255,
+        maxMessage: 'L\'adresse ne peut pas dépasser {{ limit }} caractères'
+    )]
     private ?string $adresse_user = null;
 
     /**
@@ -66,13 +97,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Vehicule::class, mappedBy: 'user')]
     private Collection $vehicules;
 
-    #[ORM\Column]
+    #[ORM\Column(type: 'datetime_immutable')]
     private ?\DateTimeImmutable $createdAt = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: 'datetime_immutable')]
     private ?\DateTimeImmutable $updatedAt = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $image_user = null;
 
     #[Vich\UploadableField(mapping: "users", fileNameProperty: "image_user")]
@@ -152,13 +183,31 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * Ensure the session doesn't contain actual password hashes by CRC32C-hashing them, as supported since Symfony 7.3.
-     */
+     * it is important to serialize the minimal set of properties needed to identify the user and their roles, while excluding sensitive information like the actual password hash.
+     * This approach allows the session to be secure while still enabling the necessary functionality for user authentication and authorization. 
+     * no need to serialize profile picture or other non-essential data, as it can be retrieved from the database when needed, ensuring that the session remains lightweight and secure.
+    */
     public function __serialize(): array
     {
-        $data = (array) $this;
-        $data["\0".self::class."\0password"] = hash('crc32c', $this->password);
-
-        return $data;
+        return [
+        'id' => $this->id,
+        'email' => $this->email,
+        'roles' => $this->roles,
+        'password' => hash('crc32c', (string) $this->password),
+    ];
+    }
+    
+    /**
+     * The __unserialize method should be implemented to restore the state of the object from the serialized data. 
+     * It should assign the values from the $data array back to the corresponding properties of the User object. 
+     * This allows the session to correctly restore the user's identity and roles when they log in, while ensuring that sensitive information like the actual password hash is not stored in the session.
+    */
+    public function __unserialize(array $data): void
+    {
+        $this->id = $data['id'] ?? null;
+        $this->email = $data['email'] ?? null;
+        $this->roles = $data['roles'] ?? [];
+        $this->password = $data['password'] ?? null;
     }
 
     #[\Deprecated]

@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Depense;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -14,6 +15,22 @@ class DepenseRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Depense::class);
+    }
+
+    /**
+     * Return a query of expenses for a given user, ready to be paginated.
+     * @param int $userId The ID of the user to retrieve expenses for.
+     * @return Query
+     */
+    public function queryByUserId(int $userId): Query
+    {
+        return $this->createQueryBuilder('d')
+            ->leftJoin('d.categorie', 'c')
+            ->addSelect('c')
+            ->andWhere('d.user = :userId')
+            ->setParameter('userId', $userId)
+            ->orderBy('d.date_depense', 'DESC')
+            ->getQuery();
     }
 
     /**
@@ -91,6 +108,36 @@ class DepenseRepository extends ServiceEntityRepository
     }
 
     /**
+     * Find the last km recorded for a given vehicle across all dates (carburant or réparation categories).
+     * Optionally excludes a specific depense (useful in edit context).
+     * @param int $vehiculeId
+     * @param int|null $excludeDepenseId ID of the depense to exclude (for edit)
+     * @return string|null
+     */
+    public function findLastKmByVehicule(int $vehiculeId, ?int $excludeDepenseId = null): ?string
+    {
+        $qb = $this->createQueryBuilder('d')
+            ->select('d.km_vehicule')
+            ->where('d.vehicule = :vehiculeId')
+            ->andWhere('d.km_vehicule IS NOT NULL')
+            ->andWhere('d.categorie IN (:categories)')
+            ->setParameter('vehiculeId', $vehiculeId)
+            ->setParameter('categories', [2, 10])
+            ->orderBy('d.date_depense', 'DESC')
+            ->addOrderBy('d.id', 'DESC')
+            ->setMaxResults(1);
+
+        if ($excludeDepenseId !== null) {
+            $qb->andWhere('d.id != :excludeId')
+               ->setParameter('excludeId', $excludeDepenseId);
+        }
+
+        $result = $qb->getQuery()->getOneOrNullResult();
+
+        return $result['km_vehicule'] ?? null;
+    }
+
+    /**
      * Find last Km for a given vehicle for a given month for carbuant expenses (id : 10) by User.
      * @param int $vehiculeId The ID of the vehicle to find the last Km for.
      * @param int $annee The year of the month to find the last Km for.
@@ -136,7 +183,57 @@ class DepenseRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * Return the total categories expenses amount for a given month by User
+     * @param int $annee The year of the month to calculate the total for.
+     * @param int $mois The month to calculate the total for (1-12).
+     * @param int $userId The ID of the user to calculate the total for.
+     * @return array An array of total expenses amount for each category for the specified month.
+     */
+    public function findTotalByCategoryAndMonth(int $annee, int $mois, int $userId): array
+    {
+        $start = new \DateTimeImmutable(sprintf('%04d-%02d-01', $annee, $mois));
+        $end = $start->modify('first day of next month');
+        return $this->createQueryBuilder('d')
+            ->select('c.nom_categorie AS category', 'COALESCE(SUM(d.montant_depense), 0) AS total', 'c.couleur_categorie AS color')
+            ->join('d.categorie', 'c')
+            ->where('d.date_depense >= :start')
+            ->andWhere('d.date_depense < :end')
+            ->andWhere('d.user = :userId')
+            ->setParameter('start', $start)
+            ->setParameter('end', $end)
+            ->setParameter('userId', $userId)
+            ->groupBy('c.nom_categorie', 'c.couleur_categorie')
+            ->getQuery()
+            ->getResult();
+    }
     
+    /**
+     * Return the total magasins expenses amount for a given month by User
+     * @param int $annee The year of the month to calculate the total for.
+     * @param int $mois The month to calculate the total for (1-12).
+     * @param int $userId The ID of the user to calculate the total for.
+     * @return array An array of total expenses amount for each magasin for the specified month.
+     */
+    public function findTotalByMagasinAndMonth(int $annee, int $mois, int $userId): array
+    {
+        $start = new \DateTimeImmutable(sprintf('%04d-%02d-01', $annee, $mois));
+        $end = $start->modify('first day of next month');
+        return $this->createQueryBuilder('d')
+            ->select('m.nom_magasin AS magasin', 'COALESCE(SUM(d.montant_depense), 0) AS total')
+            ->join('d.magasin', 'm')
+            ->where('d.date_depense >= :start')
+            ->andWhere('d.date_depense < :end')
+            ->andWhere('d.user = :userId')
+            ->setParameter('start', $start)
+            ->setParameter('end', $end)
+            ->setParameter('userId', $userId)
+            ->groupBy('m.nom_magasin')
+            ->getQuery()
+            ->getResult();
+    }
+
     //    /**
     //     * @return Depense[] Returns an array of Depense objects
     //     */

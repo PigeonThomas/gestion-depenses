@@ -1,41 +1,46 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Magasin index{% endblock %}
+{% block title %}
+	{{ title }}
+{% endblock %}
 
 {% block body %}
-    <h1>Magasin index</h1>
+	<h1>{{ title }}</h1>
+	<h2>Voici la liste de vos magasins</h2>
+	<table class="table">
+		<thead>
+			<tr>
+				<th>{{ knp_pagination_sortable(magasins, 'Date de création', 'm.createdAt') }}</th>
+				<th>{{ knp_pagination_sortable(magasins, 'Nom', 'm.nom_magasin') }}</th>
+				<th>{{ knp_pagination_sortable(magasins, 'En ligne', 'm.online_magasin') }}</th>
+				<th>Adresse</th>
+				<th>Lien</th>
+				<th>Actions</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for magasin in magasins %}
+				<tr>
+					<td>{{ magasin.createdAt ? magasin.createdAt|date('d/m/Y') : '' }}</td>
+					<td>{{ magasin.nomMagasin }}</td>
+					<td class="text-center">{{ magasin.onlineMagasin ? 'Oui' : 'Non' }}</td>
+					<td>{{ magasin.adresseMagasin }}</td>
+					<td>{{ magasin.lienMagasin }}</td>
+					<td class="text-center">
+						<a href="{{ path('app_magasin_edit', {'id': magasin.id}) }}">
+							<i class="fas fa-edit"></i>
+						</a>
+					</td>
+				</tr>
+			{% else %}
+				<tr>
+					<td colspan="6">Aucun magasin trouvé</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	<div class="d-flex justify-content-center">
+		{{ knp_pagination_render(magasins) }}
+	</div>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Nom_magasin</th>
-                <th>Online_magasin</th>
-                <th>Adresse_magasin</th>
-                <th>Lien_magasin</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for magasin in magasins %}
-            <tr>
-                <td>{{ magasin.id }}</td>
-                <td>{{ magasin.nomMagasin }}</td>
-                <td>{{ magasin.onlineMagasin ? 'Yes' : 'No' }}</td>
-                <td>{{ magasin.adresseMagasin }}</td>
-                <td>{{ magasin.lienMagasin }}</td>
-                <td>
-                    <a href="{{ path('app_magasin_show', {'id': magasin.id}) }}">show</a>
-                    <a href="{{ path('app_magasin_edit', {'id': magasin.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="6">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    <a href="{{ path('app_magasin_new') }}">Create new</a>
 {% endblock %}

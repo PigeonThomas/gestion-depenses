@@ -1,40 +1,100 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Welcome!
+{% block title %}ToolSpend !
 {% endblock %}
 
 {% block body %}
 	{% include 'partials/_navbar.html.twig' %}
 
-	<div class="example-wrapper mt-4 py-4">
-		<h1>Hello
-			{{ controller_name }}! ✅</h1>
+	<div class="container py-4">
+		<div class="row mt-2">
+			<div class="col-md-7 d-flex flex-column justify-content-center">
+				<p class="col-md-5 btn btn-info text-uppercase rounded-pill">
+					Bienvenue chez ToolSpend
+				</p>
+				<h1>
+					<strong>Gérez vos dépenses sans le moindre stress.</strong>
+				</h1>
 
-		This friendly message is coming from:
-		<ul>
-			<li>Your controller at
-				<code>/home/thomas/Documents/15_formation/2_CEFII/5_examen/3_projet/5_code/gestion-depenses/src/Controller/HomeController.php</code>
-			</li>
-			<li>Your template at
-				<code>/home/thomas/Documents/15_formation/2_CEFII/5_examen/3_projet/5_code/gestion-depenses/templates/home/index.html.twig</code>
-			</li>
-		</ul>
+				<p>De la trottinette électrique au véhicule de fonction, suivez chaque centime avec une interface pensée pour votre quotidien. Simple, fun et terriblement efficace.</p>
+
+				<div class="d-flex justify-content-center gap-3">
+					<a href="{{ path('app_register') }}" class="btn btn-primary rounded-pill">Commencez gratuitement
+						<i class="fa-solid fa-arrow-right"></i>
+					</a>
+					<button class="btn btn-outline-secondary rounded-pill">Voir la démo</button>
+				</div>
+			</div>
+			<div class="col-md-5 d-flex align-items-center p-4">
+				<img class="img-fluid rounded-5" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDhHLtXTO8s4U8t8YWqLJO-wd_9bhtY83-MxSXRy_5QhLyhwdWECS79a59CvXJbKl-Vk1Uq1-TMwhmDVw44tYbXU3zt7mQ0ye8m979cLkgCxTMQSFAbdbHyb0vGlnEGC0bbMDfxCzT2WIz7uWo0yfvVkyIStoDu2RVwapz5cyYAaCganSfW4XTSluQ-jNpyENMmL81yn4CFD6HBijnTryLHcHE5FusfjP7v6CUvvE200J8qdfaS0sKTTz6qkuVfRUOWHea2UHp1v95D" alt="Image d'illustration" class="img-fluid">
+			</div>
+		</div>
+		<div class="text-center mt-5">
+			<h2>
+				<strong>Une flotte, mille possibilités</strong>
+			</h2>
+			<p>Suivez tous vos modes de transport avec nos icônes sur-mesure.</p>
+		</div>
+		<div class="row gap-4 justify-content-center mt-5">
+			<div class="col-md-5 card shadow rounded-5 p-4 mb-4">
+				<div class="col-2 bg-light rounded-4 d-flex align-items-center justify-content-center">
+					<i class="fa-solid fa-car fa-2x p-3"></i>
+				</div>
+				<h5>Voiture</h5>
+				<p>Kilométrage, carburant et entretien en un clin d'œil.</p>
+				<div class="progress">
+					<div class="progress-bar" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">75%</div>
+				</div>
+			</div>
+			<div class="col-md-3 card shadow rounded-5 p-4 mb-4">
+				<div class="col-2 bg-light rounded-4 d-flex align-items-center justify-content-center">
+					<i class="fa-solid fa-motorcycle fa-2x p-3"></i>
+				</div>
+				<h5>Motos</h5>
+				<p>Parfait pour vos coursiers et trajets urbains.</p>
+			</div>
+			<div class="col-md-3 card shadow rounded-5 p-4 mb-4">
+				<div class="col-2 bg-light rounded-4 d-flex align-items-center justify-content-center">
+					<i class="fa-solid fa-helicopter fa-2x p-3"></i>
+				</div>
+				<h5>Spécial</h5>
+				<p>Parce que chaque trajet compte, même les plus fous.</p>
+			</div>
+		</div>
+		<div class="row justify-content-around text-center bg-light py-5">
+			<div class="col-md-3">
+				<div class="col-3 bg-white shadow rounded-4 mx-auto my-3">
+					<i class="fa-solid fa-camera fa-2x p-3"></i>
+				</div>
+				<h5>Scan Intelligent</h5>
+				<p>Prenez vos reçus en photo, notre IA s'occupe du reste. Plus besoin de saisie manuelle.</p>
+			</div>
+			<div class="col-md-3">
+				<div class="col-3 bg-white shadow rounded-4 mx-auto my-3">
+					<i class="fa-solid fa-wallet fa-2x p-3"></i>
+				</div>
+				<h5>Budgets Maîtrisés</h5>
+				<p>Définissez vos limites et recevez des alertes en temps réel avant de dépasser vos objectifs.</p>
+			</div>
+			<div class="col-md-3">
+				<div class="col-3 bg-white shadow rounded-4 mx-auto my-3">
+					<i class="fa-solid fa-chart-line fa-2x p-3"></i>
+				</div>
+				<h5>Analyse Avancée</h5>
+				<p>Obtenez des insights détaillés sur vos dépenses pour mieux planifier vos finances.</p>
+			</div>
+		</div>
+		<div class="p-5 bg-white">
+			<div class="bg-primary text-white p-5 rounded-5 m-5">
+				<h2 class="text-center">
+					<strong>Prêt à transformer votre gestion financière ?</strong>
+				</h2>
+				<p class="text-center">Rejoignez plus de 10 000 utilisateurs qui ont choisi la simplicité et le plaisir pour leurs dépenses.</p>
+				<div class="d-flex justify-content-center gap-3">
+					<a href="{{ path('app_register') }}" class="btn btn-light rounded-pill">Créer mon compte</a>
+					<button class="btn btn-outline-light rounded-pill">Parler à un expert</button>
+				</div>
+			</div>
+		</div>
 	</div>
-{% endblock %}
-
-{% block stylesheets %}
-	{{ parent() }}
-	<style>
-		.example-wrapper {
-			margin: 1em auto;
-			max-width: 800px;
-			width: 95%;
-			font: 18px / 1.5 sans-serif;
-		}
-
-		.example-wrapper code {
-			background: #F5F5F5;
-			padding: 2px 6px;
-		}
-	</style>
 {% endblock %}
