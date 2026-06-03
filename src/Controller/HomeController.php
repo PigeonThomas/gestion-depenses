@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -10,6 +11,7 @@ use App\Entity\User;
 use App\Repository\DepenseRepository;
 use App\Service\CategorieDepenseGraphService;
 use App\Service\MagasinCategorieGraphService;
+use App\Service\SixMonthDepenseGraphService;
 
 final class HomeController extends AbstractController
 {
@@ -24,9 +26,11 @@ final class HomeController extends AbstractController
     #[Route('/dashboard', name: 'app_dashboard')]
     #[IsGranted('ROLE_USER')]
     public function dashboard(
+        Request $request,
         DepenseRepository $depenseRepository, 
         CategorieDepenseGraphService $categorieDepenseGraphService,
-        MagasinCategorieGraphService $magasinCategorieGraphService
+        MagasinCategorieGraphService $magasinCategorieGraphService,
+        SixMonthDepenseGraphService $sixMonthDepenseGraphService
         ): Response
     {
         // Vérifie que l'utilisateur est connecté
@@ -45,9 +49,21 @@ final class HomeController extends AbstractController
 
         $totalDepenseActualMonth = $depenseRepository->findTotalDepenseByMonth($annee, $mois, $user->getId());
         $totalDepenseLastMonth = $depenseRepository->findTotalDepenseByMonth($anneeLastMonth, $moisLastMonth, $user->getId());
-        
-        $chartCategorie = $categorieDepenseGraphService->categorieDepenseGraph($annee, $mois, $user->getId());
-        $chartMagasin = $magasinCategorieGraphService->magasinDepenseGraph($annee, $mois, $user->getId());
+
+        // Détermine la période sélectionnée pour les graphiques catégorie et magasin
+        $period = $request->query->get('period', 'current');
+        if ($period === 'last') {
+            $anneeGraph = $anneeLastMonth;
+            $moisGraph  = $moisLastMonth;
+        } else {
+            $period = 'current';
+            $anneeGraph = $annee;
+            $moisGraph  = $mois;
+        }
+
+        $chartCategorie = $categorieDepenseGraphService->categorieDepenseGraph($anneeGraph, $moisGraph, $user->getId());
+        $chartMagasin = $magasinCategorieGraphService->magasinDepenseGraph($anneeGraph, $moisGraph, $user->getId());
+        $chartSixMonth = $sixMonthDepenseGraphService->sixMonthDepenseGraph($annee, $mois, $user->getId());
 
         return $this->render('home/dashboard.html.twig', [
             'title' => 'Dashboard',
@@ -55,6 +71,8 @@ final class HomeController extends AbstractController
             'totalDepenseLastMonth' => $totalDepenseLastMonth,
             'chartCategorie' => $chartCategorie,
             'chartMagasin' => $chartMagasin,
+            'chartSixMonth' => $chartSixMonth,
+            'period' => $period,
         ]);
     }
 }

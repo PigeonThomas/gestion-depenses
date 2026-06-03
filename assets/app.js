@@ -7,4 +7,8 @@ import './stimulus_bootstrap.js';
  */
 import './styles/app.css';
 
+import ChartDataLabels from 'chartjs-plugin-datalabels';
+import { Chart } from 'chart.js';
+Chart.register(ChartDataLabels);
+
 console.log('This log comes from assets/app.js - welcome to AssetMapper! 🎉');
