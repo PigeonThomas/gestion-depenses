@@ -15,38 +15,45 @@
 		</p>
 
 		<div class="container">
-			<div class="row g-4">
-				<div class="col-md">
-					<div class="card bg-primary text-white rounded-5">
-						<div class="card-body">
-							<h5 class="card-title">Dépenses du mois</h5>
-							<p class="card-text">Total des dépenses pour le mois en cours :
-								{{ totalDepenseActualMonth }}
-								€</p>
-						</div>
-					</div>
-				</div>
-				<div class="col-md">
-					<div class="card rounded-5">
-						<div class="card-body">
-							<h5 class="card-title">Dépenses du mois précédent</h5>
-							<p class="card-text">Total des dépenses pour le mois précédent :
-								{{ totalDepenseLastMonth }}
-								€</p>
-						</div>
-					</div>
-				</div>
-				<div class="col-md">
-					<div class="card rounded-5">
-						<div class="card-body">
-							<h5 class="card-title">Titre3</h5>
-							<p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+			<div class="col-md-12 mb-4">
+				<div class="card rounded-5 shadow">
+					<div class="card-body">
+						<h5 class="card-title text-center">Dépenses des 6 derniers mois</h5>
+						<div style="height: 400px; width: 100%;">
+							{{ render_chart(chartSixMonth) }}
 						</div>
 					</div>
 				</div>
 			</div>
 
-			{% if totalDepenseActualMonth != 0 %}
+			<div class="row g-4">
+				<div class="col-md">
+					<a href="{{ path('app_dashboard', {period: 'current'}) }}" class="text-decoration-none">
+						<div class="card rounded-5 {{ period == 'current' ? 'bg-primary text-white' : '' }}">
+							<div class="card-body">
+								<h5 class="card-title">Dépenses du mois</h5>
+								<p class="card-text">Total des dépenses pour le mois en cours :
+									<strong>{{ totalDepenseActualMonth }}</strong>
+									€</p>
+							</div>
+						</div>
+					</a>
+				</div>
+				<div class="col-md">
+					<a href="{{ path('app_dashboard', {period: 'last'}) }}" class="text-decoration-none">
+						<div class="card rounded-5 {{ period == 'last' ? 'bg-primary text-white' : '' }}">
+							<div class="card-body">
+								<h5 class="card-title">Dépenses du mois précédent</h5>
+								<p class="card-text">Total des dépenses du mois précédent :
+									<strong>{{ totalDepenseLastMonth }}</strong>
+									€</p>
+							</div>
+						</div>
+					</a>
+				</div>
+			</div>
+
+			{% if (period == 'current' and totalDepenseActualMonth != 0) or (period == 'last' and totalDepenseLastMonth != 0) %}
 				<div class="row g-4 mt-2">
 					<div class="col-md-6">
 						<div class="card rounded-5 shadow">
@@ -76,4 +83,29 @@
 			{% endif %}
 		</div>
 	</div>
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	// Permet d'afficher les pourcentages sur les graphiques en camembert
+	<script>
+		document.addEventListener('chartjs:pre-connect', function (event) { // Vérifie si le graphique est de type 'doughnut' (camembert)
+if (event.detail.config.type === 'doughnut') { // Configure le plugin datalabels pour afficher les pourcentages
+event.detail.config.options.plugins.datalabels.formatter = function (value, context) {
+var data = context.chart.data.datasets[0].data;
+// Récupère les données du graphique
+// Calcule le total des données pour obtenir le pourcentage
+var total = data.reduce(function (acc, val) {
+return acc + parseFloat(val);
+}, 0);
+// Évite la division par zéro
+if (total === 0) 
+return '0 %';
+
+// Calcule et retourne le pourcentage arrondi
+return Math.round((parseFloat(value) / total) * 100) + ' %';
+};
+}
+});
+	</script>
 {% endblock %}

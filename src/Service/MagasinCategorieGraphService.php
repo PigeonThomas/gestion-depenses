@@ -56,6 +56,25 @@ class MagasinCategorieGraphService
 
         $chart->setOptions([
             'maintainAspectRatio' => false,
+            'plugins' => [
+                // Configuration de la légende du graphique
+                'legend' => [
+                    'position' => 'bottom',
+                    'labels' => [
+                        'color' => '#333',
+                        'font' => [
+                            'size' => 14,
+                        ],
+                    ],
+                ],
+                // Configuration des datalabels pour afficher les montants sur le graphique
+                'datalabels' => [
+                    'color' => '#fff',
+                    'font' => [
+                        'size' => 12,
+                    ],
+                ],
+            ],
         ]);
 
         return $chart;

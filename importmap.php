@@ -23,9 +23,15 @@ return [
         'path' => './vendor/symfony/stimulus-bundle/assets/dist/loader.js',
     ],
     'chart.js' => [
-        'version' => '4.5.1',
+        'version' => '4.0.1',
     ],
     '@kurkle/color' => [
         'version' => '0.3.4',
+    ],
+    'chartjs-plugin-datalabels' => [
+        'version' => '2.2.0',
+    ],
+    'chart.js/helpers' => [
+        'version' => '4.0.1',
     ],
 ];
