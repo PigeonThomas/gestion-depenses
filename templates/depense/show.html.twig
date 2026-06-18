@@ -1,58 +1,61 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Depense{% endblock %}
+{% block title %}Dépense
+{% endblock %}
 
 {% block body %}
-    <h1>Depense</h1>
+	<h1>Dépense du
+		{{ depense.dateDepense ? depense.dateDepense|date('d-m-Y') : '' }}</h1>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ depense.id }}</td>
-            </tr>
-            <tr>
-                <th>Date_depense</th>
-                <td>{{ depense.dateDepense ? depense.dateDepense|date('Y-m-d') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Montant_depense</th>
-                <td>{{ depense.montantDepense }}</td>
-            </tr>
-            <tr>
-                <th>Commentaire_depense</th>
-                <td>{{ depense.commentaireDepense }}</td>
-            </tr>
-            <tr>
-                <th>Facture_depense</th>
-                <td>{{ depense.factureDepense }}</td>
-            </tr>
-            <tr>
-                <th>Km_vehicule</th>
-                <td>{{ depense.kmVehicule }}</td>
-            </tr>
-            <tr>
-                <th>Carbu_prix_litre</th>
-                <td>{{ depense.carbuPrixLitre }}</td>
-            </tr>
-            <tr>
-                <th>Repa_description</th>
-                <td>{{ depense.repaDescription }}</td>
-            </tr>
-            <tr>
-                <th>Repa_ref_pieces</th>
-                <td>{{ depense.repaRefPieces }}</td>
-            </tr>
-            <tr>
-                <th>Repa_photos</th>
-                <td>{{ depense.repaPhotos }}</td>
-            </tr>
-        </tbody>
-    </table>
+	<table class="table">
+		<tbody>
+			<tr>
+				<th>Date de la dépense</th>
+				<td>{{ depense.dateDepense ? depense.dateDepense|date('d-m-Y') : '' }}</td>
+			</tr>
+			<tr>
+				<th>Montant de la dépense</th>
+				<td>{{ depense.montantDepense }}
+					€</td>
+			</tr>
+			<tr>
+				<th>Commentaire de la dépense</th>
+				<td>{{ depense.commentaireDepense }}</td>
+			</tr>
+			<tr>
+				<th>Facture de la dépense</th>
+				<td>{{ depense.factureDepense }}</td>
+			</tr>
+			<tr>
+				<th>Kilomètres du véhicule</th>
+				<td>{{ depense.kmVehicule ? depense.kmVehicule ~ ' km' : '' }}</td>
+			</tr>
+			<tr>
+				<th>Prix du carburant au litre</th>
+				<td>{{ depense.carbuPrixLitre ? depense.carbuPrixLitre ~ ' €/l' : '' }}</td>
+			</tr>
+			<tr>
+				<th>Description de la réparation</th>
+				<td>{{ depense.repaDescription }}</td>
+			</tr>
+			<tr>
+				<th>Référence des pièces</th>
+				<td>{{ depense.repaRefPieces }}</td>
+			</tr>
+			<tr>
+				<th>Photos de la réparation</th>
+				<td>{{ depense.repaPhotos }}</td>
+			</tr>
+		</tbody>
+	</table>
 
-    <a href="{{ path('app_depense_index') }}">back to list</a>
-
-    <a href="{{ path('app_depense_edit', {'id': depense.id}) }}">edit</a>
-
-    {{ include('depense/_delete_form.html.twig') }}
+	<div class="d-flex justify-content-between mb-3">
+		<a href="{{ path('app_depense_index') }}" class="btn btn-secondary">
+			<i class="fas fa-arrow-left"></i>
+			Retour à la liste</a>
+		<a href="{{ path('app_depense_edit', {'id': depense.id}) }}" class="btn btn-primary">
+			<i class="fas fa-edit"></i>
+			Modifier</a>
+		{{ include('depense/_delete_form.html.twig') }}
+	</div>
 {% endblock %}
