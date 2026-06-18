@@ -10,21 +10,17 @@
 	<table class="table">
 		<tbody>
 			<tr>
-				<th>Id</th>
-				<td>{{ categorie.id }}</td>
-			</tr>
-			<tr>
-				<th>Nom_categorie</th>
+				<th>Nom de la catégorie</th>
 				<td>{{ categorie.nomCategorie }}</td>
 			</tr>
 			<tr>
-				<th>Couleur_categorie</th>
+				<th>Couleur de la catégorie</th>
 				<td>
 					<span class="border rounded-circle d-inline-block" style="width: 2.5rem; height: 2.5rem; background-color: {{ categorie.couleurCategorie }};"></span>
 				</td>
 			</tr>
 			<tr>
-				<th>Icone_categorie</th>
+				<th>Icône de la catégorie</th>
 				<td>
 					{% if categorie.iconeCategorieClass %}
 						<i class="{{ categorie.iconeCategorieClass }}"></i>
@@ -34,9 +30,15 @@
 		</tbody>
 	</table>
 
-	<a href="{{ path('app_categorie_index') }}">back to list</a>
+	<div class="d-flex justify-content-between mb-3">
+		<a href="{{ path('app_categorie_index') }}" class="btn btn-secondary">
+			<i class="fas fa-arrow-left"></i>
+			Retour à la liste</a>
+		<a href="{{ path('app_categorie_edit', {'id': categorie.id}) }}" class="btn btn-primary">
+			<i class="fas fa-edit"></i>
+			Modifier</a>
+		{{ include('categorie/_delete_form.html.twig') }}
+	</div>
 
-	<a href="{{ path('app_categorie_edit', {'id': categorie.id}) }}">edit</a>
 
-	{{ include('categorie/_delete_form.html.twig') }}
 {% endblock %}
