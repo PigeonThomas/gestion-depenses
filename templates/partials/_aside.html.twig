@@ -2,11 +2,11 @@
 <div class="d-flex flex-column justify-content-between vh-100">
 	<div class="bg-light">
 		{% if app.user %}
-			<a href="{{ path('app_dashboard') }}" class="d-block p-3 link-dark text-decoration-none" data-bs-toggle="tooltip" data-bs-placement="right">
+			<a href="{{ path('app_dashboard') }}" class="toolSpend d-block p-3 text-decoration-none" data-bs-toggle="tooltip" data-bs-placement="right">
 				ToolSpend
 			</a>
 		{% else %}
-			<a href="{{ path('app_home') }}" class="d-block p-3 link-dark text-decoration-none" data-bs-toggle="tooltip" data-bs-placement="right">
+			<a href="{{ path('app_home') }}" class="toolSpend d-block p-3 text-decoration-none" data-bs-toggle="tooltip" data-bs-placement="right">
 				ToolSpend
 			</a>
 		{% endif %}
