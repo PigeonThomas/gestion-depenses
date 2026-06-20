@@ -79,12 +79,12 @@
 											{{ vehicule.modeleVehicule }}</p>
 										<p>{{ vehicule.anneeCirculationVehicule ? vehicule.anneeCirculationVehicule|date('Y') : '' }}</p>
 										<p>{{ vehicule.energieVehicule ? vehicule.energieVehicule : '' }}</p>
-										<p>{{ vehicule.kmAchatVehicule ? vehicule.kmAchatVehicule : '' }}</p>
+										<p>{{ vehicule.kmAchatVehicule ? vehicule.kmAchatVehicule ~ ' km' : '' }}</p>
 									</div>
 								</div>
 								<div class="card-image col">
 									{% if vehicule.imageVehicule %}
-										<img class="img-fluid" src="{{ vich_uploader_asset(vehicule, 'imageVehiculeFile') }}" alt="{{ vehicule.surnomVehicule }}">
+										<img class="img-fluid" src="{{ vich_uploader_asset(vehicule, 'imageVehiculeFile') }}" alt="photo de {{ vehicule.surnomVehicule }}">
 									{% endif %}
 								</div>
 							</div>
@@ -95,9 +95,6 @@
 								<a href="{{ path('app_vehicule_edit', {'id': vehicule.id}) }}" class="btn btn-secondary">
 									<i class="fas fa-pencil-alt"></i>
 									Modifier</a>
-								<a href="{{ path('app_vehicule_delete', {'id': vehicule.id}) }}" class="btn btn-danger">
-									<i class="fas fa-trash"></i>
-									Supprimer</a>
 							</div>
 						</div>
 					</div>

@@ -14,6 +14,14 @@
     border-radius: 1rem;
 }
 
+.toolSpend {
+    font-family: Lexend, sans-serif;
+    font-size: 2rem;
+    font-weight: 600;
+    line-height: 2.5rem;
+    color: #0051c0;
+}
+
 @media (min-width: 768px) {
     .app-main {
         height: 100vh;

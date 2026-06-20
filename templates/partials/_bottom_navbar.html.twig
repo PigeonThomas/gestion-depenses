@@ -3,7 +3,11 @@
 {#Récupère la route actuelle pour déterminer quelle section est active#}
 
 {# Détermine le chemin et le label de l'action rapide en fonction de la route actuelle #}
-	{% if currentRoute == 'app_depense_index' %}
+	{% if currentRoute == 'app_dashboard' %}
+	{# Si on est sur la page du tableau de bord #}
+	{% set actionPath = path('app_depense_new') %}
+	{% set actionLabel = 'Ajouter une dépense' %}
+{% elseif currentRoute == 'app_depense_index' %}
 	{# Si on est sur la page des dépenses #}
 	{% set actionPath = path('app_depense_new') %}
 	{% set actionLabel = 'Ajouter une dépense' %}
@@ -35,9 +39,17 @@
 	<div class="container-fluid  px-2 py-2">
 		<div class="row flex-nowrap text-center w-100 g-0 align-items-end">
 			<div class="col">
+				<a href="{{ path('app_dashboard') }}" class="text-decoration-none d-flex flex-column align-items-center justify-content-center small {{ currentRoute starts with 'app_dashboard' ? 'text-primary' : 'text-dark' }}" aria-current="{{ currentRoute starts with 'app_dashboard' ? 'page' : 'false' }}">
+					<span class="d-inline-flex align-items-center justify-content-center rounded-pill px-3 py-2 {{ currentRoute starts with 'app_dashboard' ? 'bg-primary text-white shadow-sm' : '' }}" style="min-width: 82px;">
+						<i class="fa-solid fa-house"></i>
+					</span>
+					<span class="mt-1" style="font-size: 0.72rem;">Dashboard</span>
+				</a>
+			</div>
+			<div class="col">
 				<a href="{{ path('app_depense_index') }}" class="text-decoration-none d-flex flex-column align-items-center justify-content-center small {{ currentRoute starts with 'app_depense_' ? 'text-primary' : 'text-dark' }}" aria-current="{{ currentRoute starts with 'app_depense_' ? 'page' : 'false' }}">
 					<span class="d-inline-flex align-items-center justify-content-center rounded-pill px-3 py-2 {{ currentRoute starts with 'app_depense_' ? 'bg-primary text-white shadow-sm' : '' }}" style="min-width: 82px;">
-						<i class="fa-solid fa-house"></i>
+						<i class="fa-solid fa-money-bill"></i>
 					</span>
 					<span class="mt-1" style="font-size: 0.72rem;">Dépenses</span>
 				</a>
