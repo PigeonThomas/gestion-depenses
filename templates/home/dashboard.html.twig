@@ -19,7 +19,7 @@
 				<div class="card rounded-5 shadow">
 					<div class="card-body">
 						<h5 class="card-title text-center">Dépenses des 6 derniers mois</h5>
-						<div style="height: 400px; width: 100%;">
+						<div id="bar-six-month-wrapper" style="height: 400px; width: 100%;">
 							{{ render_chart(chartSixMonth) }}
 						</div>
 					</div>
@@ -53,13 +53,17 @@
 				</div>
 			</div>
 
-			{% if (period == 'current' and totalDepenseActualMonth != 0) or (period == 'last' and totalDepenseLastMonth != 0) %}
-				<div class="row g-4 mt-2">
+			<div id="donuts-section" class="mt-4">
+				<h5 id="donuts-section-title" class="text-center text-muted mb-3">
+					{% if period == 'current' %}Dépenses du mois en cours{% else %}Dépenses du mois précédent
+					{% endif %}
+				</h5>
+				<div class="row g-4">
 					<div class="col-md-6">
 						<div class="card rounded-5 shadow">
 							<div class="card-body">
 								<h5 class="card-title text-center">Dépenses par catégories</h5>
-								<div style="height: 400px; width: 100%;">
+								<div id="donut-categorie-wrapper" style="height: 400px; width: 100%;">
 									{{ render_chart(chartCategorie) }}
 								</div>
 							</div>
@@ -69,18 +73,14 @@
 						<div class="card rounded-5 shadow">
 							<div class="card-body">
 								<h5 class="card-title text-center">Dépenses par magasins</h5>
-								<div style="height: 400px; width: 100%;">
+								<div id="donut-magasin-wrapper" style="height: 400px; width: 100%;">
 									{{ render_chart(chartMagasin) }}
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-			{% else %}
-				<div class="alert alert-info mt-4">
-					Aucun graphique disponible pour le mois en cours.
-				</div>
-			{% endif %}
+			</div>
 		</div>
 	</div>
 {% endblock %}
@@ -102,10 +102,16 @@ return acc + parseFloat(val);
 if (total === 0) 
 return '0 %';
 
+
+
 // Calcule et retourne le pourcentage arrondi
 return Math.round((parseFloat(value) / total) * 100) + ' %';
 };
 }
 });
 	</script>
+	<script id="six-month-donut-data" type="application/json">
+		{{ sixMonthDonutData|json_encode|raw }}
+	</script>
+	<script src="{{ asset('js/sixmonth-graph-click.js') }}"></script>
 {% endblock %}
