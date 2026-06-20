@@ -68,4 +68,18 @@ class CategorieDepenseGraphService
 
         return $chart;
     }
+
+    /**
+     * Retourne les données brutes (labels, data, colors) des dépenses par catégorie pour un mois donné.
+     */
+    public function getCategorieData(int $year, int $month, int $userId): array
+    {
+        $data = $this->depenseRepository->findTotalByCategoryAndMonth($year, $month, $userId);
+
+        return [
+            'labels' => array_column($data, 'category'),
+            'data'   => array_map('floatval', array_column($data, 'total')),
+            'colors' => array_column($data, 'color'),
+        ];
+    }
 }   
