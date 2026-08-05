@@ -7,6 +7,49 @@
 	<h1>Informations détaillées de
 		{{ vehicule.surnomVehicule }}</h1>
 
+	<div class="row g-4 my-2">
+		<div class="col-md-4">
+			<div class="card " style="border-radius: 20px;">
+				<div class="card-body">
+					<h5 class="card-title text-center">Kilomètres parcourus depuis l'achat</h5>
+					<p class="card-text">
+						<strong>{{ kmParcourusDepuisAchat ? kmParcourusDepuisAchat ~ ' km' : '' }}</strong>
+					</p>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-4">
+			<div class="card " style="border-radius: 20px;">
+				<div class="card-body">
+					<h5 class="card-title text-center">Consommation moyenne</h5>
+					<p class="card-text">
+						<strong>
+							{{ consommationMoyenne }}
+							l/100</strong>
+					</p>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-4">
+			<div class="card " style="border-radius: 20px;">
+				<div class="card-body">
+					<h5 class="card-title text-center">Dernière réparation</h5>
+					<p class="card-text">Date :
+						<strong>{{ dateReparation ? dateReparation|date('d/m/Y') : 'Pas de réparations' }}</strong>
+					</p>
+					<p class="card-text">Montant :
+						<strong>{{ montantReparation ? montantReparation ~ ' €' : 'Pas de réparations' }}</strong>
+					</p>
+					<p class="card-text">Commentaire :
+						<strong>{{ commentaireReparation ? commentaireReparation : 'Pas de réparations' }}</strong>
+					</p>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+
 	<div class="row d-flex justify-content-between mb-3">
 		<div class="col-md-6">
 			<table class="table">

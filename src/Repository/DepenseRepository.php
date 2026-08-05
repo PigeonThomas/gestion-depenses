@@ -138,10 +138,42 @@ class DepenseRepository extends ServiceEntityRepository
     }
 
     /**
+     * Find last km for a given vehicle for a given year for carburant or reparation expenses (id 2 and 10) by user
+     * @param int $vehiculeId The ID of the vehicle to find the last Km for.
+     * @param int $annee The year of the month to find the last Km for.
+     * @param int $userId The ID of the user to find the last Km for.
+     * @return int|null The last Km for the specified vehicle and year.
+     */
+    public function findLastKmByVehiculeAndYear(int $vehiculeId, int $annee, int $userId): ?int
+    {
+        $start = new \DateTimeImmutable(sprintf('%04d-01-01', $annee));
+        $end = $start->modify('first day of January next year');    
+        $result = $this->createQueryBuilder('d')
+            ->select('d.km_vehicule')
+            ->where('d.date_depense >= :start')
+            ->andWhere('d.date_depense < :end')
+            ->andWhere('d.categorie IN (:categories)')
+            ->andWhere('d.vehicule = :vehiculeId')
+            ->andWhere('d.user = :userId')
+            ->setParameter('start', $start)
+            ->setParameter('end', $end)
+            ->setParameter('categories', [2, 10])
+            ->setParameter('vehiculeId', $vehiculeId)
+            ->setParameter('userId', $userId)
+            ->orderBy('d.date_depense', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        return $result['km_vehicule'] ?? null;
+    }
+
+    /**
      * Find last Km for a given vehicle for a given month for carbuant expenses (id : 10) by User.
      * @param int $vehiculeId The ID of the vehicle to find the last Km for.
      * @param int $annee The year of the month to find the last Km for.
      * @param int $mois The month to find the last Km for (1-12).
+     * @param int $userId The ID of the user to find the last Km for.
      * @return string|null The last Km for the specified vehicle and month.
      */
     public function findLastKmByVehiculeAndMonth(int $vehiculeId, int $annee, int $mois, int $userId): ?string
@@ -232,6 +264,28 @@ class DepenseRepository extends ServiceEntityRepository
             ->groupBy('m.nom_magasin')
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * Return the last repair expense entry for a vehicle and a user.
+     * @param int $vehiculeId The ID of the vehicle.
+     * @param int $userId The ID of the user.
+     * @return Depense|null The latest repair expense entity, or null if none found.
+     */
+    public function findLastReparationByVehiculeAndUser(int $vehiculeId, int $userId): ?Depense
+    {
+        return $this->createQueryBuilder('d')
+            ->where('d.vehicule = :vehiculeId')
+            ->andWhere('d.user = :userId')
+            ->andWhere('d.categorie = :categorie')
+            ->setParameter('vehiculeId', $vehiculeId)
+            ->setParameter('userId', $userId)
+            ->setParameter('categorie', 2)
+            ->orderBy('d.date_depense', 'DESC')
+            ->addOrderBy('d.id', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 
     //    /**

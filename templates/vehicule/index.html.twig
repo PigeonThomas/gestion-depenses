@@ -11,17 +11,22 @@
 		</h1>
 		<h2>Voici la liste de vos véhicules</h2>
 		<p>
-			Ici, vous pouvez suivre et gérer toutes vos véhicules.
+			Ici, vous pouvez suivre et gérer tous vos véhicules.
 		</p>
 
 		<div class="row g-4 my-2">
 			<div class="col-md-4">
 				<div class="card " style="border-radius: 20px;">
 					<div class="card-body">
-						<h5 class="card-title">Kilométres parcourus</h5>
-						<p class="card-text">Kilométres parcourus pour le mois en cours :
+						<h5 class="card-title text-center">Kilométres parcourus</h5>
+						<p class="card-text">Kilométres parcourus ce mois :
 							<strong>
 								{{ totalDistance }}
+								km</strong>
+						</p>
+						<p class="card-text">Kilométres parcourus cette année :
+							<strong>
+								{{ totalDistanceOfYear }}
 								km</strong>
 						</p>
 					</div>
@@ -30,7 +35,7 @@
 			<div class="col-md-4">
 				<div class="card " style="border-radius: 20px;">
 					<div class="card-body">
-						<h5 class="card-title">Dépenses en essence</h5>
+						<h5 class="card-title text-center">Dépenses en essence</h5>
 						<p class="card-text">Dépenses en essence en
 							{{ mois }}/{{ annee }}
 							:
@@ -47,7 +52,7 @@
 			<div class="col-md-4">
 				<div class="card " style="border-radius: 20px;">
 					<div class="card-body">
-						<h5 class="card-title">Dépenses en réparations</h5>
+						<h5 class="card-title text-center">Dépenses en réparations</h5>
 						<p class="card-text">Dépenses en réparations en
 							{{ mois }}/{{ annee }}
 							:
@@ -71,15 +76,34 @@
 
 							<div class="card-body row d-flex align-items-center">
 								<h4 class="card-title text-center">{{ vehicule.surnomVehicule }}</h4>
+								<h6 class="card-subtitle mb-2 text-muted text-center">{{ vehicule.immatVehicule }}</h6>
 								<div class="col-5">
 
 									<div class="card-text">
-										<p>{{ vehicule.immatVehicule }}</p>
-										<p>{{ vehicule.marqueVehicule }}
+										<p class="mb-0">
+											<strong>Modèle</strong>
+										</p>
+										<p class="text-muted text-center">
+											{{ vehicule.marqueVehicule }}
 											{{ vehicule.modeleVehicule }}</p>
-										<p>{{ vehicule.anneeCirculationVehicule ? vehicule.anneeCirculationVehicule|date('Y') : '' }}</p>
-										<p>{{ vehicule.energieVehicule ? vehicule.energieVehicule : '' }}</p>
-										<p>{{ vehicule.kmAchatVehicule ? vehicule.kmAchatVehicule ~ ' km' : '' }}</p>
+
+										<p class="mb-0">
+											<strong>Mise en circulation</strong>
+										</p>
+										<p class="text-muted text-center">
+											{{ vehicule.anneeCirculationVehicule ? vehicule.anneeCirculationVehicule|date('Y') : '' }}</p>
+
+										<p class="mb-0">
+											<strong>Carburant</strong>
+										</p>
+										<p class="text-muted text-center">
+											{{ vehicule.energieVehicule ? vehicule.energieVehicule : '' }}</p>
+
+										<p class="mb-0">
+											<strong>Km à l'achat</strong>
+										</p>
+										<p class="text-muted text-center">
+											{{ vehicule.kmAchatVehicule ? vehicule.kmAchatVehicule ~ ' km' : '' }}</p>
 									</div>
 								</div>
 								<div class="card-image col">

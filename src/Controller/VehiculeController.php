@@ -50,6 +50,12 @@ final class VehiculeController extends AbstractController
         foreach ($vehiculeRepository->findByUserId($user->getId()) as $vehicule) {
             $totalDistance += (int) $distanceVehiculeService->calculateDistance($vehicule->getId(), $annee, $mois, $user->getId());
         }
+
+        $totalDistanceOfYear = 0;
+        foreach ($vehiculeRepository->findByUserId($user->getId()) as $vehicule) {
+            $totalDistanceOfYear += (int) $distanceVehiculeService->calculateDistanceYear($vehicule->getId(), $annee, $user->getId());
+        }
+
         return $this->render('vehicule/index.html.twig', [
             'title' => 'Véhicules',
             'vehicules' => $vehiculeRepository->findByUserId($user->getId()),
@@ -60,6 +66,7 @@ final class VehiculeController extends AbstractController
             'totalReparationActualMonth' => $totalReparationActualMonth,
             'totalReparationLastMonth' => $totalReparationLastMonth,
             'totalDistance' => $totalDistance, // Pass the total distance to the template if needed
+            'totalDistanceOfYear' => $totalDistanceOfYear,
         ]);
     }
 
@@ -95,18 +102,31 @@ final class VehiculeController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_vehicule_show', methods: ['GET'])]
-    public function show(Vehicule $vehicule): Response
+    public function show(Vehicule $vehicule, DistanceVehiculeService $distanceVehiculeService, DepenseRepository $depenseRepository): Response
     {
         //Vérifie que l'utilisateur est connecté
         $this->denyAccessUnlessGranted('ROLE_USER');
+        $user = $this->getUser();
+        if (!$user instanceof User) {
+            throw $this->createAccessDeniedException('Vous devez être connecté pour accéder à ce véhicule.');
+        }
         //Vérifie que l'utilisateur connecté est le propriétaire du véhicule
-        if ($vehicule->getUser() !== $this->getUser()) {
+        if ($vehicule->getUser() !== $user) {
             throw $this->createAccessDeniedException('Vous n\'avez pas accès à ce véhicule.');
         }
+
+        $kmParcourusDepuisAchat = $distanceVehiculeService->calculateDistanceSincePurchase($vehicule->getId(), $user->getId());
+
+        $lastReparation = $depenseRepository->findLastReparationByVehiculeAndUser($vehicule->getId(), $user->getId());
 
         return $this->render('vehicule/show.html.twig', [
             'title' => 'Détails du véhicule',
             'vehicule' => $vehicule,
+            'kmParcourusDepuisAchat' => $kmParcourusDepuisAchat,
+            'consommationMoyenne' => 'To be calculated', // Placeholder for average consumption calculation
+            'montantReparation' => $lastReparation?->getMontantDepense(),
+            'commentaireReparation' => $lastReparation?->getCommentaireDepense(),
+            'dateReparation' => $lastReparation?->getDateDepense(),
         ]);
     }
 
