@@ -100,6 +100,12 @@ class Depense
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private ?\DateTimeImmutable $updatedAt = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $repa_vidange = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $repa_distribution = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -337,5 +343,29 @@ class Depense
                 ->atPath('km_vehicule')
                 ->addViolation();
         }
+    }
+
+    public function isRepaVidange(): ?bool
+    {
+        return $this->repa_vidange;
+    }
+
+    public function setRepaVidange(?bool $repa_vidange): static
+    {
+        $this->repa_vidange = $repa_vidange;
+
+        return $this;
+    }
+
+    public function isRepaDistribution(): ?bool
+    {
+        return $this->repa_distribution;
+    }
+
+    public function setRepaDistribution(?bool $repa_distribution): static
+    {
+        $this->repa_distribution = $repa_distribution;
+
+        return $this;
     }
 }

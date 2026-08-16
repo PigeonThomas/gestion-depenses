@@ -57,6 +57,18 @@
 <div data-depense-section="vehicule-reparation" hidden>
 	<div class="row d-flex justify-content-between gap-3">
 		<div class="col mt-3">
+			{{ form_label(form.repa_vidange)}}
+			{{ form_widget(form.repa_vidange) }}
+			{{ form_errors(form.repa_vidange) }}
+		</div>
+		<div class="col mt-3">
+			{{ form_label(form.repa_distribution)}}
+			{{ form_widget(form.repa_distribution) }}
+			{{ form_errors(form.repa_distribution) }}
+		</div>
+	</div>
+	<div class="row d-flex justify-content-between gap-3">
+		<div class="col mt-3">
 			{{ form_label(form.repa_ref_pieces)}}
 			{{ form_widget(form.repa_ref_pieces) }}
 			{{ form_errors(form.repa_ref_pieces) }}

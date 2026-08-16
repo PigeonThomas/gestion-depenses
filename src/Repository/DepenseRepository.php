@@ -108,6 +108,56 @@ class DepenseRepository extends ServiceEntityRepository
     }
 
     /**
+     * Find the last km recorded for a vidange (repa_vidange = true) for a given vehicle and user.
+     * @param int $vehiculeId
+     * @param int $userId
+     * @return string|null
+     */
+    public function findLastVidangeKmByVehicule(int $vehiculeId, int $userId): ?string
+    {
+        $result = $this->createQueryBuilder('d')
+            ->select('d.km_vehicule')
+            ->where('d.vehicule = :vehiculeId')
+            ->andWhere('d.user = :userId')
+            ->andWhere('d.repa_vidange = true')
+            ->andWhere('d.km_vehicule IS NOT NULL')
+            ->setParameter('vehiculeId', $vehiculeId)
+            ->setParameter('userId', $userId)
+            ->orderBy('d.date_depense', 'DESC')
+            ->addOrderBy('d.id', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        return $result['km_vehicule'] ?? null;
+    }
+
+    /**
+     * Find the last km recorded for a distribution (repa_distribution = true) for a given vehicle and user.
+     * @param int $vehiculeId
+     * @param int $userId
+     * @return string|null
+     */
+    public function findLastDistributionKmByVehicule(int $vehiculeId, int $userId): ?string
+    {
+        $result = $this->createQueryBuilder('d')
+            ->select('d.km_vehicule')
+            ->where('d.vehicule = :vehiculeId')
+            ->andWhere('d.user = :userId')
+            ->andWhere('d.repa_distribution = true')
+            ->andWhere('d.km_vehicule IS NOT NULL')
+            ->setParameter('vehiculeId', $vehiculeId)
+            ->setParameter('userId', $userId)
+            ->orderBy('d.date_depense', 'DESC')
+            ->addOrderBy('d.id', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        return $result['km_vehicule'] ?? null;
+    }
+
+    /**
      * Find the last km recorded for a given vehicle across all dates (carburant or réparation categories).
      * Optionally excludes a specific depense (useful in edit context).
      * @param int $vehiculeId
@@ -125,6 +175,74 @@ class DepenseRepository extends ServiceEntityRepository
             ->setParameter('categories', [2, 10])
             ->orderBy('d.date_depense', 'DESC')
             ->addOrderBy('d.id', 'DESC')
+            ->setMaxResults(1);
+
+        if ($excludeDepenseId !== null) {
+            $qb->andWhere('d.id != :excludeId')
+               ->setParameter('excludeId', $excludeDepenseId);
+        }
+
+        $result = $qb->getQuery()->getOneOrNullResult();
+
+        return $result['km_vehicule'] ?? null;
+    }
+
+    /**
+     * Find the km of the depense immediately preceding the given date, for the same vehicle and category.
+     * Optionally excludes a specific depense (useful in edit context).
+     * @param int $vehiculeId
+     * @param int $categorieId
+     * @param \DateTimeInterface $dateDepense
+     * @param int|null $excludeDepenseId ID of the depense to exclude (for edit)
+     * @return string|null
+     */
+    public function findPreviousKmByVehiculeAndCategorie(int $vehiculeId, int $categorieId, \DateTimeInterface $dateDepense, ?int $excludeDepenseId = null): ?string
+    {
+        $qb = $this->createQueryBuilder('d')
+            ->select('d.km_vehicule')
+            ->where('d.vehicule = :vehiculeId')
+            ->andWhere('d.categorie = :categorieId')
+            ->andWhere('d.km_vehicule IS NOT NULL')
+            ->andWhere('d.date_depense <= :dateDepense')
+            ->setParameter('vehiculeId', $vehiculeId)
+            ->setParameter('categorieId', $categorieId)
+            ->setParameter('dateDepense', $dateDepense)
+            ->orderBy('d.date_depense', 'DESC')
+            ->addOrderBy('d.id', 'DESC')
+            ->setMaxResults(1);
+
+        if ($excludeDepenseId !== null) {
+            $qb->andWhere('d.id != :excludeId')
+               ->setParameter('excludeId', $excludeDepenseId);
+        }
+
+        $result = $qb->getQuery()->getOneOrNullResult();
+
+        return $result['km_vehicule'] ?? null;
+    }
+
+    /**
+     * Find the km of the depense immediately following the given date, for the same vehicle and category.
+     * Optionally excludes a specific depense (useful in edit context).
+     * @param int $vehiculeId
+     * @param int $categorieId
+     * @param \DateTimeInterface $dateDepense
+     * @param int|null $excludeDepenseId ID of the depense to exclude (for edit)
+     * @return string|null
+     */
+    public function findNextKmByVehiculeAndCategorie(int $vehiculeId, int $categorieId, \DateTimeInterface $dateDepense, ?int $excludeDepenseId = null): ?string
+    {
+        $qb = $this->createQueryBuilder('d')
+            ->select('d.km_vehicule')
+            ->where('d.vehicule = :vehiculeId')
+            ->andWhere('d.categorie = :categorieId')
+            ->andWhere('d.km_vehicule IS NOT NULL')
+            ->andWhere('d.date_depense >= :dateDepense')
+            ->setParameter('vehiculeId', $vehiculeId)
+            ->setParameter('categorieId', $categorieId)
+            ->setParameter('dateDepense', $dateDepense)
+            ->orderBy('d.date_depense', 'ASC')
+            ->addOrderBy('d.id', 'ASC')
             ->setMaxResults(1);
 
         if ($excludeDepenseId !== null) {
@@ -286,6 +404,80 @@ class DepenseRepository extends ServiceEntityRepository
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
+    }
+
+    /**
+     * Return the last vidange expense entry for a vehicle and a user.
+     * @param int $vehiculeId The ID of the vehicle.
+     * @param int $userId The ID of the user.
+     * @return Depense|null The latest vidange expense entity, or null if none found.
+     */
+    public function findLastVidangeByVehiculeAndUser(int $vehiculeId, int $userId): ?Depense
+    {
+        return $this->createQueryBuilder('d')
+            ->where('d.vehicule = :vehiculeId')
+            ->andWhere('d.user = :userId')
+            ->andWhere('d.categorie = :categorie')
+            ->andWhere('d.repa_vidange = :vidange')
+            ->setParameter('vehiculeId', $vehiculeId)
+            ->setParameter('userId', $userId)
+            ->setParameter('categorie', 2) // Assuming 2 is the ID for reparation category
+            ->setParameter('vidange', true) // Assuming 'repa_vidange' is a boolean indicating vidange
+            ->orderBy('d.date_depense', 'DESC')
+            ->addOrderBy('d.id', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+    /**
+     * Return the last distribution expense entry for a vehicle and a user.
+     * @param int $vehiculeId The ID of the vehicle.
+     * @param int $userId The ID of the user.
+     * @return Depense|null The latest distribution expense entity, or null if none found.
+     */
+    public function findLastDistributionByVehiculeAndUser(int $vehiculeId, int $userId): ?Depense
+    {
+        return $this->createQueryBuilder('d')
+            ->where('d.vehicule = :vehiculeId')
+            ->andWhere('d.user = :userId')
+            ->andWhere('d.categorie = :categorie')
+            ->andWhere('d.repa_distribution = :distribution')
+            ->setParameter('vehiculeId', $vehiculeId)
+            ->setParameter('userId', $userId)
+            ->setParameter('categorie', 2) // Assuming 2 is the ID for reparation category
+            ->setParameter('distribution', true) // Assuming 'repa_distribution' is a boolean indicating distribution
+            ->orderBy('d.date_depense', 'DESC')
+            ->addOrderBy('d.id', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * Return the last distribution date for a vehicle and a user.
+     * @param int $vehiculeId The ID of the vehicle.
+     * @param int $userId The ID of the user.
+     * @return \DateTimeInterface|null The latest distribution date, or null if none found.
+     */
+    public function findLastDistributionDateByVehiculeAndUser(int $vehiculeId, int $userId): ?\DateTimeInterface
+    {
+        $result = $this->createQueryBuilder('d')
+            ->select('d.date_depense')
+            ->where('d.vehicule = :vehiculeId')
+            ->andWhere('d.user = :userId')
+            ->andWhere('d.categorie = :categorie')
+            ->andWhere('d.repa_distribution = :distribution')
+            ->setParameter('vehiculeId', $vehiculeId)
+            ->setParameter('userId', $userId)
+            ->setParameter('categorie', 2) // Assuming 2 is the ID for reparation category
+            ->setParameter('distribution', true) // Assuming 'repa_distribution' is a boolean indicating distribution
+            ->orderBy('d.date_depense', 'DESC')
+            ->addOrderBy('d.id', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        return $result ? $result['date_depense'] : null;
     }
 
     //    /**

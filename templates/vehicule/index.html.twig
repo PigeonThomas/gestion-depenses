@@ -21,12 +21,12 @@
 						<h5 class="card-title text-center">Kilométres parcourus</h5>
 						<p class="card-text">Kilométres parcourus ce mois :
 							<strong>
-								{{ totalDistance }}
+								{{ totalDistance|number_format(0, ',', ' ') }}
 								km</strong>
 						</p>
 						<p class="card-text">Kilométres parcourus cette année :
 							<strong>
-								{{ totalDistanceOfYear }}
+								{{ totalDistanceOfYear|number_format(0, ',', ' ') }}
 								km</strong>
 						</p>
 					</div>
@@ -103,7 +103,7 @@
 											<strong>Km à l'achat</strong>
 										</p>
 										<p class="text-muted text-center">
-											{{ vehicule.kmAchatVehicule ? vehicule.kmAchatVehicule ~ ' km' : '' }}</p>
+											{{ vehicule.kmAchatVehicule ? vehicule.kmAchatVehicule|number_format(0, ',', ' ') ~ ' km' : '' }}</p>
 									</div>
 								</div>
 								<div class="card-image col">

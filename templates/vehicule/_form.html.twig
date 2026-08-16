@@ -51,6 +51,24 @@
 
 <div class="row d-flex justify-content-between gap-3">
 	<div class="col mt-3">
+		{{form_label(form.km_vidange)}}
+		{{ form_widget(form.km_vidange) }}
+		{{ form_errors(form.km_vidange) }}
+	</div>
+	<div class="col mt-3">
+		{{form_label(form.km_distribution)}}
+		{{ form_widget(form.km_distribution) }}
+		{{ form_errors(form.km_distribution) }}
+	</div>
+	<div class="col mt-3">
+		{{form_label(form.annee_distribution)}}
+		{{ form_widget(form.annee_distribution) }}
+		{{ form_errors(form.annee_distribution) }}
+	</div>
+</div>
+
+<div class="row d-flex justify-content-between gap-3">
+	<div class="col mt-3">
 		{{form_label(form.imageVehiculeFile)}}
 		{{ form_widget(form.imageVehiculeFile) }}
 		{{ form_errors(form.imageVehiculeFile) }}

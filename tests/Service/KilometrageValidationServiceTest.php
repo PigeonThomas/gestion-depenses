@@ -48,7 +48,7 @@ class KilometrageValidationServiceTest extends TestCase
         $depense->setMontantDepense('50.00');
         $depense->setDateDepense(new \DateTimeImmutable());
 
-        $this->depenseRepository->expects($this->never())->method('findLastKmByVehicule');
+        $this->depenseRepository->expects($this->never())->method('findPreviousKmByVehiculeAndCategorie');
 
         $result = $this->service->validate($depense);
 
@@ -66,7 +66,7 @@ class KilometrageValidationServiceTest extends TestCase
         $depense->setMontantDepense('50.00');
         $depense->setDateDepense(new \DateTimeImmutable());
 
-        $this->depenseRepository->expects($this->never())->method('findLastKmByVehicule');
+        $this->depenseRepository->expects($this->never())->method('findPreviousKmByVehiculeAndCategorie');
 
         $result = $this->service->validate($depense);
 
@@ -79,31 +79,32 @@ class KilometrageValidationServiceTest extends TestCase
         // ID de catégorie qui n'est ni carburant (10) ni réparation (2)
         $depense = $this->makeDepense(5, '15000');
 
-        $this->depenseRepository->expects($this->never())->method('findLastKmByVehicule');
+        $this->depenseRepository->expects($this->never())->method('findPreviousKmByVehiculeAndCategorie');
 
         $result = $this->service->validate($depense);
 
         $this->assertNull($result);
     }
 
-    // Test de la validation du kilométrage pour une dépense de carburant avec un km supérieur au dernier km enregistré (doit retourner null)
-    public function testReturnsNullWhenKmIsHigherThanLastKm(): void
+    // Test de la validation du kilométrage pour une dépense de carburant avec un km supérieur au km de la dépense précédente de cette catégorie (doit retourner null)
+    public function testReturnsNullWhenKmIsHigherThanPreviousKm(): void
     {
         $depense = $this->makeDepense(10, '20000'); // carburant
 
-        $this->depenseRepository->method('findLastKmByVehicule')->willReturn('15000');
+        $this->depenseRepository->method('findPreviousKmByVehiculeAndCategorie')->willReturn('15000');
+        $this->depenseRepository->method('findNextKmByVehiculeAndCategorie')->willReturn(null);
 
         $result = $this->service->validate($depense);
 
         $this->assertNull($result);
     }
 
-    // Test de la validation du kilométrage pour une dépense de carburant avec un km inférieur au dernier km enregistré (doit retourner un message d'erreur)
-    public function testReturnsErrorWhenKmIsLowerThanLastKm(): void
+    // Test de la validation du kilométrage pour une dépense de carburant avec un km inférieur au km de la dépense précédente de cette catégorie (doit retourner un message d'erreur)
+    public function testReturnsErrorWhenKmIsLowerThanPreviousKm(): void
     {
         $depense = $this->makeDepense(10, '10000'); // carburant
 
-        $this->depenseRepository->method('findLastKmByVehicule')->willReturn('15000');
+        $this->depenseRepository->method('findPreviousKmByVehiculeAndCategorie')->willReturn('15000');
 
         $result = $this->service->validate($depense);
 
@@ -112,36 +113,37 @@ class KilometrageValidationServiceTest extends TestCase
         $this->assertStringContainsString('15 000', $result);
     }
 
-    // Test de la validation du kilométrage pour une dépense de carburant avec un km égal au dernier km enregistré (doit retourner un message d'erreur)
-    public function testReturnsErrorWhenKmEqualsLastKm(): void
+    // Test de la validation du kilométrage pour une dépense de carburant avec un km égal au km de la dépense précédente de cette catégorie (doit retourner un message d'erreur)
+    public function testReturnsErrorWhenKmEqualsPreviousKm(): void
     {
         $depense = $this->makeDepense(10, '15000'); // carburant
 
-        $this->depenseRepository->method('findLastKmByVehicule')->willReturn('15000');
+        $this->depenseRepository->method('findPreviousKmByVehiculeAndCategorie')->willReturn('15000');
 
         $result = $this->service->validate($depense);
 
         $this->assertNotNull($result);
     }
 
-    // Test de la validation du kilométrage pour une dépense de carburant sans km précédent mais avec un km d'achat défini (doit retourner null si km >= km achat)
-    public function testReturnsNullWhenNoLastKmAndKmAboveAchat(): void
+    // Test de la validation du kilométrage pour une dépense de carburant sans dépense précédente mais avec un km d'achat défini (doit retourner null si km >= km achat)
+    public function testReturnsNullWhenNoPreviousKmAndKmAboveAchat(): void
     {
         $depense = $this->makeDepense(10, '60000', '50000'); // km > km achat
 
-        $this->depenseRepository->method('findLastKmByVehicule')->willReturn(null);
+        $this->depenseRepository->method('findPreviousKmByVehiculeAndCategorie')->willReturn(null);
+        $this->depenseRepository->method('findNextKmByVehiculeAndCategorie')->willReturn(null);
 
         $result = $this->service->validate($depense);
 
         $this->assertNull($result);
     }
 
-    // Test de la validation du kilométrage pour une dépense de carburant sans km précédent mais avec un km d'achat défini (doit retourner un message d'erreur si km < km achat)
-    public function testReturnsErrorWhenNoLastKmAndKmBelowAchat(): void
+    // Test de la validation du kilométrage pour une dépense de carburant sans dépense précédente mais avec un km d'achat défini (doit retourner un message d'erreur si km < km achat)
+    public function testReturnsErrorWhenNoPreviousKmAndKmBelowAchat(): void
     {
         $depense = $this->makeDepense(10, '30000', '50000'); // km < km achat
 
-        $this->depenseRepository->method('findLastKmByVehicule')->willReturn(null);
+        $this->depenseRepository->method('findPreviousKmByVehiculeAndCategorie')->willReturn(null);
 
         $result = $this->service->validate($depense);
 
@@ -149,15 +151,57 @@ class KilometrageValidationServiceTest extends TestCase
         $this->assertStringContainsString('achat', $result);
     }
 
-    // Test de la validation du kilométrage pour une dépense de réparation avec un km supérieur au dernier km enregistré (doit retourner null)
+    // Test de la validation du kilométrage pour une dépense de réparation avec un km supérieur au km de la dépense précédente de cette catégorie (doit retourner null)
     public function testWorksForReparationCategory(): void
     {
         $depense = $this->makeDepense(2, '20000'); // réparation
 
-        $this->depenseRepository->method('findLastKmByVehicule')->willReturn('15000');
+        $this->depenseRepository->method('findPreviousKmByVehiculeAndCategorie')->willReturn('15000');
+        $this->depenseRepository->method('findNextKmByVehiculeAndCategorie')->willReturn(null);
 
         $result = $this->service->validate($depense);
 
         $this->assertNull($result);
+    }
+
+    // Test de la validation du kilométrage pour une dépense avec un km inférieur au km de la dépense suivante de cette catégorie (doit retourner null)
+    public function testReturnsNullWhenKmIsLowerThanNextKm(): void
+    {
+        $depense = $this->makeDepense(10, '20000'); // carburant
+
+        $this->depenseRepository->method('findPreviousKmByVehiculeAndCategorie')->willReturn('15000');
+        $this->depenseRepository->method('findNextKmByVehiculeAndCategorie')->willReturn('25000');
+
+        $result = $this->service->validate($depense);
+
+        $this->assertNull($result);
+    }
+
+    // Test de la validation du kilométrage pour une dépense avec un km supérieur au km de la dépense suivante de cette catégorie (doit retourner un message d'erreur)
+    public function testReturnsErrorWhenKmIsHigherThanNextKm(): void
+    {
+        $depense = $this->makeDepense(10, '30000'); // carburant
+
+        $this->depenseRepository->method('findPreviousKmByVehiculeAndCategorie')->willReturn('15000');
+        $this->depenseRepository->method('findNextKmByVehiculeAndCategorie')->willReturn('25000');
+
+        $result = $this->service->validate($depense);
+
+        $this->assertNotNull($result);
+        $this->assertStringContainsString('30 000', $result);
+        $this->assertStringContainsString('25 000', $result);
+    }
+
+    // Test de la validation du kilométrage pour une dépense avec un km égal au km de la dépense suivante de cette catégorie (doit retourner un message d'erreur)
+    public function testReturnsErrorWhenKmEqualsNextKm(): void
+    {
+        $depense = $this->makeDepense(10, '25000'); // carburant
+
+        $this->depenseRepository->method('findPreviousKmByVehiculeAndCategorie')->willReturn('15000');
+        $this->depenseRepository->method('findNextKmByVehiculeAndCategorie')->willReturn('25000');
+
+        $result = $this->service->validate($depense);
+
+        $this->assertNotNull($result);
     }
 }
