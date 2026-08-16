@@ -7,48 +7,110 @@
 	<h1>Informations détaillées de
 		{{ vehicule.surnomVehicule }}</h1>
 
-	<div class="row g-4 my-2">
-		<div class="col-md-4">
-			<div class="card " style="border-radius: 20px;">
-				<div class="card-body">
-					<h5 class="card-title text-center">Kilomètres parcourus depuis l'achat</h5>
-					<p class="card-text">
-						<strong>{{ kmParcourusDepuisAchat ? kmParcourusDepuisAchat ~ ' km' : '' }}</strong>
-					</p>
-				</div>
-			</div>
-		</div>
-		<div class="col-md-4">
-			<div class="card " style="border-radius: 20px;">
-				<div class="card-body">
-					<h5 class="card-title text-center">Consommation moyenne</h5>
-					<p class="card-text">
-						<strong>
-							{{ consommationMoyenne }}
-							l/100</strong>
-					</p>
-				</div>
-			</div>
-		</div>
-		<div class="col-md-4">
-			<div class="card " style="border-radius: 20px;">
-				<div class="card-body">
-					<h5 class="card-title text-center">Dernière réparation</h5>
-					<p class="card-text">Date :
-						<strong>{{ dateReparation ? dateReparation|date('d/m/Y') : 'Pas de réparations' }}</strong>
-					</p>
-					<p class="card-text">Montant :
-						<strong>{{ montantReparation ? montantReparation ~ ' €' : 'Pas de réparations' }}</strong>
-					</p>
-					<p class="card-text">Commentaire :
-						<strong>{{ commentaireReparation ? commentaireReparation : 'Pas de réparations' }}</strong>
-					</p>
-				</div>
-			</div>
-		</div>
-
+	<div class="text-center my-4">
+		<h4>kilométrage actuel :
+			{{ actualKm ? actualKm|number_format(0, ',', ' ') ~ ' km' : '' }}</h4>
 	</div>
 
+	<div class="row g-4 my-2">
+		<div class="col-md-6">
+			<div class="card " style="border-radius: 20px;">
+				<div class="card-body">
+					<h5 class="card-title text-center">Kilomètres parcourus depuis l'achat
+						<i class="fa-solid fa-route"></i>
+					</h5>
+					<p class="card-text text-center">
+						{{ kmParcourusDepuisAchat ? kmParcourusDepuisAchat|number_format(0, ',', ' ') ~ ' km' : '' }}
+					</p>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-6">
+			<div class="card " style="border-radius: 20px;">
+				<div class="card-body">
+					<h5 class="card-title text-center">Consommation moyenne
+						<i class="fa-solid fa-gas-pump"></i>
+					</h5>
+					<p class="card-text text-center">
+						{{ consommationMoyenne }}
+						l/100
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row g-4 my-2">
+		<div class="col-md-6">
+			<div class="card " style="border-radius: 20px;">
+				<div class="card-body">
+					<h5 class="card-title text-center">Vidange
+						<i class="fa-solid fa-oil-can"></i>
+					</h5>
+					<p class="card-text">
+						Dernière vidange :
+						<strong>{{ dateVidange ? dateVidange|date('d/m/Y') : 'Pas de vidange enregistrée' }}</strong>
+					</p>
+					<p class="card-text">
+						Kilométrage de la dernière vidange :
+						<strong>{{ kmVidange ? kmVidange|number_format(0, ',', ' ') ~ ' km' : 'Pas de vidange enregistrée' }}</strong>
+					</p>
+					<p class="card-text">
+						Prochaine vidange prévue :
+						<strong>{{ nextVidange ? nextVidange|number_format(0, ',', ' ') ~ ' km' : 'Vidange à prévoir' }}</strong>
+					</p>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-6">
+			<div class="card " style="border-radius: 20px;">
+				<div class="card-body">
+					<h5 class="card-title text-center">Distribution
+						<i class="fa-solid fa-gears"></i>
+					</h5>
+					<p class="card-text">
+						Dernière distribution :
+						<strong>{{ dateDistribution ? dateDistribution|date('d/m/Y') : 'Pas de distribution enregistrée' }}</strong>
+					</p>
+					<p class="card-text">
+						Kilométrage de la dernière distribution :
+						<strong>{{ kmDistribution ? kmDistribution|number_format(0, ',', ' ') ~ ' km' : 'Pas de distribution enregistrée' }}</strong>
+					</p>
+					<p class="card-text">
+						Prochaine distribution prévue :
+						<strong>{{ nextDistribution ? nextDistribution|number_format(0, ',', ' ') ~ ' km' : 'Distribution à prévoir' }}</strong>
+					</p>
+					<p class="card-text">
+						Prochaine distribution prévue (date) :
+						<strong>{{ nextDistributionDate ? nextDistributionDate|date('d/m/Y') : 'Distribution à prévoir' }}</strong>
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row g-4 my-2">
+		<div class="col-md-12">
+			<div class="card " style="border-radius: 20px;">
+				<div class="card-body">
+					<h5 class="card-title text-center">Dernière réparation
+						<i class="fa-solid fa-wrench"></i>
+					</h5>
+					<div class="d-flex justify-content-around text-center">
+						<p class="card-text">Date :
+							<strong>{{ dateReparation ? dateReparation|date('d/m/Y') : 'Pas de réparations' }}</strong>
+						</p>
+						<p class="card-text">Montant :
+							<strong>{{ montantReparation ? montantReparation ~ ' €' : 'Pas de réparations' }}</strong>
+						</p>
+						<p class="card-text">Commentaire :
+							<strong>{{ commentaireReparation ? commentaireReparation : 'Pas de réparations' }}</strong>
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 
 	<div class="row d-flex justify-content-between mb-3">
 		<div class="col-md-6">
@@ -84,7 +146,7 @@
 					</tr>
 					<tr>
 						<th>Kilométrage à l'achat</th>
-						<td>{{ vehicule.kmAchatVehicule ? vehicule.kmAchatVehicule ~ ' km' : '' }}</td>
+						<td>{{ vehicule.kmAchatVehicule ? vehicule.kmAchatVehicule|number_format(0, ',', ' ') ~ ' km' : '' }}</td>
 					</tr>
 				</tbody>
 			</table>
@@ -100,6 +162,7 @@
 			</div>
 		</div>
 	</div>
+
 
 	<div class="d-flex justify-content-between mb-3">
 		<a href="{{ path('app_vehicule_index') }}" class="btn btn-secondary">

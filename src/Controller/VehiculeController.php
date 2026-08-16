@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
-use App\Entity\Vehicule;
 use App\Entity\User;
+use App\Entity\Vehicule;
+use App\Service\VidangeVehiculeService;
+use App\Service\DistributionVehiculeService;
 use App\Form\VehiculeType;
 use App\Repository\VehiculeRepository;
 use App\Repository\DepenseRepository;
@@ -102,7 +104,12 @@ final class VehiculeController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_vehicule_show', methods: ['GET'])]
-    public function show(Vehicule $vehicule, DistanceVehiculeService $distanceVehiculeService, DepenseRepository $depenseRepository): Response
+    public function show(
+        Vehicule $vehicule, 
+        DistanceVehiculeService $distanceVehiculeService, 
+        DepenseRepository $depenseRepository, 
+        VidangeVehiculeService $vidangeVehiculeService, 
+        DistributionVehiculeService $distributionVehiculeService): Response
     {
         //Vérifie que l'utilisateur est connecté
         $this->denyAccessUnlessGranted('ROLE_USER');
@@ -115,18 +122,35 @@ final class VehiculeController extends AbstractController
             throw $this->createAccessDeniedException('Vous n\'avez pas accès à ce véhicule.');
         }
 
+        $actualKm = $depenseRepository->findLastKmByVehicule($vehicule->getId(), $user->getId());
+
         $kmParcourusDepuisAchat = $distanceVehiculeService->calculateDistanceSincePurchase($vehicule->getId(), $user->getId());
 
         $lastReparation = $depenseRepository->findLastReparationByVehiculeAndUser($vehicule->getId(), $user->getId());
 
+        $lastVidange = $depenseRepository->findLastVidangeByVehiculeAndUser($vehicule->getId(), $user->getId());
+        $lastDistribution = $depenseRepository->findLastDistributionByVehiculeAndUser($vehicule->getId(), $user->getId());
+
+        $nextVidange = $vidangeVehiculeService->calculateNextVidange($vehicule->getId(), $user->getId());
+        $nextDistribution = $distributionVehiculeService->calculateNextDistribution($vehicule->getId(), $user->getId());
+        $nextDistributionDate = $distributionVehiculeService->calculateNextDistributionDate($vehicule->getId(), $user->getId());
+
         return $this->render('vehicule/show.html.twig', [
             'title' => 'Détails du véhicule',
             'vehicule' => $vehicule,
+            'actualKm' => $actualKm,
             'kmParcourusDepuisAchat' => $kmParcourusDepuisAchat,
             'consommationMoyenne' => 'To be calculated', // Placeholder for average consumption calculation
             'montantReparation' => $lastReparation?->getMontantDepense(),
             'commentaireReparation' => $lastReparation?->getCommentaireDepense(),
             'dateReparation' => $lastReparation?->getDateDepense(),
+            'dateVidange' => $lastVidange?->getDateDepense(),
+            'kmVidange' => $lastVidange?->getKmVehicule(),
+            'dateDistribution' => $lastDistribution?->getDateDepense(),
+            'kmDistribution' => $lastDistribution?->getKmVehicule(),
+            'nextVidange' => $nextVidange,
+            'nextDistribution' => $nextDistribution,
+            'nextDistributionDate' => $nextDistributionDate,
         ]);
     }
 

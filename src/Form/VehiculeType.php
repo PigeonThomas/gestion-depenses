@@ -69,6 +69,24 @@ class VehiculeType extends AbstractType
                 'attr' => ['class' => 'form-control'],
                 'required' => false,
             ])
+            ->add('km_vidange', IntegerType::class, [
+                'label' => 'Kilomètres entre les vidanges',
+                'label_attr' => ['class' => 'form-label'],
+                'attr' => ['class' => 'form-control'],
+                'required' => false,
+            ])
+            ->add('km_distribution', IntegerType::class, [
+                'label' => 'Kilomètres entre les distributions',
+                'label_attr' => ['class' => 'form-label'],
+                'attr' => ['class' => 'form-control'],
+                'required' => false,
+            ])
+            ->add('annee_distribution', IntegerType::class, [
+                'label' => 'Années entre les distributions',
+                'label_attr' => ['class' => 'form-label'],
+                'attr' => ['class' => 'form-control'],
+                'required' => false,
+            ])
             ->add('imageVehiculeFile', FileType::class, [
                 'label' => 'Image du véhicule (JPG, PNG)',
                 'label_attr' => ['class' => 'form-label'],

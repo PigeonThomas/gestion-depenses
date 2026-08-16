@@ -18,6 +18,7 @@ use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class DepenseType extends AbstractType
 {
@@ -72,6 +73,28 @@ class DepenseType extends AbstractType
                 'label_attr' => ['class' => 'form-label'],
                 'attr' => ['class' => 'form-control'],
                 'required' => false,
+            ])
+            ->add('repa_vidange', ChoiceType::class, [
+                'label' => 'S\'agit-il d\'une vidange ?',
+                'label_attr' => ['class' => 'form-label'],
+                'attr' => ['class' => 'form-control'],
+                'choices' => [
+                    'Oui' => true,
+                    'Non' => false,
+                ],
+                'expanded' => true,
+                'multiple' => false,
+            ])
+            ->add('repa_distribution', ChoiceType::class, [
+                'label' => 'S\'agit-il d\'un changement de distribution ?',
+                'label_attr' => ['class' => 'form-label'],
+                'attr' => ['class' => 'form-control'],
+                'choices' => [
+                    'Oui' => true,
+                    'Non' => false,
+                ],
+                'expanded' => true,
+                'multiple' => false,
             ])
             ->add('repaPhotosFile', FileType::class, [
                 'label' => 'Photos de la réparation (3 photos maximum)',
