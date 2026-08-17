@@ -65,4 +65,20 @@ class DistributionVehiculeService
 
         return $nextDistributionDate;
     }
+
+    /**
+     * Alert for next distribution for a vehicule
+     *
+     * @param integer $vehiculeId
+     * @param integer $userId
+     * @return bool
+     */
+    public function alertNextDistribution(int $vehiculeId, int $userId): bool
+    {
+        $nextDistributionKm = $this->calculateNextDistribution($vehiculeId, $userId);
+        $currentKm = (int) $this->depenseRepository->findLastKmByVehicule($vehiculeId, $userId);
+        $nextDistributionDate = $this->calculateNextDistributionDate($vehiculeId, $userId);
+        $currentDate = new \DateTimeImmutable();
+        return $currentKm >= $nextDistributionKm || ($nextDistributionDate !== null && $currentDate >= $nextDistributionDate);
+    }
 }

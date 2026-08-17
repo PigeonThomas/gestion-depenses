@@ -44,9 +44,22 @@
 		<div class="col-md-6">
 			<div class="card " style="border-radius: 20px;">
 				<div class="card-body">
-					<h5 class="card-title text-center">Vidange
-						<i class="fa-solid fa-oil-can"></i>
-					</h5>
+					<div class="mb-2">
+						<h5 class="card-title text-center">Vidange
+							<i class="fa-solid fa-oil-can"></i>
+						</h5>
+						<div class="text-center">
+							{% if alertNextVidange %}
+								<span class="badge bg-danger">
+									<i class="fa-solid fa-triangle-exclamation fa-bounce"></i>
+									Vidange à prévoir</span>
+							{% else %}
+								<span class="badge bg-success">
+									<i class="fa-solid fa-check"></i>
+									Vidange à jour</span>
+							{% endif %}
+						</div>
+					</div>
 					<p class="card-text">
 						Dernière vidange :
 						<strong>{{ dateVidange ? dateVidange|date('d/m/Y') : 'Pas de vidange enregistrée' }}</strong>
@@ -65,9 +78,22 @@
 		<div class="col-md-6">
 			<div class="card " style="border-radius: 20px;">
 				<div class="card-body">
-					<h5 class="card-title text-center">Distribution
-						<i class="fa-solid fa-gears"></i>
-					</h5>
+					<div class="mb-2">
+						<h5 class="card-title text-center">Distribution
+							<i class="fa-solid fa-gears"></i>
+						</h5>
+						<div class="text-center">
+							{% if alertNextDistribution %}
+								<span class="badge bg-danger">
+									<i class="fa-solid fa-triangle-exclamation fa-bounce"></i>
+									Distribution à prévoir</span>
+							{% else %}
+								<span class="badge bg-success">
+									<i class="fa-solid fa-check"></i>
+									Distribution à jour</span>
+							{% endif %}
+						</div>
+					</div>
 					<p class="card-text">
 						Dernière distribution :
 						<strong>{{ dateDistribution ? dateDistribution|date('d/m/Y') : 'Pas de distribution enregistrée' }}</strong>

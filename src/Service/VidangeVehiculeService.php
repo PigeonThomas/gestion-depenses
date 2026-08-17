@@ -40,4 +40,18 @@ class VidangeVehiculeService
         // Calculate the next vidange km (every 10,000 km)
         return (int) ($lastVidangeKm + $kmBetweenVidanges);
     }
+
+    /**
+     * Alert for next vidange for a vehicule
+     *
+     * @param integer $vehiculeId
+     * @param integer $userId
+     * @return bool
+     */
+    public function alertNextVidange(int $vehiculeId, int $userId): bool
+    {
+        $nextVidangeKm = $this->calculateNextVidange($vehiculeId, $userId);
+        $currentKm = (int) $this->depenseRepository->findLastKmByVehicule($vehiculeId, $userId);
+        return $currentKm >= $nextVidangeKm;
+    }
 }
