@@ -26,6 +26,8 @@ final class VehiculeController extends AbstractController
         VehiculeRepository $vehiculeRepository, 
         DepenseRepository $depenseRepository, 
         DistanceVehiculeService $distanceVehiculeService,
+        VidangeVehiculeService $vidangeVehiculeService, 
+        DistributionVehiculeService $distributionVehiculeService,
         ): Response
     {
         // Vérifie que l'utilisateur est connecté
@@ -58,6 +60,13 @@ final class VehiculeController extends AbstractController
             $totalDistanceOfYear += (int) $distanceVehiculeService->calculateDistanceYear($vehicule->getId(), $annee, $user->getId());
         }
 
+        $alertNextDistribution = [];
+        $alertNextVidange = [];
+        foreach ($vehiculeRepository->findByUserId($user->getId()) as $vehicule) {
+            $alertNextDistribution[$vehicule->getId()] = $distributionVehiculeService->alertNextDistribution($vehicule->getId(), $user->getId());
+            $alertNextVidange[$vehicule->getId()] = $vidangeVehiculeService->alertNextVidange($vehicule->getId(), $user->getId());
+        }
+        
         return $this->render('vehicule/index.html.twig', [
             'title' => 'Véhicules',
             'vehicules' => $vehiculeRepository->findByUserId($user->getId()),
@@ -69,6 +78,8 @@ final class VehiculeController extends AbstractController
             'totalReparationLastMonth' => $totalReparationLastMonth,
             'totalDistance' => $totalDistance, // Pass the total distance to the template if needed
             'totalDistanceOfYear' => $totalDistanceOfYear,
+            'alertNextDistribution' => $alertNextDistribution,
+            'alertNextVidange' => $alertNextVidange,
         ]);
     }
 
@@ -135,6 +146,9 @@ final class VehiculeController extends AbstractController
         $nextDistribution = $distributionVehiculeService->calculateNextDistribution($vehicule->getId(), $user->getId());
         $nextDistributionDate = $distributionVehiculeService->calculateNextDistributionDate($vehicule->getId(), $user->getId());
 
+        $alertNextDistribution = $distributionVehiculeService->alertNextDistribution($vehicule->getId(), $user->getId());
+        $alertNextVidange = $vidangeVehiculeService->alertNextVidange($vehicule->getId(), $user->getId());
+
         return $this->render('vehicule/show.html.twig', [
             'title' => 'Détails du véhicule',
             'vehicule' => $vehicule,
@@ -151,6 +165,8 @@ final class VehiculeController extends AbstractController
             'nextVidange' => $nextVidange,
             'nextDistribution' => $nextDistribution,
             'nextDistributionDate' => $nextDistributionDate,
+            'alertNextDistribution' => $alertNextDistribution,
+            'alertNextVidange' => $alertNextVidange,
         ]);
     }
 

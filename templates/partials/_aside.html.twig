@@ -40,17 +40,24 @@
 					Dashboard
 				</a>
 			</li>
+			<li class="nav-item">
+				<a href="{{ path('app_vehicule_index') }}" class="nav-link {{ app.current_route == 'app_vehicule_index' ? 'active' : '' }} py-3 border-bottom rounded-0 d-flex align-items-center justify-content-between" data-bs-toggle="tooltip" data-bs-placement="right" aria-label="Véhicules">
+					<div>
+						<i class="fa-solid fa-car"></i>
+						Véhicules
+					</div>
+					{% if maintenance_alert_count() > 0 %}
+						<div class="text-warning" title="Une maintenance est à effectuer" aria-label="Une maintenance est à effectuer">
+							<i class="fa-solid fa-triangle-exclamation fa-bounce"></i>
+						</div>
+					{% endif %}
+				</a>
+			</li>
 
 			<li class="nav-item">
 				<a href="{{ path('app_depense_index') }}" class="nav-link {{ app.current_route == 'app_depense_index' ? 'active' : '' }} py-3 border-bottom rounded-0" aria-current="page" data-bs-toggle="tooltip" data-bs-placement="right" aria-label="Dépenses">
 					<i class="fa-solid fa-money-bill"></i>
 					Dépenses
-				</a>
-			</li>
-			<li class="nav-item">
-				<a href="{{ path('app_vehicule_index') }}" class="nav-link {{ app.current_route == 'app_vehicule_index' ? 'active' : '' }} py-3 border-bottom rounded-0" data-bs-toggle="tooltip" data-bs-placement="right" aria-label="Véhicules">
-					<i class="fa-solid fa-car"></i>
-					Véhicules
 				</a>
 			</li>
 			<li class="nav-item">
