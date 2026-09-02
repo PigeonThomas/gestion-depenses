@@ -29,7 +29,7 @@ class Depense
     #[Assert\NotBlank(message: 'Le montant de la dépense ne peut pas être vide')]
     #[Assert\Positive(message: 'Le montant de la dépense doit être un nombre positif')]
     #[Assert\Type(type: 'numeric', message: 'Le montant de la dépense doit être un nombre valide')]
-    private string $montant_depense = '0.00';
+    private ?string $montant_depense = null;
 
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
     #[Assert\Length(
@@ -128,7 +128,7 @@ class Depense
         return $this->montant_depense;
     }
 
-    public function setMontantDepense(string $montant_depense): static
+    public function setMontantDepense(?string $montant_depense): static
     {
         $this->montant_depense = $montant_depense;
 
