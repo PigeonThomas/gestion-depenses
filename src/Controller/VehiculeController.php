@@ -10,6 +10,7 @@ use App\Form\VehiculeType;
 use App\Repository\VehiculeRepository;
 use App\Repository\DepenseRepository;
 use App\Service\DistanceVehiculeService;
+use App\Service\SixMonthKmVehiculeGraphService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,6 +29,7 @@ final class VehiculeController extends AbstractController
         DistanceVehiculeService $distanceVehiculeService,
         VidangeVehiculeService $vidangeVehiculeService, 
         DistributionVehiculeService $distributionVehiculeService,
+        SixMonthKmVehiculeGraphService $sixMonthKmVehiculeGraphService,
         ): Response
     {
         // Vérifie que l'utilisateur est connecté
@@ -66,7 +68,9 @@ final class VehiculeController extends AbstractController
             $alertNextDistribution[$vehicule->getId()] = $distributionVehiculeService->alertNextDistribution($vehicule->getId(), $user->getId());
             $alertNextVidange[$vehicule->getId()] = $vidangeVehiculeService->alertNextVidange($vehicule->getId(), $user->getId());
         }
-        
+
+        $chartSixMonthKm = $sixMonthKmVehiculeGraphService->sixMonthKmVehiculeGraph($user->getId());
+
         return $this->render('vehicule/index.html.twig', [
             'title' => 'Véhicules',
             'vehicules' => $vehiculeRepository->findByUserId($user->getId()),
@@ -80,6 +84,7 @@ final class VehiculeController extends AbstractController
             'totalDistanceOfYear' => $totalDistanceOfYear,
             'alertNextDistribution' => $alertNextDistribution,
             'alertNextVidange' => $alertNextVidange,
+            'chartSixMonthKm' => $chartSixMonthKm,
         ]);
     }
 

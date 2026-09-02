@@ -28,21 +28,19 @@ class DistanceVehiculeService
     {
         $totalKmOfMonth = '0';
 
-        //condition to get the previous month and year if the current month is January
-        $moisPrecedent = $mois === 1 ? 12 : $mois - 1;
-        $anneePrecedente = $mois === 1 ? $annee - 1 : $annee;
-
         $lastKmActualMonth = $this->depenseRepository->findLastKmByVehiculeAndMonth($vehiculeId, $annee, $mois, $userId);
-        $lastKmLastMonth = $this->depenseRepository->findLastKmByVehiculeAndMonth($vehiculeId, $anneePrecedente, $moisPrecedent, $userId);
 
         if ($lastKmActualMonth === null || $lastKmActualMonth === '') {
             return $totalKmOfMonth; // Return 0 if there are no distance records for the month
         }
 
-        if ($lastKmLastMonth === null || $lastKmLastMonth === '') {
-            $lastKmLastMonth = $this->vehiculeRepository->findInitialKmByVehicule($vehiculeId); // Use initial Km if there are no records for the previous month
+        // Recherche du dernier km connu avant ce mois, quel que soit le nombre de mois sans relevé
+        $lastKmBeforeMonth = $this->depenseRepository->findLastKmByVehiculeBeforeMonth($vehiculeId, $annee, $mois, $userId);
+
+        if ($lastKmBeforeMonth === null || $lastKmBeforeMonth === '') {
+            $lastKmBeforeMonth = $this->vehiculeRepository->findInitialKmByVehicule($vehiculeId); // Use initial Km if there are no records before this month
         }
-        $totalKmOfMonth = (string) ($lastKmActualMonth - $lastKmLastMonth);
+        $totalKmOfMonth = (string) ($lastKmActualMonth - $lastKmBeforeMonth);
         return $totalKmOfMonth;
     }
 
