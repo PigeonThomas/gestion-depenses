@@ -287,7 +287,7 @@ class DepenseRepository extends ServiceEntityRepository
     }
 
     /**
-     * Find last Km for a given vehicle for a given month for carbuant expenses (id : 10) by User.
+     * Find last Km for a given vehicle for a given month for carburant or reparation expenses (id 2 and 10) by User.
      * @param int $vehiculeId The ID of the vehicle to find the last Km for.
      * @param int $annee The year of the month to find the last Km for.
      * @param int $mois The month to find the last Km for (1-12).
@@ -300,15 +300,46 @@ class DepenseRepository extends ServiceEntityRepository
         $end = $start->modify('first day of next month');
 
         $result = $this->createQueryBuilder('d')
-            ->select('d.km_vehicule') // Assuming the Km is stored in the km_vehicule field
+            ->select('d.km_vehicule')
             ->where('d.date_depense >= :start')
             ->andWhere('d.date_depense < :end')
-            ->andWhere('d.categorie = :categorie') // Assuming 'carbuant' is the category name for fuel expenses
+            ->andWhere('d.categorie IN (:categories)')
             ->andWhere('d.vehicule = :vehiculeId')
             ->andWhere('d.user = :userId')
             ->setParameter('start', $start)
             ->setParameter('end', $end)
-            ->setParameter('categorie', '10') // Adjust the category name as needed
+            ->setParameter('categories', [2, 10])
+            ->setParameter('vehiculeId', $vehiculeId)
+            ->setParameter('userId', $userId)
+            ->orderBy('d.date_depense', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        return $result['km_vehicule'] ?? null;
+    }
+
+    /**
+     * Find the last known Km for a given vehicle recorded strictly before a given month (carburant or reparation expenses).
+     * Used as a fallback to bridge gaps of several months without any recorded expense.
+     * @param int $vehiculeId The ID of the vehicle to find the last Km for.
+     * @param int $annee The year of the month used as the upper bound.
+     * @param int $mois The month used as the upper bound (1-12).
+     * @param int $userId The ID of the user to find the last Km for.
+     * @return string|null The last known Km before the specified month.
+     */
+    public function findLastKmByVehiculeBeforeMonth(int $vehiculeId, int $annee, int $mois, int $userId): ?string
+    {
+        $start = new \DateTimeImmutable(sprintf('%04d-%02d-01', $annee, $mois));
+
+        $result = $this->createQueryBuilder('d')
+            ->select('d.km_vehicule')
+            ->where('d.date_depense < :start')
+            ->andWhere('d.categorie IN (:categories)')
+            ->andWhere('d.vehicule = :vehiculeId')
+            ->andWhere('d.user = :userId')
+            ->setParameter('start', $start)
+            ->setParameter('categories', [2, 10])
             ->setParameter('vehiculeId', $vehiculeId)
             ->setParameter('userId', $userId)
             ->orderBy('d.date_depense', 'DESC')
