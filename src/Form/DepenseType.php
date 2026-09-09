@@ -86,6 +86,7 @@ class DepenseType extends AbstractType
                 'expanded' => true,
                 'multiple' => false,
                 'required' => false,
+                'placeholder' => false,
             ])
             ->add('repa_distribution', ChoiceType::class, [
                 'label' => 'S\'agit-il d\'un changement de distribution ?',
@@ -98,6 +99,20 @@ class DepenseType extends AbstractType
                 'expanded' => true,
                 'multiple' => false,
                 'required' => false,
+                'placeholder' => false,
+            ])
+            ->add('repa_CT', ChoiceType::class, [
+                'label' => 'S\'agit-il d\'un contrôle technique ?',
+                'label_attr' => ['class' => 'form-label'],
+                'attr' => ['class' => 'form-control'],
+                'choices' => [
+                    'Oui' => true,
+                    'Non' => false,
+                ],
+                'expanded' => true,
+                'multiple' => false,
+                'required' => false,
+                'placeholder' => false,
             ])
             ->add('repaPhotosFile', FileType::class, [
                 'label' => 'Photos de la réparation (3 photos maximum)',

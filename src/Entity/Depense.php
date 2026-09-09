@@ -106,6 +106,9 @@ class Depense
     #[ORM\Column(nullable: true)]
     private ?bool $repa_distribution = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $repa_CT = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -365,6 +368,18 @@ class Depense
     public function setRepaDistribution(?bool $repa_distribution): static
     {
         $this->repa_distribution = $repa_distribution;
+
+        return $this;
+    }
+
+    public function isRepaCT(): ?bool
+    {
+        return $this->repa_CT;
+    }
+
+    public function setRepaCT(?bool $repa_CT): static
+    {
+        $this->repa_CT = $repa_CT;
 
         return $this;
     }

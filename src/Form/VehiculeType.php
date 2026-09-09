@@ -69,6 +69,18 @@ class VehiculeType extends AbstractType
                 'attr' => ['class' => 'form-control'],
                 'required' => false,
             ])
+            ->add('annee_controle_technique', ChoiceType::class, [
+                'label' => 'Année entre les contrôles techniques',
+                'label_attr' => ['class' => 'form-label'],
+                'attr' => ['class' => 'form-control'],
+                'choices' => [
+                    'Non applicable' => null,
+                    '1 an' => 1,
+                    '2 ans' => 2,
+                    '5 ans' => 5,
+                ],
+                'required' => false,
+            ])
             ->add('km_vidange', IntegerType::class, [
                 'label' => 'Kilomètres entre les vidanges',
                 'label_attr' => ['class' => 'form-label'],

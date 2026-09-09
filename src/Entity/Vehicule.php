@@ -143,6 +143,10 @@ class Vehicule
     #[ORM\Column(type: Types::DECIMAL, precision: 1, scale: 0, nullable: true)]
     private ?string $annee_distribution = null;
 
+    #[ORM\Column(type: Types::SMALLINT, nullable: true)]
+    #[Assert\Choice(choices: [1, 2, 5], message: 'La périodicité du contrôle technique doit être 1, 2 ou 5 ans')]
+    private ?int $annee_controle_technique = null;
+
     public function __construct()
     {
         $this->depenses = new ArrayCollection();
@@ -398,6 +402,18 @@ class Vehicule
     public function setAnneeDistribution(?string $annee_distribution): static
     {
         $this->annee_distribution = $annee_distribution;
+
+        return $this;
+    }
+
+    public function getAnneeControleTechnique(): ?int
+    {
+        return $this->annee_controle_technique;
+    }
+
+    public function setAnneeControleTechnique(?int $annee_controle_technique): static
+    {
+        $this->annee_controle_technique = $annee_controle_technique;
 
         return $this;
     }

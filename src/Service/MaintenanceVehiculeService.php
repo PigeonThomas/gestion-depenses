@@ -10,13 +10,14 @@ class MaintenanceVehiculeService
         private readonly VehiculeRepository $vehiculeRepository,
         private readonly VidangeVehiculeService $vidangeVehiculeService,
         private readonly DistributionVehiculeService $distributionVehiculeService,
+        private readonly ControleTechniqueVehiculeService $controleTechniqueVehiculeService,
     ) {
     }
 
     /**
      * Retourne l'état des alertes de maintenance pour les véhicules d'un utilisateur.
      *
-     * @return array<int, array{vidange: bool, distribution: bool}>
+     * @return array<int, array{vidange: bool, distribution: bool, controleTechnique: bool}>
      */
     public function getAlerts(int $userId): array
     {
@@ -32,6 +33,7 @@ class MaintenanceVehiculeService
             $alerts[$vehiculeId] = [
                 'vidange' => $this->vidangeVehiculeService->alertNextVidange($vehiculeId, $userId),
                 'distribution' => $this->distributionVehiculeService->alertNextDistribution($vehiculeId, $userId),
+                'controleTechnique' => $this->controleTechniqueVehiculeService->alertNextControleTechnique($vehiculeId, $userId),
             ];
         }
 
@@ -48,6 +50,7 @@ class MaintenanceVehiculeService
         foreach ($this->getAlerts($userId) as $alert) {
             $count += (int) $alert['vidange'];
             $count += (int) $alert['distribution'];
+            $count += (int) $alert['controleTechnique'];
         }
 
         return $count;

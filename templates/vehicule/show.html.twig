@@ -41,6 +41,52 @@
 	</div>
 
 	<div class="row g-4 my-2">
+		<div class="col-md-12">
+			<div class="card " style="border-radius: 20px;">
+				<div class="card-body">
+					<div class="mb-2">
+						<h5 class="card-title text-center">Contrôle technique
+							<i class="fa-solid fa-clipboard-check"></i>
+						</h5>
+						<div class="text-center">
+							{% if vehicule.anneeControleTechnique is null %}
+								<span class="badge bg-secondary">
+									<i class="fa-solid fa-minus"></i>
+									Non applicable</span>
+							{% elseif alertNextControleTechnique %}
+								<span class="badge bg-danger">
+									<i class="fa-solid fa-triangle-exclamation fa-bounce"></i>
+									Contrôle technique à prévoir</span>
+							{% else %}
+								<span class="badge bg-success">
+									<i class="fa-solid fa-check"></i>
+									Contrôle technique à jour</span>
+							{% endif %}
+						</div>
+					</div>
+					<p class="card-text">
+						Dernier contrôle technique :
+						{% if dateControleTechnique and kmControleTechnique %}
+							le 
+							<strong>{{ dateControleTechnique ? dateControleTechnique|date('d/m/Y') }}</strong>
+							à 
+							<strong>{{ kmControleTechnique ? kmControleTechnique|number_format(0, ',', ' ') ~ ' km' }}</strong>
+						{% endif %}
+						{% if not dateControleTechnique or not kmControleTechnique %}
+							<strong>Pas de contrôle technique enregistré</strong>
+						{% endif %}
+					</p>
+					
+					<p class="card-text">
+						Prochain contrôle technique le :
+						<strong>{{ nextControleTechniqueDate ? nextControleTechniqueDate|date('d/m/Y') : 'Contrôle technique à prévoir' }}</strong>
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row g-4 my-2">
 		<div class="col-md-6">
 			<div class="card " style="border-radius: 20px;">
 				<div class="card-body">
@@ -61,13 +107,18 @@
 						</div>
 					</div>
 					<p class="card-text">
-						Dernière vidange :
-						<strong>{{ dateVidange ? dateVidange|date('d/m/Y') : 'Pas de vidange enregistrée' }}</strong>
+						Dernière vidange : 
+						{% if dateVidange and kmVidange %}
+							le 
+							<strong>{{ dateVidange ? dateVidange|date('d/m/Y') }}</strong>
+							à 
+							<strong>{{ kmVidange ? kmVidange|number_format(0, ',', ' ') ~ ' km' }}</strong>
+						{% endif %}
+						{% if not dateVidange or not kmVidange %}
+							<strong>Pas de vidange enregistrée</strong>
+						{% endif %}
 					</p>
-					<p class="card-text">
-						Kilométrage de la dernière vidange :
-						<strong>{{ kmVidange ? kmVidange|number_format(0, ',', ' ') ~ ' km' : 'Pas de vidange enregistrée' }}</strong>
-					</p>
+					
 					<p class="card-text">
 						Prochaine vidange prévue :
 						<strong>{{ nextVidange ? nextVidange|number_format(0, ',', ' ') ~ ' km' : 'Vidange à prévoir' }}</strong>
@@ -96,18 +147,21 @@
 					</div>
 					<p class="card-text">
 						Dernière distribution :
-						<strong>{{ dateDistribution ? dateDistribution|date('d/m/Y') : 'Pas de distribution enregistrée' }}</strong>
+						{% if dateDistribution and kmDistribution %}
+							le 
+							<strong>{{ dateDistribution ? dateDistribution|date('d/m/Y') }}</strong>
+							à 
+							<strong>{{ kmDistribution ? kmDistribution|number_format(0, ',', ' ') ~ ' km' }}</strong>
+						{% endif %}
+						{% if not dateDistribution or not kmDistribution %}
+							<strong>Pas de distribution enregistrée</strong>
+						{% endif %}
 					</p>
 					<p class="card-text">
-						Kilométrage de la dernière distribution :
-						<strong>{{ kmDistribution ? kmDistribution|number_format(0, ',', ' ') ~ ' km' : 'Pas de distribution enregistrée' }}</strong>
-					</p>
-					<p class="card-text">
-						Prochaine distribution prévue :
+						Prochaine distribution prévue : 
+						à 
 						<strong>{{ nextDistribution ? nextDistribution|number_format(0, ',', ' ') ~ ' km' : 'Distribution à prévoir' }}</strong>
-					</p>
-					<p class="card-text">
-						Prochaine distribution prévue (date) :
+						ou le
 						<strong>{{ nextDistributionDate ? nextDistributionDate|date('d/m/Y') : 'Distribution à prévoir' }}</strong>
 					</p>
 				</div>
