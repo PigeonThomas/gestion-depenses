@@ -134,8 +134,11 @@
 										<span class="text-danger" title="Distribution à effectuer" aria-label="Distribution à effectuer">
 											<i class="fa-solid fa-gears fa-bounce"></i>
 										</span>
-									{% endif %}
-								</div>
+									{% endif %}								{% if alertNextControleTechnique[vehicule.id] %}
+										<span class="text-danger" title="Contrôle technique à effectuer" aria-label="Contrôle technique à effectuer">
+											<i class="fa-solid fa-clipboard-check fa-bounce"></i>
+										</span>
+									{% endif %}								</div>
 								<button class="btn btn-primary">
 									<a href="{{ path('app_vehicule_show', {'id': vehicule.id}) }}" class="text-white text-decoration-none">
 										<i class="fas fa-eye"></i>
@@ -156,37 +159,43 @@
 	{{ parent() }}
 	<script>
 		// Ajoute une étiquette noire affichant le total du mois au-dessus de chaque barre empilée
-document.addEventListener('chartjs:pre-connect', function (event) {
-if (! event.target.closest('#bar-km-vehicule-wrapper')) {
-return;
-}
+		document.addEventListener("chartjs:pre-connect", function (event) {
+			if (!event.target.closest("#bar-km-vehicule-wrapper")) {
+				return;
+			}
 
-var datasets = event.detail.config.data.datasets;
-if (! datasets || datasets.length === 0) {
-return;
-}
+			var datasets = event.detail.config.data.datasets;
+			if (!datasets || datasets.length === 0) {
+				return;
+			}
 
-var topDataset = datasets[datasets.length - 1];
-topDataset.datalabels = {
-labels: {
-value: {}, // conserve l'étiquette du véhicule déjà configurée globalement
-total: {
-anchor: 'end',
-align: 'top',
-color: '#000',
-font: {
-weight: 'bold',
-size: 13
-},
-formatter: function (value, context) {
-var total = context.chart.data.datasets.reduce(function (sum, dataset) {
-return sum + (parseFloat(dataset.data[context.dataIndex]) || 0);
-}, 0);
-return total > 0 ? total + ' km' : '';
-}
-}
-}
-};
-});
+			var topDataset = datasets[datasets.length - 1];
+			topDataset.datalabels = {
+				labels: {
+					value: {}, // conserve l'étiquette du véhicule déjà configurée globalement
+					total: {
+						anchor: "end",
+						align: "top",
+						color: "#000",
+						font: {
+							weight: "bold",
+							size: 13,
+						},
+						formatter: function (value, context) {
+							var total = context.chart.data.datasets.reduce(function (
+								sum,
+								dataset,
+							) {
+								return (
+									sum +
+									(parseFloat(dataset.data[context.dataIndex]) || 0)
+								);
+							}, 0);
+							return total > 0 ? total + " km" : "";
+						},
+					},
+				},
+			};
+		});
 	</script>
 {% endblock %}
