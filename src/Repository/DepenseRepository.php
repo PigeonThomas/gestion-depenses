@@ -511,6 +511,57 @@ class DepenseRepository extends ServiceEntityRepository
         return $result ? $result['date_depense'] : null;
     }
 
+    /**
+     * Return the last contrôle technique expense entry for a vehicle and a user.
+     * @param int $vehiculeId The ID of the vehicle.
+     * @param int $userId The ID of the user.
+     * @return Depense|null The latest contrôle technique expense entity, or null if none found.
+     */
+    public function findLastControleTechniqueByVehiculeAndUser(int $vehiculeId, int $userId): ?Depense
+    {
+        return $this->createQueryBuilder('d')
+            ->where('d.vehicule = :vehiculeId')
+            ->andWhere('d.user = :userId')
+            ->andWhere('d.categorie = :categorie')
+            ->andWhere('d.repa_CT = :controleTechnique')
+            ->setParameter('vehiculeId', $vehiculeId)
+            ->setParameter('userId', $userId)
+            ->setParameter('categorie', 2) // Assuming 2 is the ID for reparation category
+            ->setParameter('controleTechnique', true) // Assuming 'repa_CT' is a boolean indicating contrôle technique
+            ->orderBy('d.date_depense', 'DESC')
+            ->addOrderBy('d.id', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * Return the last contrôle technique date for a vehicle and a user.
+     * @param int $vehiculeId The ID of the vehicle.
+     * @param int $userId The ID of the user.
+     * @return \DateTimeInterface|null The latest contrôle technique date, or null if none found.
+     */
+    public function findLastControleTechniqueDateByVehiculeAndUser(int $vehiculeId, int $userId): ?\DateTimeInterface
+    {
+        $result = $this->createQueryBuilder('d')
+            ->select('d.date_depense')
+            ->where('d.vehicule = :vehiculeId')
+            ->andWhere('d.user = :userId')
+            ->andWhere('d.categorie = :categorie')
+            ->andWhere('d.repa_CT = :controleTechnique')
+            ->setParameter('vehiculeId', $vehiculeId)
+            ->setParameter('userId', $userId)
+            ->setParameter('categorie', 2) // Assuming 2 is the ID for reparation category
+            ->setParameter('controleTechnique', true) // Assuming 'repa_CT' is a boolean indicating contrôle technique
+            ->orderBy('d.date_depense', 'DESC')
+            ->addOrderBy('d.id', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        return $result ? $result['date_depense'] : null;
+    }
+
     //    /**
     //     * @return Depense[] Returns an array of Depense objects
     //     */

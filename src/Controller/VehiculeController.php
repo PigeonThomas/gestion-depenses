@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Entity\Vehicule;
 use App\Service\VidangeVehiculeService;
 use App\Service\DistributionVehiculeService;
+use App\Service\ControleTechniqueVehiculeService;
 use App\Form\VehiculeType;
 use App\Repository\VehiculeRepository;
 use App\Repository\DepenseRepository;
@@ -29,6 +30,7 @@ final class VehiculeController extends AbstractController
         DistanceVehiculeService $distanceVehiculeService,
         VidangeVehiculeService $vidangeVehiculeService, 
         DistributionVehiculeService $distributionVehiculeService,
+        ControleTechniqueVehiculeService $controleTechniqueVehiculeService,
         SixMonthKmVehiculeGraphService $sixMonthKmVehiculeGraphService,
         ): Response
     {
@@ -64,9 +66,11 @@ final class VehiculeController extends AbstractController
 
         $alertNextDistribution = [];
         $alertNextVidange = [];
+        $alertNextControleTechnique = [];
         foreach ($vehiculeRepository->findByUserId($user->getId()) as $vehicule) {
             $alertNextDistribution[$vehicule->getId()] = $distributionVehiculeService->alertNextDistribution($vehicule->getId(), $user->getId());
             $alertNextVidange[$vehicule->getId()] = $vidangeVehiculeService->alertNextVidange($vehicule->getId(), $user->getId());
+            $alertNextControleTechnique[$vehicule->getId()] = $controleTechniqueVehiculeService->alertNextControleTechnique($vehicule->getId(), $user->getId());
         }
 
         $chartSixMonthKm = $sixMonthKmVehiculeGraphService->sixMonthKmVehiculeGraph($user->getId());
@@ -84,6 +88,7 @@ final class VehiculeController extends AbstractController
             'totalDistanceOfYear' => $totalDistanceOfYear,
             'alertNextDistribution' => $alertNextDistribution,
             'alertNextVidange' => $alertNextVidange,
+            'alertNextControleTechnique' => $alertNextControleTechnique,
             'chartSixMonthKm' => $chartSixMonthKm,
         ]);
     }
@@ -125,7 +130,8 @@ final class VehiculeController extends AbstractController
         DistanceVehiculeService $distanceVehiculeService, 
         DepenseRepository $depenseRepository, 
         VidangeVehiculeService $vidangeVehiculeService, 
-        DistributionVehiculeService $distributionVehiculeService): Response
+        DistributionVehiculeService $distributionVehiculeService,
+        ControleTechniqueVehiculeService $controleTechniqueVehiculeService): Response
     {
         //Vérifie que l'utilisateur est connecté
         $this->denyAccessUnlessGranted('ROLE_USER');
@@ -146,13 +152,16 @@ final class VehiculeController extends AbstractController
 
         $lastVidange = $depenseRepository->findLastVidangeByVehiculeAndUser($vehicule->getId(), $user->getId());
         $lastDistribution = $depenseRepository->findLastDistributionByVehiculeAndUser($vehicule->getId(), $user->getId());
+        $lastControleTechnique = $depenseRepository->findLastControleTechniqueByVehiculeAndUser($vehicule->getId(), $user->getId());
 
         $nextVidange = $vidangeVehiculeService->calculateNextVidange($vehicule->getId(), $user->getId());
         $nextDistribution = $distributionVehiculeService->calculateNextDistribution($vehicule->getId(), $user->getId());
         $nextDistributionDate = $distributionVehiculeService->calculateNextDistributionDate($vehicule->getId(), $user->getId());
+        $nextControleTechniqueDate = $controleTechniqueVehiculeService->calculateNextControleTechniqueDate($vehicule->getId(), $user->getId());
 
         $alertNextDistribution = $distributionVehiculeService->alertNextDistribution($vehicule->getId(), $user->getId());
         $alertNextVidange = $vidangeVehiculeService->alertNextVidange($vehicule->getId(), $user->getId());
+        $alertNextControleTechnique = $controleTechniqueVehiculeService->alertNextControleTechnique($vehicule->getId(), $user->getId());
 
         return $this->render('vehicule/show.html.twig', [
             'title' => 'Détails du véhicule',
@@ -167,11 +176,15 @@ final class VehiculeController extends AbstractController
             'kmVidange' => $lastVidange?->getKmVehicule(),
             'dateDistribution' => $lastDistribution?->getDateDepense(),
             'kmDistribution' => $lastDistribution?->getKmVehicule(),
+            'dateControleTechnique' => $lastControleTechnique?->getDateDepense(),
+            'kmControleTechnique' => $lastControleTechnique?->getKmVehicule(),
             'nextVidange' => $nextVidange,
             'nextDistribution' => $nextDistribution,
             'nextDistributionDate' => $nextDistributionDate,
+            'nextControleTechniqueDate' => $nextControleTechniqueDate,
             'alertNextDistribution' => $alertNextDistribution,
             'alertNextVidange' => $alertNextVidange,
+            'alertNextControleTechnique' => $alertNextControleTechnique,
         ]);
     }
 
