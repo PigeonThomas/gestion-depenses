@@ -79,4 +79,20 @@ class MagasinCategorieGraphService
 
         return $chart;
     }
+
+    /**
+     * Retourne les données brutes (labels, data, colors) des dépenses par magasin pour un mois donné.
+     */
+    public function getMagasinData(int $year, int $month, int $userId): array
+    {
+        $data = $this->depenseRepository->findTotalByMagasinAndMonth($year, $month, $userId);
+        $labels = array_column($data, 'magasin');
+        $colors = $this->chartColorPaletteService->getColorsForLabels($labels);
+
+        return [
+            'labels' => $labels,
+            'data'   => array_map('floatval', array_column($data, 'total')),
+            'colors' => $colors,
+        ];
+    }
 }

@@ -65,6 +65,20 @@ final class HomeController extends AbstractController
         $chartMagasin = $magasinCategorieGraphService->magasinDepenseGraph($anneeGraph, $moisGraph, $user->getId());
         $chartSixMonth = $sixMonthDepenseGraphService->sixMonthDepenseGraph($annee, $mois, $user->getId());
 
+        // Pré-calcul des données des 6 mois pour les donuts (mis à jour au clic côté JS, sans rechargement)
+        $sixMonthDonutData = [];
+        for ($i = 5; $i >= 0; $i--) {
+            $date = new \DateTime();
+            $date->modify("-$i month");
+            $y = (int) $date->format('Y');
+            $m = (int) $date->format('n');
+            $sixMonthDonutData[] = [
+                'label'     => $date->format('M Y'),
+                'categorie' => $categorieDepenseGraphService->getCategorieData($y, $m, $user->getId()),
+                'magasin'   => $magasinCategorieGraphService->getMagasinData($y, $m, $user->getId()),
+            ];
+        }
+
         return $this->render('home/dashboard.html.twig', [
             'title' => 'Dashboard',
             'totalDepenseActualMonth' => $totalDepenseActualMonth,
@@ -73,6 +87,7 @@ final class HomeController extends AbstractController
             'chartMagasin' => $chartMagasin,
             'chartSixMonth' => $chartSixMonth,
             'period' => $period,
+            'sixMonthDonutData' => $sixMonthDonutData,
         ]);
     }
 }

@@ -2,12 +2,16 @@
 
 namespace App\Controller;
 
-use App\Entity\Vehicule;
 use App\Entity\User;
+use App\Entity\Vehicule;
+use App\Service\VidangeVehiculeService;
+use App\Service\DistributionVehiculeService;
+use App\Service\ControleTechniqueVehiculeService;
 use App\Form\VehiculeType;
 use App\Repository\VehiculeRepository;
 use App\Repository\DepenseRepository;
 use App\Service\DistanceVehiculeService;
+use App\Service\SixMonthKmVehiculeGraphService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,6 +28,10 @@ final class VehiculeController extends AbstractController
         VehiculeRepository $vehiculeRepository, 
         DepenseRepository $depenseRepository, 
         DistanceVehiculeService $distanceVehiculeService,
+        VidangeVehiculeService $vidangeVehiculeService, 
+        DistributionVehiculeService $distributionVehiculeService,
+        ControleTechniqueVehiculeService $controleTechniqueVehiculeService,
+        SixMonthKmVehiculeGraphService $sixMonthKmVehiculeGraphService,
         ): Response
     {
         // Vérifie que l'utilisateur est connecté
@@ -50,6 +58,23 @@ final class VehiculeController extends AbstractController
         foreach ($vehiculeRepository->findByUserId($user->getId()) as $vehicule) {
             $totalDistance += (int) $distanceVehiculeService->calculateDistance($vehicule->getId(), $annee, $mois, $user->getId());
         }
+
+        $totalDistanceOfYear = 0;
+        foreach ($vehiculeRepository->findByUserId($user->getId()) as $vehicule) {
+            $totalDistanceOfYear += (int) $distanceVehiculeService->calculateDistanceYear($vehicule->getId(), $annee, $user->getId());
+        }
+
+        $alertNextDistribution = [];
+        $alertNextVidange = [];
+        $alertNextControleTechnique = [];
+        foreach ($vehiculeRepository->findByUserId($user->getId()) as $vehicule) {
+            $alertNextDistribution[$vehicule->getId()] = $distributionVehiculeService->alertNextDistribution($vehicule->getId(), $user->getId());
+            $alertNextVidange[$vehicule->getId()] = $vidangeVehiculeService->alertNextVidange($vehicule->getId(), $user->getId());
+            $alertNextControleTechnique[$vehicule->getId()] = $controleTechniqueVehiculeService->alertNextControleTechnique($vehicule->getId(), $user->getId());
+        }
+
+        $chartSixMonthKm = $sixMonthKmVehiculeGraphService->sixMonthKmVehiculeGraph($user->getId());
+
         return $this->render('vehicule/index.html.twig', [
             'title' => 'Véhicules',
             'vehicules' => $vehiculeRepository->findByUserId($user->getId()),
@@ -60,6 +85,11 @@ final class VehiculeController extends AbstractController
             'totalReparationActualMonth' => $totalReparationActualMonth,
             'totalReparationLastMonth' => $totalReparationLastMonth,
             'totalDistance' => $totalDistance, // Pass the total distance to the template if needed
+            'totalDistanceOfYear' => $totalDistanceOfYear,
+            'alertNextDistribution' => $alertNextDistribution,
+            'alertNextVidange' => $alertNextVidange,
+            'alertNextControleTechnique' => $alertNextControleTechnique,
+            'chartSixMonthKm' => $chartSixMonthKm,
         ]);
     }
 
@@ -95,18 +125,66 @@ final class VehiculeController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_vehicule_show', methods: ['GET'])]
-    public function show(Vehicule $vehicule): Response
+    public function show(
+        Vehicule $vehicule, 
+        DistanceVehiculeService $distanceVehiculeService, 
+        DepenseRepository $depenseRepository, 
+        VidangeVehiculeService $vidangeVehiculeService, 
+        DistributionVehiculeService $distributionVehiculeService,
+        ControleTechniqueVehiculeService $controleTechniqueVehiculeService): Response
     {
         //Vérifie que l'utilisateur est connecté
         $this->denyAccessUnlessGranted('ROLE_USER');
+        $user = $this->getUser();
+        if (!$user instanceof User) {
+            throw $this->createAccessDeniedException('Vous devez être connecté pour accéder à ce véhicule.');
+        }
         //Vérifie que l'utilisateur connecté est le propriétaire du véhicule
-        if ($vehicule->getUser() !== $this->getUser()) {
+        if ($vehicule->getUser() !== $user) {
             throw $this->createAccessDeniedException('Vous n\'avez pas accès à ce véhicule.');
         }
+
+        $actualKm = $depenseRepository->findLastKmByVehicule($vehicule->getId(), $user->getId());
+
+        $kmParcourusDepuisAchat = $distanceVehiculeService->calculateDistanceSincePurchase($vehicule->getId(), $user->getId());
+
+        $lastReparation = $depenseRepository->findLastReparationByVehiculeAndUser($vehicule->getId(), $user->getId());
+
+        $lastVidange = $depenseRepository->findLastVidangeByVehiculeAndUser($vehicule->getId(), $user->getId());
+        $lastDistribution = $depenseRepository->findLastDistributionByVehiculeAndUser($vehicule->getId(), $user->getId());
+        $lastControleTechnique = $depenseRepository->findLastControleTechniqueByVehiculeAndUser($vehicule->getId(), $user->getId());
+
+        $nextVidange = $vidangeVehiculeService->calculateNextVidange($vehicule->getId(), $user->getId());
+        $nextDistribution = $distributionVehiculeService->calculateNextDistribution($vehicule->getId(), $user->getId());
+        $nextDistributionDate = $distributionVehiculeService->calculateNextDistributionDate($vehicule->getId(), $user->getId());
+        $nextControleTechniqueDate = $controleTechniqueVehiculeService->calculateNextControleTechniqueDate($vehicule->getId(), $user->getId());
+
+        $alertNextDistribution = $distributionVehiculeService->alertNextDistribution($vehicule->getId(), $user->getId());
+        $alertNextVidange = $vidangeVehiculeService->alertNextVidange($vehicule->getId(), $user->getId());
+        $alertNextControleTechnique = $controleTechniqueVehiculeService->alertNextControleTechnique($vehicule->getId(), $user->getId());
 
         return $this->render('vehicule/show.html.twig', [
             'title' => 'Détails du véhicule',
             'vehicule' => $vehicule,
+            'actualKm' => $actualKm,
+            'kmParcourusDepuisAchat' => $kmParcourusDepuisAchat,
+            'consommationMoyenne' => 'To be calculated', // Placeholder for average consumption calculation
+            'montantReparation' => $lastReparation?->getMontantDepense(),
+            'commentaireReparation' => $lastReparation?->getCommentaireDepense(),
+            'dateReparation' => $lastReparation?->getDateDepense(),
+            'dateVidange' => $lastVidange?->getDateDepense(),
+            'kmVidange' => $lastVidange?->getKmVehicule(),
+            'dateDistribution' => $lastDistribution?->getDateDepense(),
+            'kmDistribution' => $lastDistribution?->getKmVehicule(),
+            'dateControleTechnique' => $lastControleTechnique?->getDateDepense(),
+            'kmControleTechnique' => $lastControleTechnique?->getKmVehicule(),
+            'nextVidange' => $nextVidange,
+            'nextDistribution' => $nextDistribution,
+            'nextDistributionDate' => $nextDistributionDate,
+            'nextControleTechniqueDate' => $nextControleTechniqueDate,
+            'alertNextDistribution' => $alertNextDistribution,
+            'alertNextVidange' => $alertNextVidange,
+            'alertNextControleTechnique' => $alertNextControleTechnique,
         ]);
     }
 

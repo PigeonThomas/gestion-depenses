@@ -36,29 +36,49 @@ class KilometrageValidationService
         }
 
         $kmSaisi = (float) $depense->getKmVehicule();
+        $dateDepense = $depense->getDateDepense();
 
-        // Cherche le dernier km enregistré pour ce véhicule (toutes dates confondues)
-        $lastKm = $this->depenseRepository->findLastKmByVehicule($vehicule->getId(), $depense->getId());
+        // Cherche le km de la dépense précédente (même véhicule, même catégorie, date antérieure ou égale)
+        $previousKm = $this->depenseRepository->findPreviousKmByVehiculeAndCategorie(
+            $vehicule->getId(),
+            $categorie->getId(),
+            $dateDepense,
+            $depense->getId()
+        );
 
-        if ($lastKm !== null) {
-            if ($kmSaisi <= (float) $lastKm) {
+        if ($previousKm !== null) {
+            if ($kmSaisi <= (float) $previousKm) {
                 return sprintf(
-                    'Le kilométrage saisi (%s km) doit être supérieur au dernier kilométrage enregistré (%s km) pour ce véhicule.',
+                    'Le kilométrage saisi (%s km) doit être supérieur au kilométrage de la dépense précédente (%s km) pour cette catégorie.',
                     number_format($kmSaisi, 0, ',', ' '),
-                    number_format((float) $lastKm, 0, ',', ' ')
+                    number_format((float) $previousKm, 0, ',', ' ')
                 );
             }
-
-            return null;
+        } else {
+            // Aucune dépense antérieure de cette catégorie : compare avec le km à l'achat du véhicule
+            $kmAchat = $vehicule->getKmAchatVehicule();
+            if ($kmAchat !== null && $kmSaisi <= (float) $kmAchat) {
+                return sprintf(
+                    'Le kilométrage saisi (%s km) doit être supérieur au kilométrage à l\'achat du véhicule (%s km).',
+                    number_format($kmSaisi, 0, ',', ' '),
+                    number_format((float) $kmAchat, 0, ',', ' ')
+                );
+            }
         }
 
-        // Aucun km en BDD : compare avec le km à l'achat du véhicule
-        $kmAchat = $vehicule->getKmAchatVehicule();
-        if ($kmAchat !== null && $kmSaisi <= (float) $kmAchat) {
+        // Cherche le km de la dépense suivante (même véhicule, même catégorie, date postérieure ou égale)
+        $nextKm = $this->depenseRepository->findNextKmByVehiculeAndCategorie(
+            $vehicule->getId(),
+            $categorie->getId(),
+            $dateDepense,
+            $depense->getId()
+        );
+
+        if ($nextKm !== null && $kmSaisi >= (float) $nextKm) {
             return sprintf(
-                'Le kilométrage saisi (%s km) doit être supérieur au kilométrage à l\'achat du véhicule (%s km).',
+                'Le kilométrage saisi (%s km) doit être inférieur au kilométrage de la dépense suivante (%s km) pour cette catégorie.',
                 number_format($kmSaisi, 0, ',', ' '),
-                number_format((float) $kmAchat, 0, ',', ' ')
+                number_format((float) $nextKm, 0, ',', ' ')
             );
         }
 

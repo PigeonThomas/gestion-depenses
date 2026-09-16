@@ -6,6 +6,7 @@ use App\Entity\Categorie;
 use App\Entity\Depense;
 use App\Entity\Magasin;
 use App\Entity\Vehicule;
+use App\Repository\CategorieRepository;
 use App\Repository\MagasinRepository;
 use App\Repository\VehiculeRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -18,6 +19,7 @@ use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class DepenseType extends AbstractType
 {
@@ -73,6 +75,45 @@ class DepenseType extends AbstractType
                 'attr' => ['class' => 'form-control'],
                 'required' => false,
             ])
+            ->add('repa_vidange', ChoiceType::class, [
+                'label' => 'S\'agit-il d\'une vidange ?',
+                'label_attr' => ['class' => 'form-label'],
+                'attr' => ['class' => 'form-control'],
+                'choices' => [
+                    'Oui' => true,
+                    'Non' => false,
+                ],
+                'expanded' => true,
+                'multiple' => false,
+                'required' => false,
+                'placeholder' => false,
+            ])
+            ->add('repa_distribution', ChoiceType::class, [
+                'label' => 'S\'agit-il d\'un changement de distribution ?',
+                'label_attr' => ['class' => 'form-label'],
+                'attr' => ['class' => 'form-control'],
+                'choices' => [
+                    'Oui' => true,
+                    'Non' => false,
+                ],
+                'expanded' => true,
+                'multiple' => false,
+                'required' => false,
+                'placeholder' => false,
+            ])
+            ->add('repa_CT', ChoiceType::class, [
+                'label' => 'S\'agit-il d\'un contrôle technique ?',
+                'label_attr' => ['class' => 'form-label'],
+                'attr' => ['class' => 'form-control'],
+                'choices' => [
+                    'Oui' => true,
+                    'Non' => false,
+                ],
+                'expanded' => true,
+                'multiple' => false,
+                'required' => false,
+                'placeholder' => false,
+            ])
             ->add('repaPhotosFile', FileType::class, [
                 'label' => 'Photos de la réparation (3 photos maximum)',
                 'label_attr' => ['class' => 'form-label'],
@@ -80,6 +121,10 @@ class DepenseType extends AbstractType
                 'required' => false,
             ])
             ->add('categorie', EntityType::class, [
+                'query_builder' => function (CategorieRepository $categorieRepository) {
+                    return $categorieRepository->createQueryBuilder('c')
+                        ->orderBy('c.nom_categorie', 'ASC');
+                },
                 'label' => 'Catégorie de dépense*',
                 'label_attr' => ['class' => 'form-label'],
                 'attr' => ['class' => 'form-control'],
@@ -92,7 +137,7 @@ class DepenseType extends AbstractType
                     return $magasinRepository->createQueryBuilder('m')
                         ->andWhere('m.user = :user')
                         ->setParameter('user', $options['user'])
-                        ->orderBy('m.createdAt', 'DESC');
+                        ->orderBy('m.nom_magasin', 'ASC');
                 },
                 'label' => 'Magasin*',
                 'label_attr' => ['class' => 'form-label'],
@@ -106,7 +151,7 @@ class DepenseType extends AbstractType
                     return $vehiculeRepository->createQueryBuilder('v')
                         ->andWhere('v.user = :user')
                         ->setParameter('user', $options['user'])
-                        ->orderBy('v.createdAt', 'DESC');
+                        ->orderBy('v.surnom_vehicule', 'ASC');
                 },
                 'label' => 'Véhicule',
                 'label_attr' => ['class' => 'form-label'],

@@ -63,7 +63,9 @@ class SixMonthDepenseGraphService
 
         // Configuration du graphique
         $chart->setOptions([
-            'maintainAspectRatio' => false, // Permet de rendre le graphique responsive
+            // Permet de rendre le graphique responsive
+            'maintainAspectRatio' => false, 
+            
             // Configuration des axes et des plugins pour améliorer l'affichage du graphique
             'scales' => [
                 'y' => [
@@ -84,6 +86,7 @@ class SixMonthDepenseGraphService
                     ],
                 ],
             ],
+
             // Configuration des plugins pour la légende, le titre et les datalabels du graphique
             'plugins' => [
                 'legend' => [
@@ -105,7 +108,6 @@ class SixMonthDepenseGraphService
                         return $value . ' €';
                     },
                 ],
-                
             ],
         ]);
 

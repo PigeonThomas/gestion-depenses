@@ -19,9 +19,9 @@ class DepenseTest extends TestCase
     }
 
     // Les tests suivants vérifient les getters et setters de l'entité Depense
-    public function testDefaultMontantIsZero(): void
+    public function testDefaultMontantIsNull(): void
     {
-        $this->assertSame('0.00', $this->depense->getMontantDepense());
+        $this->assertNull($this->depense->getMontantDepense());
     }
 
     public function testSetAndGetMontantDepense(): void

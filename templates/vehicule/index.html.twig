@@ -11,17 +11,22 @@
 		</h1>
 		<h2>Voici la liste de vos véhicules</h2>
 		<p>
-			Ici, vous pouvez suivre et gérer toutes vos véhicules.
+			Ici, vous pouvez suivre et gérer tous vos véhicules.
 		</p>
 
 		<div class="row g-4 my-2">
 			<div class="col-md-4">
 				<div class="card " style="border-radius: 20px;">
 					<div class="card-body">
-						<h5 class="card-title">Kilométres parcourus</h5>
-						<p class="card-text">Kilométres parcourus pour le mois en cours :
+						<h5 class="card-title text-center">Kilométres parcourus</h5>
+						<p class="card-text">Kilométres parcourus ce mois :
 							<strong>
-								{{ totalDistance }}
+								{{ totalDistance|number_format(0, ',', ' ') }}
+								km</strong>
+						</p>
+						<p class="card-text">Kilométres parcourus cette année :
+							<strong>
+								{{ totalDistanceOfYear|number_format(0, ',', ' ') }}
 								km</strong>
 						</p>
 					</div>
@@ -30,7 +35,7 @@
 			<div class="col-md-4">
 				<div class="card " style="border-radius: 20px;">
 					<div class="card-body">
-						<h5 class="card-title">Dépenses en essence</h5>
+						<h5 class="card-title text-center">Dépenses en essence</h5>
 						<p class="card-text">Dépenses en essence en
 							{{ mois }}/{{ annee }}
 							:
@@ -47,7 +52,7 @@
 			<div class="col-md-4">
 				<div class="card " style="border-radius: 20px;">
 					<div class="card-body">
-						<h5 class="card-title">Dépenses en réparations</h5>
+						<h5 class="card-title text-center">Dépenses en réparations</h5>
 						<p class="card-text">Dépenses en réparations en
 							{{ mois }}/{{ annee }}
 							:
@@ -63,6 +68,17 @@
 			</div>
 		</div>
 
+		<div class="col-md-12 my-4">
+			<div class="card" style="border-radius: 20px;">
+				<div class="card-body">
+					<h5 class="card-title text-center">Kilométres parcourus par véhicule (6 derniers mois)</h5>
+					<div id="bar-km-vehicule-wrapper" style="height: 400px; width: 100%;">
+						{{ render_chart(chartSixMonthKm) }}
+					</div>
+				</div>
+			</div>
+		</div>
+
 		<div class="container">
 			<div class="row g-4">
 				{% for vehicule in vehicules %}
@@ -71,15 +87,34 @@
 
 							<div class="card-body row d-flex align-items-center">
 								<h4 class="card-title text-center">{{ vehicule.surnomVehicule }}</h4>
+								<h6 class="card-subtitle mb-2 text-muted text-center">{{ vehicule.immatVehicule }}</h6>
 								<div class="col-5">
 
 									<div class="card-text">
-										<p>{{ vehicule.immatVehicule }}</p>
-										<p>{{ vehicule.marqueVehicule }}
+										<p class="mb-0">
+											<strong>Modèle</strong>
+										</p>
+										<p class="text-muted text-center">
+											{{ vehicule.marqueVehicule }}
 											{{ vehicule.modeleVehicule }}</p>
-										<p>{{ vehicule.anneeCirculationVehicule ? vehicule.anneeCirculationVehicule|date('Y') : '' }}</p>
-										<p>{{ vehicule.energieVehicule ? vehicule.energieVehicule : '' }}</p>
-										<p>{{ vehicule.kmAchatVehicule ? vehicule.kmAchatVehicule ~ ' km' : '' }}</p>
+
+										<p class="mb-0">
+											<strong>Mise en circulation</strong>
+										</p>
+										<p class="text-muted text-center">
+											{{ vehicule.anneeCirculationVehicule ? vehicule.anneeCirculationVehicule|date('Y') : '' }}</p>
+
+										<p class="mb-0">
+											<strong>Carburant</strong>
+										</p>
+										<p class="text-muted text-center">
+											{{ vehicule.energieVehicule ? vehicule.energieVehicule : '' }}</p>
+
+										<p class="mb-0">
+											<strong>Km à l'achat</strong>
+										</p>
+										<p class="text-muted text-center">
+											{{ vehicule.kmAchatVehicule ? vehicule.kmAchatVehicule|number_format(0, ',', ' ') ~ ' km' : '' }}</p>
 									</div>
 								</div>
 								<div class="card-image col">
@@ -88,13 +123,27 @@
 									{% endif %}
 								</div>
 							</div>
-							<div class="card-footer d-flex justify-content-end gap-2">
-								<a href="{{ path('app_vehicule_show', {'id': vehicule.id}) }}" class="btn btn-primary">
-									<i class="fas fa-eye"></i>
-									Détails</a>
-								<a href="{{ path('app_vehicule_edit', {'id': vehicule.id}) }}" class="btn btn-secondary">
-									<i class="fas fa-pencil-alt"></i>
-									Modifier</a>
+							<div class="card-footer d-flex justify-content-between gap-2">
+								<div class="d-flex align-items-center gap-2">
+									{% if alertNextVidange[vehicule.id] %}
+										<span class="text-danger" title="Vidange à effectuer" aria-label="Vidange à effectuer">
+											<i class="fa-solid fa-oil-can fa-bounce"></i>
+										</span>
+									{% endif %}
+									{% if alertNextDistribution[vehicule.id] %}
+										<span class="text-danger" title="Distribution à effectuer" aria-label="Distribution à effectuer">
+											<i class="fa-solid fa-gears fa-bounce"></i>
+										</span>
+									{% endif %}								{% if alertNextControleTechnique[vehicule.id] %}
+										<span class="text-danger" title="Contrôle technique à effectuer" aria-label="Contrôle technique à effectuer">
+											<i class="fa-solid fa-clipboard-check fa-bounce"></i>
+										</span>
+									{% endif %}								</div>
+								<button class="btn btn-primary">
+									<a href="{{ path('app_vehicule_show', {'id': vehicule.id}) }}" class="text-white text-decoration-none">
+										<i class="fas fa-eye"></i>
+										Détails</a>
+								</button>
 							</div>
 						</div>
 					</div>
@@ -104,4 +153,49 @@
 
 		</div>
 	</div>
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	<script>
+		// Ajoute une étiquette noire affichant le total du mois au-dessus de chaque barre empilée
+		document.addEventListener("chartjs:pre-connect", function (event) {
+			if (!event.target.closest("#bar-km-vehicule-wrapper")) {
+				return;
+			}
+
+			var datasets = event.detail.config.data.datasets;
+			if (!datasets || datasets.length === 0) {
+				return;
+			}
+
+			var topDataset = datasets[datasets.length - 1];
+			topDataset.datalabels = {
+				labels: {
+					value: {}, // conserve l'étiquette du véhicule déjà configurée globalement
+					total: {
+						anchor: "end",
+						align: "top",
+						color: "#000",
+						font: {
+							weight: "bold",
+							size: 13,
+						},
+						formatter: function (value, context) {
+							var total = context.chart.data.datasets.reduce(function (
+								sum,
+								dataset,
+							) {
+								return (
+									sum +
+									(parseFloat(dataset.data[context.dataIndex]) || 0)
+								);
+							}, 0);
+							return total > 0 ? total + " km" : "";
+						},
+					},
+				},
+			};
+		});
+	</script>
 {% endblock %}

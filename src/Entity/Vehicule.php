@@ -134,6 +134,19 @@ class Vehicule
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private ?\DateTimeImmutable $updatedAt = null;
 
+    #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 0, nullable: true)]
+    private ?string $km_vidange = null;
+
+    #[ORM\Column(type: Types::DECIMAL, precision: 6, scale: 0, nullable: true)]
+    private ?string $km_distribution = null;
+
+    #[ORM\Column(type: Types::DECIMAL, precision: 1, scale: 0, nullable: true)]
+    private ?string $annee_distribution = null;
+
+    #[ORM\Column(type: Types::SMALLINT, nullable: true)]
+    #[Assert\Choice(choices: [1, 2, 5], message: 'La périodicité du contrôle technique doit être 1, 2 ou 5 ans')]
+    private ?int $annee_controle_technique = null;
+
     public function __construct()
     {
         $this->depenses = new ArrayCollection();
@@ -355,5 +368,53 @@ class Vehicule
     public function updateTimestampOnUpdate(): void
     {
         $this->updatedAt = new \DateTimeImmutable();
+    }
+
+    public function getKmVidange(): ?string
+    {
+        return $this->km_vidange;
+    }
+
+    public function setKmVidange(?string $km_vidange): static
+    {
+        $this->km_vidange = $km_vidange;
+
+        return $this;
+    }
+
+    public function getKmDistribution(): ?string
+    {
+        return $this->km_distribution;
+    }
+
+    public function setKmDistribution(?string $km_distribution): static
+    {
+        $this->km_distribution = $km_distribution;
+
+        return $this;
+    }
+
+    public function getAnneeDistribution(): ?string
+    {
+        return $this->annee_distribution;
+    }
+
+    public function setAnneeDistribution(?string $annee_distribution): static
+    {
+        $this->annee_distribution = $annee_distribution;
+
+        return $this;
+    }
+
+    public function getAnneeControleTechnique(): ?int
+    {
+        return $this->annee_controle_technique;
+    }
+
+    public function setAnneeControleTechnique(?int $annee_controle_technique): static
+    {
+        $this->annee_controle_technique = $annee_controle_technique;
+
+        return $this;
     }
 }

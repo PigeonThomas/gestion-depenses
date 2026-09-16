@@ -29,7 +29,7 @@ class Depense
     #[Assert\NotBlank(message: 'Le montant de la dépense ne peut pas être vide')]
     #[Assert\Positive(message: 'Le montant de la dépense doit être un nombre positif')]
     #[Assert\Type(type: 'numeric', message: 'Le montant de la dépense doit être un nombre valide')]
-    private string $montant_depense = '0.00';
+    private ?string $montant_depense = null;
 
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
     #[Assert\Length(
@@ -100,6 +100,15 @@ class Depense
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private ?\DateTimeImmutable $updatedAt = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $repa_vidange = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $repa_distribution = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $repa_CT = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -122,7 +131,7 @@ class Depense
         return $this->montant_depense;
     }
 
-    public function setMontantDepense(string $montant_depense): static
+    public function setMontantDepense(?string $montant_depense): static
     {
         $this->montant_depense = $montant_depense;
 
@@ -337,5 +346,41 @@ class Depense
                 ->atPath('km_vehicule')
                 ->addViolation();
         }
+    }
+
+    public function isRepaVidange(): ?bool
+    {
+        return $this->repa_vidange;
+    }
+
+    public function setRepaVidange(?bool $repa_vidange): static
+    {
+        $this->repa_vidange = $repa_vidange;
+
+        return $this;
+    }
+
+    public function isRepaDistribution(): ?bool
+    {
+        return $this->repa_distribution;
+    }
+
+    public function setRepaDistribution(?bool $repa_distribution): static
+    {
+        $this->repa_distribution = $repa_distribution;
+
+        return $this;
+    }
+
+    public function isRepaCT(): ?bool
+    {
+        return $this->repa_CT;
+    }
+
+    public function setRepaCT(?bool $repa_CT): static
+    {
+        $this->repa_CT = $repa_CT;
+
+        return $this;
     }
 }
