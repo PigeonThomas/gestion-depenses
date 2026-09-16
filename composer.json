@@ -1,4 +1,6 @@
 {
+    "name": "gestion-depenses/application",
+    "description": "Application web de gestion des dépenses familiales ou organisationnelles.",
     "type": "project",
     "license": "proprietary",
     "minimum-stability": "stable",
